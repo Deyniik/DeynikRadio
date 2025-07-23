@@ -1,304 +1,603 @@
+# Профессиональный фоторедактор
+
+Вот полностью переработанный фоторедактор с устранением всех багов, красивым дизайном и плавной работой:
+
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Простой фоторедактор</title>
+    <title>ProPhoto Editor</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --bg: #0f0f0f;
+            --panel: #1e1e1e;
+            --accent: #4361ee;
+            --text: #f0f0f0;
+            --slider-track: #333;
+            --slider-thumb: var(--accent);
+            --border: rgba(255,255,255,0.1);
+            --radius: 12px;
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
-        
+
         body {
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px 0;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        h1 {
-            color: #4a6baf;
-            margin-bottom: 10px;
-        }
-        
-        .editor-container {
+
+        #app {
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+            flex-direction: column;
+            height: 100vh;
         }
-        
-        .image-container {
+
+        /* Шапка */
+        .header {
+            height: 60px;
+            background: var(--panel);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 18px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Основная рабочая область */
+        .main-content {
+            display: flex;
             flex: 1;
-            min-width: 300px;
-            background-color: #fff;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            overflow: hidden;
+            position: relative;
         }
-        
-        .controls {
+
+        .workspace {
             flex: 1;
-            min-width: 300px;
-            background-color: #fff;
-            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
             padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .canvas-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            border-radius: var(--radius);
+            overflow: hidden;
+            position: relative;
+            box-shadow: var(--shadow);
+        }
+
         canvas {
             max-width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-bottom: 20px;
+            max-height: calc(100vh - 180px);
+            object-fit: contain;
+            transition: all 0.3s;
+            border-radius: var(--radius);
         }
-        
-        .btn {
-            background-color: #4a6baf;
-            color: white;
+
+        /* Панель инструментов */
+        .toolbar {
+            height: 60px;
+            background: var(--panel);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tool-button {
+            background: transparent;
+            color: var(--text);
             border: none;
             padding: 10px 15px;
-            margin: 5px;
-            border-radius: 5px;
+            border-radius: var(--radius);
             cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            min-width: 70px;
         }
-        
-        .btn:hover {
-            background-color: #3a5a9f;
+
+        .tool-button:hover {
+            background: rgba(255,255,255,0.05);
         }
-        
-        .btn i {
-            margin-right: 5px;
+
+        .tool-button.active {
+            color: var(--accent);
+            background: rgba(67, 97, 238, 0.1);
         }
-        
+
+        .tool-button i {
+            font-size: 16px;
+        }
+
+        /* Панель настроек */
+        .controls {
+            width: 340px;
+            background: var(--panel);
+            padding: 20px;
+            overflow-y: auto;
+            border-left: 1px solid var(--border);
+            transition: transform 0.3s;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) var(--panel);
+        }
+
+        .controls::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .controls::-webkit-scrollbar-track {
+            background: var(--panel);
+        }
+
+        .controls::-webkit-scrollbar-thumb {
+            background-color: var(--accent);
+            border-radius: 3px;
+        }
+
         .control-group {
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
+            margin-bottom: 25px;
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-radius: var(--radius);
         }
-        
+
         .control-group h3 {
             margin-bottom: 15px;
-            color: #4a6baf;
+            color: var(--accent);
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        
-        .filter-btn {
-            display: inline-block;
-            width: 70px;
-            height: 70px;
-            margin: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            background-size: cover;
-            background-position: center;
-            border: 2px solid transparent;
-            transition: all 0.3s;
-        }
-        
-        .filter-btn:hover {
-            transform: scale(1.05);
-            border-color: #4a6baf;
-        }
-        
-        .filter-btn.active {
-            border-color: #4a6baf;
-            box-shadow: 0 0 10px rgba(74, 107, 175, 0.5);
-        }
-        
+
+        /* Стили для ползунков */
         .slider-container {
-            margin: 15px 0;
+            margin-bottom: 20px;
         }
-        
-        .slider-container label {
-            display: block;
-            margin-bottom: 5px;
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .slider-label {
+            font-size: 14px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .slider-value {
+            font-size: 14px;
+            color: var(--accent);
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            height: 24px;
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: var(--slider-track);
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--slider-thumb);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+            transition: all 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        .slider-fill {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 6px;
+            background: var(--accent);
+            border-radius: 3px;
+            pointer-events: none;
+        }
+
+        /* Фильтры */
+        .filters-container {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+        }
+
+        .filters-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            min-width: 90px;
+            flex-shrink: 0;
+        }
+
+        .filter-preview {
+            width: 90px;
+            height: 90px;
+            border-radius: var(--radius);
+            background-size: cover;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .filter-item.active .filter-preview {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+        }
+
+        .filter-name {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            text-align: center;
             font-weight: 500;
         }
-        
-        input[type="range"] {
-            width: 100%;
-        }
-        
-        .filter-presets {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
+
+        /* Кнопки загрузки/скачивания */
         .file-input {
             display: none;
         }
-        
-        .file-label {
-            display: inline-block;
-            background-color: #4a6baf;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 15px;
-        }
-        
-        .file-label:hover {
-            background-color: #3a5a9f;
-        }
-        
-        .tools {
+
+        .action-buttons {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 12px;
+            margin-top: 20px;
         }
-        
-        .tool-btn {
-            background-color: #f0f0f0;
+
+        .action-button {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--radius);
             border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            font-size: 14px;
         }
-        
-        .tool-btn:hover {
-            background-color: #e0e0e0;
-        }
-        
-        .tool-btn.active {
-            background-color: #4a6baf;
+
+        .primary-button {
+            background: var(--accent);
             color: white;
+            box-shadow: 0 2px 10px rgba(67, 97, 238, 0.3);
         }
-        
-        .download-btn {
-            background-color: #28a745;
+
+        .primary-button:hover {
+            background: #3a56d4;
+            transform: translateY(-2px);
         }
-        
-        .download-btn:hover {
-            background-color: #218838;
+
+        .secondary-button {
+            background: rgba(255,255,255,0.08);
+            color: var(--text);
         }
-        
-        .reset-btn {
-            background-color: #dc3545;
+
+        .secondary-button:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
         }
-        
-        .reset-btn:hover {
-            background-color: #c82333;
+
+        /* Цветовые контролы */
+        .color-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        
+
+        input[type="color"] {
+            width: 36px;
+            height: 36px;
+            border: 2px solid var(--slider-track);
+            border-radius: 50%;
+            padding: 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        input[type="color"]:hover {
+            transform: scale(1.1);
+        }
+
+        .color-hex {
+            font-size: 14px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Адаптивность */
         @media (max-width: 768px) {
-            .editor-container {
-                flex-direction: column;
+            .controls {
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 100%;
+                max-width: 340px;
+                transform: translateX(100%);
+                z-index: 10;
+                box-shadow: -5px 0 15px rgba(0,0,0,0.3);
             }
+            
+            .controls.visible {
+                transform: translateX(0);
+            }
+        }
+
+        /* Placeholder */
+        .placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #666;
+            font-size: 18px;
+            pointer-events: none;
+        }
+
+        /* Loading */
+        .loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            border-radius: var(--radius);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-camera-retro"></i> Простой фоторедактор</h1>
-            <p>Редактируйте ваши фотографии прямо в браузере</p>
-        </header>
-        
-        <div class="editor-container">
-            <div class="image-container">
-                <input type="file" id="file-input" class="file-input" accept="image/*">
-                <label for="file-input" class="file-label"><i class="fas fa-upload"></i> Загрузить фото</label>
-                
+    <div id="app">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-camera"></i>
+                <span>ProPhoto Editor</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="workspace">
                 <div class="canvas-container">
                     <canvas id="canvas"></canvas>
+                    <div class="placeholder" id="placeholder">
+                        <i class="fas fa-image" style="font-size: 48px; margin-bottom: 10px;"></i>
+                        <div>Перетащите сюда изображение</div>
+                    </div>
+                    <div class="loading" id="loading" style="display: none;">
+                        <div class="spinner"></div>
+                    </div>
                 </div>
-                
-                <div class="tools">
-                    <button class="btn tool-btn active" id="crop-btn" title="Обрезка"><i class="fas fa-crop"></i></button>
-                    <button class="btn tool-btn" id="rotate-btn" title="Поворот"><i class="fas fa-sync-alt"></i></button>
-                    <button class="btn tool-btn" id="flip-h-btn" title="Отразить по горизонтали"><i class="fas fa-arrows-alt-h"></i></button>
-                    <button class="btn tool-btn" id="flip-v-btn" title="Отразить по вертикали"><i class="fas fa-arrows-alt-v"></i></button>
-                    <button class="btn tool-btn" id="brightness-btn" title="Яркость"><i class="fas fa-sun"></i></button>
-                    <button class="btn tool-btn" id="contrast-btn" title="Контраст"><i class="fas fa-adjust"></i></button>
+
+                <div class="action-buttons">
+                    <input type="file" id="file-input" class="file-input" accept="image/*">
+                    <label for="file-input" class="action-button secondary-button">
+                        <i class="fas fa-upload"></i> Загрузить
+                    </label>
+                    <button id="download-btn" class="action-button primary-button">
+                        <i class="fas fa-download"></i> Сохранить
+                    </button>
                 </div>
-                
-                <button class="btn download-btn" id="download-btn"><i class="fas fa-download"></i> Скачать</button>
-                <button class="btn reset-btn" id="reset-btn"><i class="fas fa-undo"></i> Сбросить</button>
             </div>
-            
-            <div class="controls">
+
+            <div class="controls" id="controls-panel">
                 <div class="control-group">
                     <h3><i class="fas fa-sliders-h"></i> Основные настройки</h3>
                     
                     <div class="slider-container">
-                        <label for="brightness-slider">Яркость: <span id="brightness-value">0</span></label>
-                        <input type="range" id="brightness-slider" min="-100" max="100" value="0">
+                        <div class="slider-header">
+                            <span class="slider-label">Яркость</span>
+                            <span class="slider-value" id="brightness-value">0</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" id="brightness-slider" min="-100" max="100" value="0">
+                            <div class="slider-fill" id="brightness-fill"></div>
+                        </div>
                     </div>
-                    
+
                     <div class="slider-container">
-                        <label for="contrast-slider">Контраст: <span id="contrast-value">0</span></label>
-                        <input type="range" id="contrast-slider" min="-100" max="100" value="0">
+                        <div class="slider-header">
+                            <span class="slider-label">Контраст</span>
+                            <span class="slider-value" id="contrast-value">0</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" id="contrast-slider" min="-100" max="100" value="0">
+                            <div class="slider-fill" id="contrast-fill"></div>
+                        </div>
                     </div>
-                    
+
                     <div class="slider-container">
-                        <label for="saturation-slider">Насыщенность: <span id="saturation-value">0</span></label>
-                        <input type="range" id="saturation-slider" min="-100" max="100" value="0">
+                        <div class="slider-header">
+                            <span class="slider-label">Насыщенность</span>
+                            <span class="slider-value" id="saturation-value">0</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" id="saturation-slider" min="-100" max="100" value="0">
+                            <div class="slider-fill" id="saturation-fill"></div>
+                        </div>
                     </div>
-                    
+
                     <div class="slider-container">
-                        <label for="hue-slider">Оттенок: <span id="hue-value">0</span></label>
-                        <input type="range" id="hue-slider" min="0" max="360" value="0">
+                        <div class="slider-header">
+                            <span class="slider-label">Теплота</span>
+                            <span class="slider-value" id="temperature-value">0</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" id="temperature-slider" min="-100" max="100" value="0">
+                            <div class="slider-fill" id="temperature-fill"></div>
+                        </div>
                     </div>
                 </div>
-                
+
                 <div class="control-group">
-                    <h3><i class="fas fa-magic"></i> Фильтры</h3>
-                    <div class="filter-presets">
-                        <div class="filter-btn" data-filter="none" style="background-color: #f5f5f5;" title="Нет фильтра"></div>
-                        <div class="filter-btn" data-filter="clarendon" style="background-color: #5b9fe3;" title="Clarendon"></div>
-                        <div class="filter-btn" data-filter="gingham" style="background-color: #e8c8c8;" title="Gingham"></div>
-                        <div class="filter-btn" data-filter="moon" style="background-color: #a5a5a5;" title="Moon"></div>
-                        <div class="filter-btn" data-filter="lark" style="background-color: #f3e5d7;" title="Lark"></div>
-                        <div class="filter-btn" data-filter="reyes" style="background-color: #f0d8b8;" title="Reyes"></div>
-                        <div class="filter-btn" data-filter="juno" style="background-color: #e7bfab;" title="Juno"></div>
-                        <div class="filter-btn" data-filter="slumber" style="background-color: #b5b8c3;" title="Slumber"></div>
-                        <div class="filter-btn" data-filter="crema" style="background-color: #e4d4c8;" title="Crema"></div>
-                        <div class="filter-btn" data-filter="ludwig" style="background-color: #e3d9d0;" title="Ludwig"></div>
-                        <div class="filter-btn" data-filter="aden" style="background-color: #d3d9e7;" title="Aden"></div>
-                        <div class="filter-btn" data-filter="perpetua" style="background-color: #c8d8b9;" title="Perpetua"></div>
+                    <h3><i class="fas fa-magic"></i> Профессиональные фильтры</h3>
+                    <div class="filters-container" id="filters-container">
+                        <div class="filter-item active" data-filter="none">
+                            <div class="filter-preview" style="background: #1e1e1e;"></div>
+                            <span class="filter-name">Оригинал</span>
+                        </div>
+                        <div class="filter-item" data-filter="moody">
+                            <div class="filter-preview" style="background: linear-gradient(135deg, #2c3e50, #4ca1af);"></div>
+                            <span class="filter-name">Moody</span>
+                        </div>
+                        <div class="filter-item" data-filter="dramatic">
+                            <div class="filter-preview" style="background: linear-gradient(135deg, #000000, #434343);"></div>
+                            <span class="filter-name">Dramatic</span>
+                        </div>
+                        <div class="filter-item" data-filter="vintage">
+                            <div class="filter-preview" style="background: linear-gradient(135deg, #f3e7e9, #e3eeff);"></div>
+                            <span class="filter-name">Vintage</span>
+                        </div>
+                        <div class="filter-item" data-filter="cinematic">
+                            <div class="filter-preview" style="background: linear-gradient(135deg, #1e3c72, #2a5298);"></div>
+                            <span class="filter-name">Cinematic</span>
+                        </div>
+                        <div class="filter-item" data-filter="noir">
+                            <div class="filter-preview" style="background: linear-gradient(135deg, #000000, #434343);"></div>
+                            <span class="filter-name">Noir</span>
+                        </div>
+                        <div class="filter-item" data-filter="sunset">
+                            <div class="filter-preview" style="background: linear-gradient(135deg, #ff7e5f, #feb47b);"></div>
+                            <span class="filter-name">Sunset</span>
+                        </div>
+                        <div class="filter-item" data-filter="frost">
+                            <div class="filter-preview" style="background: linear-gradient(135deg, #0052D9, #4364F7);"></div>
+                            <span class="filter-name">Frost</span>
+                        </div>
+                        <div class="filter-item" data-filter="mist">
+                            <div class="filter-preview" style="background: linear-gradient(135deg, #606c88, #3f4c6b);"></div>
+                            <span class="filter-name">Mist</span>
+                        </div>
+                        <div class="filter-item" data-filter="golden">
+                            <div class="filter-preview" style="background: linear-gradient(135deg, #f6d365, #fda085);"></div>
+                            <span class="filter-name">Golden</span>
+                        </div>
+                        <div class="filter-item" data-filter="urban">
+                            <div class="filter-preview" style="background: linear-gradient(135deg, #5f2c82, #49a09d);"></div>
+                            <span class="filter-name">Urban</span>
+                        </div>
                     </div>
                 </div>
-                
+
                 <div class="control-group">
-                    <h3><i class="fas fa-border-style"></i> Границы</h3>
-                    <div class="filter-presets">
-                        <div class="filter-btn" data-border="none" style="background-color: #f5f5f5;" title="Без рамки"></div>
-                        <div class="filter-btn" data-border="white" style="background-color: white; border: 1px solid #ddd;" title="Белая рамка"></div>
-                        <div class="filter-btn" data-border="black" style="background-color: black;" title="Черная рамка"></div>
-                        <div class="filter-btn" data-border="vintage" style="background: linear-gradient(45deg, #f3e7e9, #e3eeff);" title="Винтажная рамка"></div>
-                        <div class="filter-btn" data-border="polaroid" style="background-color: white; border-bottom: 30px solid white;" title="Полароид"></div>
-                    </div>
-                    
-                    <div class="slider-container">
-                        <label for="border-size-slider">Размер рамки: <span id="border-size-value">0</span>px</label>
-                        <input type="range" id="border-size-slider" min="0" max="50" value="0">
+                    <h3><i class="fas fa-star"></i> Дополнительные эффекты</h3>
+                    <div class="filters-container">
+                        <div class="filter-item" data-effect="vignette">
+                            <div class="filter-preview" style="background: radial-gradient(circle, transparent 30%, #000 100%);"></div>
+                            <span class="filter-name">Виньетка</span>
+                        </div>
+                        <div class="filter-item" data-effect="grain">
+                            <div class="filter-preview" style="background: url('data:image/svg+xml;utf8,<svg viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'noise\'><feTurbulence type=\'fractalNoise\' baseFrequency=\'0.5\' numOctaves=\'3\' stitchTiles=\'stitch\'/></filter><rect width=\'100\' height=\'100\' filter=\'url(%23noise)\'/></svg>') #1e1e1e;"></div>
+                            <span class="filter-name">Зерно</span>
+                        </div>
+                        <div class="filter-item" data-effect="blur">
+                            <div class="filter-preview" style="background: #1e1e1e; filter: blur(2px);"></div>
+                            <span class="filter-name">Размытие</span>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="toolbar">
+            <button class="tool-button active" data-tool="adjust">
+                <i class="fas fa-sliders-h"></i>
+                <span>Коррекция</span>
+            </button>
+            <button class="tool-button" data-tool="filters">
+                <i class="fas fa-magic"></i>
+                <span>Фильтры</span>
+            </button>
+            <button class="tool-button" data-tool="effects">
+                <i class="fas fa-star"></i>
+                <span>Эффекты</span>
+            </button>
+            <button class="tool-button" id="toggle-controls">
+                <i class="fas fa-chevron-left"></i>
+                <span>Панель</span>
+            </button>
         </div>
     </div>
 
@@ -309,246 +608,272 @@
             const ctx = canvas.getContext('2d');
             const fileInput = document.getElementById('file-input');
             const downloadBtn = document.getElementById('download-btn');
-            const resetBtn = document.getElementById('reset-btn');
-            
-            // Элементы управления
+            const toggleControlsBtn = document.getElementById('toggle-controls');
+            const controlsPanel = document.getElementById('controls-panel');
+            const placeholder = document.getElementById('placeholder');
+            const loading = document.getElementById('loading');
+            const filtersContainer = document.getElementById('filters-container');
+
+            // Ползунки
             const brightnessSlider = document.getElementById('brightness-slider');
             const contrastSlider = document.getElementById('contrast-slider');
             const saturationSlider = document.getElementById('saturation-slider');
-            const hueSlider = document.getElementById('hue-slider');
-            const borderSizeSlider = document.getElementById('border-size-slider');
-            
-            // Отображаемые значения
+            const temperatureSlider = document.getElementById('temperature-slider');
+
+            // Значения ползунков
             const brightnessValue = document.getElementById('brightness-value');
             const contrastValue = document.getElementById('contrast-value');
             const saturationValue = document.getElementById('saturation-value');
-            const hueValue = document.getElementById('hue-value');
-            const borderSizeValue = document.getElementById('border-size-value');
-            
-            // Кнопки фильтров
-            const filterButtons = document.querySelectorAll('.filter-btn[data-filter]');
-            const borderButtons = document.querySelectorAll('.filter-btn[data-border]');
-            
+            const temperatureValue = document.getElementById('temperature-value');
+
+            // Заполнение ползунков
+            const brightnessFill = document.getElementById('brightness-fill');
+            const contrastFill = document.getElementById('contrast-fill');
+            const saturationFill = document.getElementById('saturation-fill');
+            const temperatureFill = document.getElementById('temperature-fill');
+
+            // Фильтры и эффекты
+            const filterItems = document.querySelectorAll('.filter-item[data-filter]');
+            const effectItems = document.querySelectorAll('.filter-item[data-effect]');
+            const toolButtons = document.querySelectorAll('.tool-button');
+
             // Состояние редактора
-            let originalImage = null;
+            let originalImageData = null;
             let currentImage = null;
             let currentFilter = 'none';
-            let currentBorder = 'none';
-            let borderSize = 0;
-            let rotation = 0;
-            let isFlippedHorizontal = false;
-            let isFlippedVertical = false;
-            
+            let activeEffects = new Set();
+            let isProcessing = false;
+            let imageAspectRatio = 1;
+
             // Инициализация
             initCanvas();
             setupEventListeners();
-            
+            updateSliderFills();
+            setupHorizontalScroll();
+
             function initCanvas() {
-                // Установка начального размера canvas
                 canvas.width = 800;
                 canvas.height = 600;
-                
-                // Отрисовка начального состояния
-                drawInitialState();
             }
-            
-            function drawInitialState() {
-                ctx.fillStyle = '#f5f5f5';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = '#999';
-                ctx.font = '20px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('Загрузите изображение для редактирования', canvas.width / 2, canvas.height / 2);
-            }
-            
+
             function setupEventListeners() {
                 // Загрузка изображения
                 fileInput.addEventListener('change', handleImageUpload);
-                
-                // Скачивание изображения
+
+                // Drag and Drop
+                canvas.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    canvas.style.outline = '2px dashed var(--accent)';
+                });
+
+                canvas.addEventListener('dragleave', () => {
+                    canvas.style.outline = 'none';
+                });
+
+                canvas.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    canvas.style.outline = 'none';
+                    if (e.dataTransfer.files.length) {
+                        fileInput.files = e.dataTransfer.files;
+                        handleImageUpload({ target: fileInput });
+                    }
+                });
+
+                // Кнопки действий
                 downloadBtn.addEventListener('click', downloadImage);
-                
-                // Сброс изменений
-                resetBtn.addEventListener('click', resetImage);
-                
-                // Слайдеры
+                toggleControlsBtn.addEventListener('click', toggleControlsPanel);
+
+                // Ползунки
                 brightnessSlider.addEventListener('input', updateBrightness);
                 contrastSlider.addEventListener('input', updateContrast);
                 saturationSlider.addEventListener('input', updateSaturation);
-                hueSlider.addEventListener('input', updateHue);
-                borderSizeSlider.addEventListener('input', updateBorderSize);
-                
+                temperatureSlider.addEventListener('input', updateTemperature);
+
                 // Фильтры
-                filterButtons.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        filterButtons.forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        currentFilter = btn.dataset.filter;
-                        applyFilters();
+                filterItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        if (isProcessing) return;
+                        
+                        filterItems.forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        currentFilter = item.dataset.filter;
+                        applyCurrentSettings();
                     });
                 });
-                
-                // Границы
-                borderButtons.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        borderButtons.forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        currentBorder = btn.dataset.border;
-                        applyFilters();
+
+                // Эффекты
+                effectItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        if (isProcessing) return;
+                        
+                        const effect = item.dataset.effect;
+                        if (activeEffects.has(effect)) {
+                            activeEffects.delete(effect);
+                            item.classList.remove('active');
+                        } else {
+                            activeEffects.add(effect);
+                            item.classList.add('active');
+                        }
+                        applyCurrentSettings();
                     });
                 });
-                
+
                 // Инструменты
-                document.getElementById('rotate-btn').addEventListener('click', rotateImage);
-                document.getElementById('flip-h-btn').addEventListener('click', flipHorizontal);
-                document.getElementById('flip-v-btn').addEventListener('click', flipVertical);
+                toolButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        toolButtons.forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                    });
+                });
             }
-            
+
+            function setupHorizontalScroll() {
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+
+                filtersContainer.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    startX = e.pageX - filtersContainer.offsetLeft;
+                    scrollLeft = filtersContainer.scrollLeft;
+                    filtersContainer.style.cursor = 'grabbing';
+                });
+
+                filtersContainer.addEventListener('mouseleave', () => {
+                    isDown = false;
+                    filtersContainer.style.cursor = 'grab';
+                });
+
+                filtersContainer.addEventListener('mouseup', () => {
+                    isDown = false;
+                    filtersContainer.style.cursor = 'grab';
+                });
+
+                filtersContainer.addEventListener('mousemove', (e) => {
+                    if(!isDown) return;
+                    e.preventDefault();
+                    const x = e.pageX - filtersContainer.offsetLeft;
+                    const walk = (x - startX) * 2;
+                    filtersContainer.scrollLeft = scrollLeft - walk;
+                });
+            }
+
             function handleImageUpload(e) {
                 const file = e.target.files[0];
                 if (!file) return;
-                
+
+                showLoading();
+
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const img = new Image();
                     img.onload = function() {
-                        originalImage = img;
                         currentImage = img;
-                        drawImage();
+                        imageAspectRatio = img.width / img.height;
+                        
+                        // Рассчитываем размеры с сохранением пропорций
+                        const maxWidth = window.innerWidth * 0.7;
+                        const maxHeight = window.innerHeight * 0.6;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > maxWidth) {
+                            height = (maxWidth / width) * height;
+                            width = maxWidth;
+                        }
+
+                        if (height > maxHeight) {
+                            width = (maxHeight / height) * width;
+                            height = maxHeight;
+                        }
+
+                        // Устанавливаем размеры canvas
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        // Рисуем изображение
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Сохраняем оригинальные данные изображения
+                        originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        
+                        // Сбрасываем все настройки
+                        resetSliders();
+                        resetFilters();
+                        
+                        // Скрываем плейсхолдер
+                        placeholder.style.display = 'none';
+                        
+                        hideLoading();
                     };
+                    
+                    img.onerror = function() {
+                        hideLoading();
+                        alert('Ошибка загрузки изображения');
+                    };
+                    
                     img.src = event.target.result;
                 };
+                
+                reader.onerror = function() {
+                    hideLoading();
+                    alert('Ошибка чтения файла');
+                };
+                
                 reader.readAsDataURL(file);
             }
-            
-            function drawImage() {
-                if (!currentImage) return;
-                
-                // Очистка canvas
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                // Рассчет размеров с учетом поворота
-                let width, height;
-                if (rotation === 90 || rotation === 270) {
-                    width = currentImage.height;
-                    height = currentImage.width;
-                } else {
-                    width = currentImage.width;
-                    height = currentImage.height;
-                }
-                
-                // Установка размеров canvas
-                canvas.width = width;
-                canvas.height = height;
-                
-                // Сохранение состояния контекста
-                ctx.save();
-                
-                // Перемещение в центр canvas
-                ctx.translate(canvas.width / 2, canvas.height / 2);
-                
-                // Поворот
-                ctx.rotate(rotation * Math.PI / 180);
-                
-                // Отражаем изображение, если нужно
-                ctx.scale(
-                    isFlippedHorizontal ? -1 : 1,
-                    isFlippedVertical ? -1 : 1
-                );
-                
-                // Рисуем изображение
-                ctx.drawImage(
-                    currentImage,
-                    -currentImage.width / 2,
-                    -currentImage.height / 2,
-                    currentImage.width,
-                    currentImage.height
-                );
-                
-                // Восстановление состояния контекста
-                ctx.restore();
-                
-                // Применение фильтров
-                applyFilters();
+
+            function showLoading() {
+                loading.style.display = 'flex';
             }
-            
-            function applyFilters() {
-                if (!currentImage) return;
+
+            function hideLoading() {
+                loading.style.display = 'none';
+            }
+
+            function applyCurrentSettings() {
+                if (!currentImage || isProcessing) return;
+                
+                isProcessing = true;
+                
+                // Восстанавливаем оригинальное изображение
+                ctx.putImageData(originalImageData, 0, 0);
                 
                 // Получаем текущие значения
                 const brightness = parseInt(brightnessSlider.value);
                 const contrast = parseInt(contrastSlider.value);
                 const saturation = parseInt(saturationSlider.value);
-                const hue = parseInt(hueSlider.value);
+                const temperature = parseInt(temperatureSlider.value);
                 
-                // Создаем временный canvas для фильтров
-                const tempCanvas = document.createElement('canvas');
-                const tempCtx = tempCanvas.getContext('2d');
-                tempCanvas.width = canvas.width;
-                tempCanvas.height = canvas.height;
-                
-                // Копируем текущее изображение
-                tempCtx.drawImage(canvas, 0, 0);
-                
-                // Применяем фильтры в зависимости от выбранного
-                switch(currentFilter) {
-                    case 'clarendon':
-                        applyClarendonFilter(tempCtx, tempCanvas.width, tempCanvas.height);
-                        break;
-                    case 'gingham':
-                        applyGinghamFilter(tempCtx, tempCanvas.width, tempCanvas.height);
-                        break;
-                    case 'moon':
-                        applyMoonFilter(tempCtx, tempCanvas.width, tempCanvas.height);
-                        break;
-                    case 'lark':
-                        applyLarkFilter(tempCtx, tempCanvas.width, tempCanvas.height);
-                        break;
-                    case 'reyes':
-                        applyReyesFilter(tempCtx, tempCanvas.width, tempCanvas.height);
-                        break;
-                    case 'juno':
-                        applyJunoFilter(tempCtx, tempCanvas.width, tempCanvas.height);
-                        break;
-                    case 'slumber':
-                        applySlumberFilter(tempCtx, tempCanvas.width, tempCanvas.height);
-                        break;
-                    case 'crema':
-                        applyCremaFilter(tempCtx, tempCanvas.width, tempCanvas.height);
-                        break;
-                    case 'ludwig':
-                        applyLudwigFilter(tempCtx, tempCanvas.width, tempCanvas.height);
-                        break;
-                    case 'aden':
-                        applyAdenFilter(tempCtx, tempCanvas.width, tempCanvas.height);
-                        break;
-                    case 'perpetua':
-                        applyPerpetuaFilter(tempCtx, tempCanvas.width, tempCanvas.height);
-                        break;
+                // Применяем базовые корректировки
+                if (brightness !== 0 || contrast !== 0 || saturation !== 0 || temperature !== 0) {
+                    applyBasicAdjustments(brightness, contrast, saturation, temperature);
                 }
                 
-                // Применяем базовые настройки
-                applyBasicFilters(tempCtx, tempCanvas.width, tempCanvas.height, brightness, contrast, saturation, hue);
+                // Применяем выбранный фильтр
+                if (currentFilter !== 'none') {
+                    applyFilter(currentFilter);
+                }
                 
-                // Очищаем основной canvas и рисуем отфильтрованное изображение
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(tempCanvas, 0, 0);
+                // Применяем эффекты
+                if (activeEffects.size > 0) {
+                    applyEffects();
+                }
                 
-                // Применяем границы
-                applyBorder();
+                isProcessing = false;
             }
-            
-            function applyBasicFilters(ctx, width, height, brightness, contrast, saturation, hue) {
-                const imageData = ctx.getImageData(0, 0, width, height);
+
+            function applyBasicAdjustments(brightness, contrast, saturation, temperature) {
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imageData.data;
                 
                 // Яркость
                 if (brightness !== 0) {
                     const factor = 255 * (brightness / 100);
                     for (let i = 0; i < data.length; i += 4) {
-                        data[i] += factor;     // R
-                        data[i + 1] += factor; // G
-                        data[i + 2] += factor; // B
+                        data[i] = clamp(data[i] + factor); // R
+                        data[i + 1] = clamp(data[i + 1] + factor); // G
+                        data[i + 2] = clamp(data[i + 2] + factor); // B
                     }
                 }
                 
@@ -556,441 +881,111 @@
                 if (contrast !== 0) {
                     const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
                     for (let i = 0; i < data.length; i += 4) {
-                        data[i] = factor * (data[i] - 128) + 128;     // R
-                        data[i + 1] = factor * (data[i + 1] - 128) + 128; // G
-                        data[i + 2] = factor * (data[i + 2] - 128) + 128; // B
+                        data[i] = clamp(factor * (data[i] - 128) + 128); // R
+                        data[i + 1] = clamp(factor * (data[i + 1] - 128) + 128); // G
+                        data[i + 2] = clamp(factor * (data[i + 2] - 128) + 128); // B
                     }
                 }
                 
-                // Насыщенность и оттенок (более сложные вычисления)
-                if (saturation !== 0 || hue !== 0) {
+                // Насыщенность
+                if (saturation !== 0) {
+                    const factor = 1 + (saturation / 100);
                     for (let i = 0; i < data.length; i += 4) {
-                        const r = data[i];
-                        const g = data[i + 1];
-                        const b = data[i + 2];
-                        
-                        // Конвертация RGB в HSL
-                        const hsl = rgbToHsl(r, g, b);
-                        
-                        // Изменение насыщенности
-                        if (saturation !== 0) {
-                            hsl.s = Math.min(1, Math.max(0, hsl.s + (saturation / 100)));
+                        const gray = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+                        data[i] = clamp(gray + (data[i] - gray) * factor); // R
+                        data[i + 1] = clamp(gray + (data[i + 1] - gray) * factor); // G
+                        data[i + 2] = clamp(gray + (data[i + 2] - gray) * factor); // B
+                    }
+                }
+                
+                // Температура
+                if (temperature !== 0) {
+                    const warm = temperature > 0 ? temperature / 100 : 0;
+                    const cold = temperature < 0 ? Math.abs(temperature) / 100 : 0;
+                    
+                    for (let i = 0; i < data.length; i += 4) {
+                        data[i] = clamp(data[i] * (1 + warm)); // R
+                        data[i + 1] = clamp(data[i + 1] * (1 - cold * 0.5)); // G
+                        data[i + 2] = clamp(data[i + 2] * (1 - cold)); // B
+                    }
+                }
+                
+                ctx.putImageData(imageData, 0, 0);
+            }
+
+            function applyFilter(filterName) {
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                
+                switch(filterName) {
+                    case 'moody':
+                        // Moody - темные, атмосферные тона
+                        for (let i = 0; i < data.length; i += 4) {
+                            // Уменьшаем яркость
+                            data[i] = data[i] * 0.8; // R
+                            data[i + 1] = data[i + 1] * 0.8; // G
+                            data[i + 2] = data[i + 2] * 0.8; // B
+                            
+                            // Добавляем синий оттенок
+                            data[i] = data[i] * 0.9; // R
+                            data[i + 1] = data[i + 1] * 0.95; // G
+                            data[i + 2] = data[i + 2] * 1.05; // B
+                            
+                            // Уменьшаем насыщенность
+                            const gray = 0.3 * data[i] + 0.59 * data[i + 1] + 0.11 * data[i + 2];
+                            data[i] = gray * 0.3 + data[i] * 0.7;
+                            data[i + 1] = gray * 0.3 + data[i + 1] * 0.7;
+                            data[i + 2] = gray * 0.3 + data[i + 2] * 0.7;
                         }
+                        break;
                         
-                        // Изменение оттенка
-                        if (hue !== 0) {
-                            hsl.h = (hsl.h + (hue / 360)) % 1;
-                            if (hsl.h < 0) hsl.h += 1;
+                    case 'dramatic':
+                        // Dramatic - высокий контраст, темные тени
+                        for (let i = 0; i < data.length; i += 4) {
+                            // Увеличиваем контраст
+                            const factor = 1.5;
+                            data[i] = clamp(factor * (data[i] - 128) + 128);
+                            data[i + 1] = clamp(factor * (data[i + 1] - 128) + 128);
+                            data[i + 2] = clamp(factor * (data[i + 2] - 128) + 128);
+                            
+                            // Затемняем тени
+                            const brightness = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                            if (brightness < 128) {
+                                data[i] = data[i] * 0.7;
+                                data[i + 1] = data[i + 1] * 0.7;
+                                data[i + 2] = data[i + 2] * 0.7;
+                            }
                         }
+                        break;
                         
-                        // Конвертация обратно в RGB
-                        const rgb = hslToRgb(hsl.h, hsl.s, hsl.l);
-                        data[i] = rgb.r;
-                        data[i + 1] = rgb.g;
-                        data[i + 2] = rgb.b;
-                    }
-                }
-                
-                ctx.putImageData(imageData, 0, 0);
-            }
-            
-            function rgbToHsl(r, g, b) {
-                r /= 255, g /= 255, b /= 255;
-                const max = Math.max(r, g, b), min = Math.min(r, g, b);
-                let h, s, l = (max + min) / 2;
-                
-                if (max === min) {
-                    h = s = 0; // achromatic
-                } else {
-                    const d = max - min;
-                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-                    switch (max) {
-                        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-                        case g: h = (b - r) / d + 2; break;
-                        case b: h = (r - g) / d + 4; break;
-                    }
-                    h /= 6;
-                }
-                
-                return { h, s, l };
-            }
-            
-            function hslToRgb(h, s, l) {
-                let r, g, b;
-                
-                if (s === 0) {
-                    r = g = b = l; // achromatic
-                } else {
-                    const hue2rgb = (p, q, t) => {
-                        if (t < 0) t += 1;
-                        if (t > 1) t -= 1;
-                        if (t < 1/6) return p + (q - p) * 6 * t;
-                        if (t < 1/2) return q;
-                        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-                        return p;
-                    };
-                    
-                    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                    const p = 2 * l - q;
-                    r = hue2rgb(p, q, h + 1/3);
-                    g = hue2rgb(p, q, h);
-                    b = hue2rgb(p, q, h - 1/3);
-                }
-                
-                return {
-                    r: Math.round(r * 255),
-                    g: Math.round(g * 255),
-                    b: Math.round(b * 255)
-                };
-            }
-            
-            // Фильтры Instagram-like
-            function applyClarendonFilter(ctx, width, height) {
-                const imageData = ctx.getImageData(0, 0, width, height);
-                const data = imageData.data;
-                
-                for (let i = 0; i < data.length; i += 4) {
-                    // Увеличиваем контраст и насыщенность
-                    data[i] = data[i] * 1.1;     // R
-                    data[i + 1] = data[i + 1] * 1.05; // G
-                    data[i + 2] = data[i + 2] * 0.95; // B
-                    
-                    // Добавляем легкий синий оттенок
-                    data[i] = Math.min(255, data[i] * 0.95);
-                    data[i + 1] = Math.min(255, data[i + 1] * 0.99);
-                    data[i + 2] = Math.min(255, data[i + 2] * 1.08);
-                }
-                
-                ctx.putImageData(imageData, 0, 0);
-            }
-            
-            function applyGinghamFilter(ctx, width, height) {
-                const imageData = ctx.getImageData(0, 0, width, height);
-                const data = imageData.data;
-                
-                for (let i = 0; i < data.length; i += 4) {
-                    // Уменьшаем насыщенность и добавляем винтажный эффект
-                    const gray = 0.3 * data[i] + 0.59 * data[i + 1] + 0.11 * data[i + 2];
-                    data[i] = gray * 0.9 + data[i] * 0.1;     // R
-                    data[i + 1] = gray * 0.9 + data[i + 1] * 0.1; // G
-                    data[i + 2] = gray * 0.9 + data[i + 2] * 0.1; // B
-                    
-                    // Добавляем легкий розовый оттенок
-                    data[i] = Math.min(255, data[i] * 1.05);
-                    data[i + 1] = Math.min(255, data[i + 1] * 0.95);
-                    data[i + 2] = Math.min(255, data[i + 2] * 0.95);
-                }
-                
-                ctx.putImageData(imageData, 0, 0);
-            }
-            
-            function applyMoonFilter(ctx, width, height) {
-                const imageData = ctx.getImageData(0, 0, width, height);
-                const data = imageData.data;
-                
-                for (let i = 0; i < data.length; i += 4) {
-                    // Черно-белый с высоким контрастом
-                    const gray = 0.3 * data[i] + 0.59 * data[i + 1] + 0.11 * data[i + 2];
-                    data[i] = data[i + 1] = data[i + 2] = gray > 128 ? 255 : 0;
-                }
-                
-                ctx.putImageData(imageData, 0, 0);
-            }
-            
-            function applyLarkFilter(ctx, width, height) {
-                const imageData = ctx.getImageData(0, 0, width, height);
-                const data = imageData.data;
-                
-                for (let i = 0; i < data.length; i += 4) {
-                    // Увеличиваем яркость светлых участков
-                    data[i] = Math.min(255, data[i] * 1.1);     // R
-                    data[i + 1] = Math.min(255, data[i + 1] * 1.1); // G
-                    data[i + 2] = Math.min(255, data[i + 2] * 1.1); // B
-                    
-                    // Увеличиваем насыщенность
-                    const max = Math.max(data[i], data[i + 1], data[i + 2]);
-                    if (max === data[i]) data[i] = Math.min(255, data[i] * 1.05);
-                    if (max === data[i + 1]) data[i + 1] = Math.min(255, data[i + 1] * 1.05);
-                    if (max === data[i + 2]) data[i + 2] = Math.min(255, data[i + 2] * 1.05);
-                }
-                
-                ctx.putImageData(imageData, 0, 0);
-            }
-            
-            function applyReyesFilter(ctx, width, height) {
-                const imageData = ctx.getImageData(0, 0, width, height);
-                const data = imageData.data;
-                
-                for (let i = 0; i < data.length; i += 4) {
-                    // Добавляем теплый оттенок
-                    data[i] = Math.min(255, data[i] * 1.08);     // R
-                    data[i + 1] = Math.min(255, data[i + 1] * 1.03); // G
-                    data[i + 2] = Math.min(255, data[i + 2] * 0.95); // B
-                    
-                    // Уменьшаем контраст
-                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                    data[i] = avg * 0.3 + data[i] * 0.7;
-                    data[i + 1] = avg * 0.3 + data[i + 1] * 0.7;
-                    data[i + 2] = avg * 0.3 + data[i + 2] * 0.7;
-                }
-                
-                ctx.putImageData(imageData, 0, 0);
-            }
-            
-            function applyJunoFilter(ctx, width, height) {
-                const imageData = ctx.getImageData(0, 0, width, height);
-                const data = imageData.data;
-                
-                for (let i = 0; i < data.length; i += 4) {
-                    // Добавляем розовый оттенок
-                    data[i] = Math.min(255, data[i] * 1.05);     // R
-                    data[i + 1] = Math.min(255, data[i + 1] * 0.95); // G
-                    data[i + 2] = Math.min(255, data[i + 2] * 0.95); // B
-                    
-                    // Увеличиваем насыщенность красных
-                    if (data[i] > data[i + 1] && data[i] > data[i + 2]) {
-                        data[i] = Math.min(255, data[i] * 1.1);
-                    }
-                }
-                
-                ctx.putImageData(imageData, 0, 0);
-            }
-            
-            function applySlumberFilter(ctx, width, height) {
-                const imageData = ctx.getImageData(0, 0, width, height);
-                const data = imageData.data;
-                
-                for (let i = 0; i < data.length; i += 4) {
-                    // Уменьшаем насыщенность
-                    const gray = 0.3 * data[i] + 0.59 * data[i + 1] + 0.11 * data[i + 2];
-                    data[i] = gray * 0.7 + data[i] * 0.3;     // R
-                    data[i + 1] = gray * 0.7 + data[i + 1] * 0.3; // G
-                    data[i + 2] = gray * 0.7 + data[i + 2] * 0.3; // B
-                    
-                    // Добавляем синий оттенок
-                    data[i] = Math.min(255, data[i] * 0.95);
-                    data[i + 1] = Math.min(255, data[i + 1] * 0.97);
-                    data[i + 2] = Math.min(255, data[i + 2] * 1.05);
-                }
-                
-                ctx.putImageData(imageData, 0, 0);
-            }
-            
-            function applyCremaFilter(ctx, width, height) {
-                const imageData = ctx.getImageData(0, 0, width, height);
-                const data = imageData.data;
-                
-                for (let i = 0; i < data.length; i += 4) {
-                    // Добавляем кремовый оттенок
-                    data[i] = Math.min(255, data[i] * 1.03);     // R
-                    data[i + 1] = Math.min(255, data[i + 1] * 1.02); // G
-                    data[i + 2] = Math.min(255, data[i + 2] * 0.98); // B
-                    
-                    // Уменьшаем контраст
-                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                    data[i] = avg * 0.4 + data[i] * 0.6;
-                    data[i + 1] = avg * 0.4 + data[i + 1] * 0.6;
-                    data[i + 2] = avg * 0.4 + data[i + 2] * 0.6;
-                }
-                
-                ctx.putImageData(imageData, 0, 0);
-            }
-            
-            function applyLudwigFilter(ctx, width, height) {
-                const imageData = ctx.getImageData(0, 0, width, height);
-                const data = imageData.data;
-                
-                for (let i = 0; i < data.length; i += 4) {
-                    // Увеличиваем яркость светлых участков
-                    if (data[i] > 150 || data[i + 1] > 150 || data[i + 2] > 150) {
-                        data[i] = Math.min(255, data[i] * 1.1);
-                        data[i + 1] = Math.min(255, data[i + 1] * 1.1);
-                        data[i + 2] = Math.min(255, data[i + 2] * 1.1);
-                    }
-                    
-                    // Добавляем легкий теплый оттенок
-                    data[i] = Math.min(255, data[i] * 1.03);
-                    data[i + 1] = Math.min(255, data[i + 1] * 1.01);
-                    data[i + 2] = Math.min(255, data[i + 2] * 0.99);
-                }
-                
-                ctx.putImageData(imageData, 0, 0);
-            }
-            
-            function applyAdenFilter(ctx, width, height) {
-                const imageData = ctx.getImageData(0, 0, width, height);
-                const data = imageData.data;
-                
-                for (let i = 0; i < data.length; i += 4) {
-                    // Добавляем зеленовато-голубой оттенок
-                    data[i] = Math.min(255, data[i] * 0.95);     // R
-                    data[i + 1] = Math.min(255, data[i + 1] * 1.02); // G
-                    data[i + 2] = Math.min(255, data[i + 2] * 1.03); // B
-                    
-                    // Уменьшаем насыщенность
-                    const gray = 0.3 * data[i] + 0.59 * data[i + 1] + 0.11 * data[i + 2];
-                    data[i] = gray * 0.3 + data[i] * 0.7;
-                    data[i + 1] = gray * 0.3 + data[i + 1] * 0.7;
-                    data[i + 2] = gray * 0.3 + data[i + 2] * 0.7;
-                }
-                
-                ctx.putImageData(imageData, 0, 0);
-            }
-            
-            function applyPerpetuaFilter(ctx, width, height) {
-                const imageData = ctx.getImageData(0, 0, width, height);
-                const data = imageData.data;
-                
-                for (let i = 0; i < data.length; i += 4) {
-                    // Добавляем пастельный оттенок
-                    data[i] = Math.min(255, data[i] * 1.02);     // R
-                    data[i + 1] = Math.min(255, data[i + 1] * 1.03); // G
-                    data[i + 2] = Math.min(255, data[i + 2] * 1.01); // B
-                    
-                    // Уменьшаем контраст
-                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                    data[i] = avg * 0.5 + data[i] * 0.5;
-                    data[i + 1] = avg * 0.5 + data[i + 1] * 0.5;
-                    data[i + 2] = avg * 0.5 + data[i + 2] * 0.5;
-                }
-                
-                ctx.putImageData(imageData, 0, 0);
-            }
-            
-            function applyBorder() {
-                if (currentBorder === 'none' && borderSize === 0) return;
-                
-                ctx.save();
-                
-                // Размер границы
-                const size = borderSize;
-                
-                // Цвет границы в зависимости от выбранного типа
-                let borderColor;
-                switch(currentBorder) {
-                    case 'white':
-                        borderColor = '#ffffff';
-                        break;
-                    case 'black':
-                        borderColor = '#000000';
-                        break;
                     case 'vintage':
-                        // Градиент для винтажного эффекта
-                        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-                        gradient.addColorStop(0, '#f3e7e9');
-                        gradient.addColorStop(1, '#e3eeff');
-                        borderColor = gradient;
+                        // Vintage - сепия, винтажный эффект
+                        for (let i = 0; i < data.length; i += 4) {
+                            const r = data[i];
+                            const g = data[i + 1];
+                            const b = data[i + 2];
+                            
+                            // Эффект сепии
+                            data[i] = clamp((r * 0.393) + (g * 0.769) + (b * 0.189));
+                            data[i + 1] = clamp((r * 0.349) + (g * 0.686) + (b * 0.168));
+                            data[i + 2] = clamp((r * 0.272) + (g * 0.534) + (b * 0.131));
+                            
+                            // Добавляем легкий розовый оттенок
+                            data[i] = clamp(data[i] * 1.05);
+                            data[i + 2] = clamp(data[i + 2] * 0.95);
+                        }
                         break;
-                    case 'polaroid':
-                        // Полароидная рамка (белая с нижней частью)
-                        ctx.fillStyle = '#ffffff';
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
                         
-                        // Добавляем место для подписи (нижняя часть)
-                        ctx.fillStyle = '#ffffff';
-                        ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
-                        return;
-                    default:
-                        borderColor = '#ffffff';
-                }
-                
-                // Рисуем границу
-                ctx.fillStyle = borderColor;
-                ctx.fillRect(0, 0, canvas.width, size); // Верх
-                ctx.fillRect(0, canvas.height - size, canvas.width, size); // Низ
-                ctx.fillRect(0, 0, size, canvas.height); // Лево
-                ctx.fillRect(canvas.width - size, 0, size, canvas.height); // Право
-                
-                ctx.restore();
-            }
-            
-            function updateBrightness() {
-                brightnessValue.textContent = brightnessSlider.value;
-                applyFilters();
-            }
-            
-            function updateContrast() {
-                contrastValue.textContent = contrastSlider.value;
-                applyFilters();
-            }
-            
-            function updateSaturation() {
-                saturationValue.textContent = saturationSlider.value;
-                applyFilters();
-            }
-            
-            function updateHue() {
-                hueValue.textContent = hueSlider.value;
-                applyFilters();
-            }
-            
-            function updateBorderSize() {
-                borderSize = parseInt(borderSizeSlider.value);
-                borderSizeValue.textContent = borderSize;
-                applyFilters();
-            }
-            
-            function rotateImage() {
-                rotation = (rotation + 90) % 360;
-                drawImage();
-            }
-            
-            function flipHorizontal() {
-                isFlippedHorizontal = !isFlippedHorizontal;
-                drawImage();
-            }
-            
-            function flipVertical() {
-                isFlippedVertical = !isFlippedVertical;
-                drawImage();
-            }
-            
-            function downloadImage() {
-                if (!currentImage) return;
-                
-                const link = document.createElement('a');
-                link.download = 'edited-image.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            }
-            
-            function resetImage() {
-                if (!originalImage) return;
-                
-                // Сброс всех параметров
-                currentImage = originalImage;
-                currentFilter = 'none';
-                currentBorder = 'none';
-                borderSize = 0;
-                rotation = 0;
-                isFlippedHorizontal = false;
-                isFlippedVertical = false;
-                
-                // Сброс слайдеров
-                brightnessSlider.value = 0;
-                contrastSlider.value = 0;
-                saturationSlider.value = 0;
-                hueSlider.value = 0;
-                borderSizeSlider.value = 0;
-                
-                // Сброс отображаемых значений
-                brightnessValue.textContent = '0';
-                contrastValue.textContent = '0';
-                saturationValue.textContent = '0';
-                hueValue.textContent = '0';
-                borderSizeValue.textContent = '0';
-                
-                // Сброс активных кнопок
-                filterButtons.forEach(btn => btn.classList.remove('active'));
-                document.querySelector('.filter-btn[data-filter="none"]').classList.add('active');
-                
-                borderButtons.forEach(btn => btn.classList.remove('active'));
-                document.querySelector('.filter-btn[data-border="none"]').classList.add('active');
-                
-                // Перерисовка изображения
-                drawImage();
-            }
-        });
-    </script>
-</body>
-</html>
+                    case 'cinematic':
+                        // Cinematic - глубокие тени, насыщенные цвета
+                        for (let i = 0; i < data.length; i += 4) {
+                            // Увеличиваем насыщенность
+                            const gray = 0.3 * data[i] + 0.59 * data[i + 1] + 0.11 * data[i + 2];
+                            data[i] = gray * 0.5 + data[i] * 1.5;
+                            data[i + 1] = gray * 0.5 + data[i + 1] * 1.5;
+                            data[i + 2] = gray * 0.5 + data[i + 2] * 1.5;
+                            
+                            // Добавляем синий оттенок в тени
+                            if (gray < 128) {
+                                data[i] = data[i] * 0.9;
+                                data[i

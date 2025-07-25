@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deynik Radio</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -14,7 +13,7 @@
             --dark: #121212;
             --light: #FFFFFF;
             --gray: #B3B3B3;
-            --radius: 12px;
+            --radius: 16px;
             --active-highlight: rgba(29, 185, 84, 0.1);
         }
         * {
@@ -26,27 +25,24 @@
         body {
             background-color: var(--dark);
             color: var(--light);
-            padding: 0 20px;
+            padding: 20px;
             max-width: 1000px;
-            margin: 50px auto;
-            min-height: calc(100vh - 100px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            margin: 0 auto;
         }
         .tabs {
             display: flex;
             gap: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             justify-content: center;
             align-items: center;
+            flex-wrap: wrap;
         }
         .tab-btn {
             background: rgba(255, 255, 255, 0.05);
             color: var(--light);
             border: none;
             border-radius: 20px;
-            padding: 8px 14px;
+            padding: 8px 16px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
@@ -55,13 +51,14 @@
             font-size: 14px;
         }
         .tab-btn.home-btn {
-            padding: 10px 14px;
+            padding: 10px 16px;
             font-size: 18px;
             background: rgba(255, 255, 255, 0.1);
         }
         .tab-btn.active {
             background: var(--secondary);
             color: var(--dark);
+            font-weight: 500;
         }
         .tab-content {
             display: none;
@@ -72,100 +69,136 @@
         .radio-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
-            gap: 15px;
-            margin-bottom: 15px;
+            gap: 20px;
+            margin-bottom: 20px;
         }
         .radio-card {
-            background: var(--primary);
+            background: rgba(255, 255, 255, 0.03);
             border-radius: var(--radius);
-            padding: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            padding: 20px;
             transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .radio-card.active {
             background: rgba(29, 185, 84, 0.05);
-            box-shadow: 0 0 0 1px var(--secondary);
+            border-color: var(--secondary);
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.1);
         }
         .station-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 12px;
+            margin-bottom: 15px;
         }
         .station-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 18px;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .station-info {
+            flex-grow: 1;
         }
         .station-info h3 {
-            font-size: 16px;
-            margin-bottom: 2px;
+            font-size: 18px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
         }
         .station-info p {
-            font-size: 13px;
+            font-size: 14px;
             color: var(--gray);
+            opacity: 0.8;
         }
         .quality-tag {
             background: rgba(29, 185, 84, 0.2);
             color: var(--secondary);
-            padding: 2px 8px;
+            padding: 2px 10px;
             border-radius: 10px;
             font-size: 12px;
             font-weight: 500;
-            margin-left: 5px;
+            margin-left: 8px;
         }
-        audio {
+        .custom-audio-player {
             width: 100%;
-            height: 40px;
-            margin-top: 5px;
-            background: var(--dark);
-            border-radius: 10px;
+            margin-top: 10px;
+        }
+        .custom-audio-player audio {
+            width: 100%;
+            height: 50px;
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.05);
+            outline: none;
+        }
+        .custom-audio-player audio::-webkit-media-controls-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+        }
+        .custom-audio-player audio::-webkit-media-controls-play-button,
+        .custom-audio-player audio::-webkit-media-controls-mute-button {
+            filter: invert(1);
+        }
+        .custom-audio-player audio::-webkit-media-controls-current-time-display,
+        .custom-audio-player audio::-webkit-media-controls-time-remaining-display {
+            color: var(--light);
+        }
+        .bitrate-info {
+            font-size: 12px;
+            color: var(--gray);
+            text-align: center;
+            margin-top: 8px;
+            height: 16px;
         }
         .page-header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         .page-header h1 {
             color: var(--secondary);
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-size: 2.5rem;
+        }
+        .page-header p {
+            color: var(--gray);
+            font-size: 1.1rem;
         }
         .global-controls {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 15px;
+            margin-bottom: 25px;
         }
         .control-row {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
             flex-wrap: wrap;
         }
         .volume-control {
             display: flex;
             align-items: center;
             gap: 12px;
-            width: 200px;
+            width: 220px;
         }
         .volume-slider {
             -webkit-appearance: none;
             width: 100%;
-            height: 4px;
+            height: 6px;
             background: rgba(255,255,255,0.2);
-            border-radius: 2px;
+            border-radius: 3px;
             outline: none;
         }
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             background: var(--light);
             cursor: pointer;
@@ -177,30 +210,33 @@
             color: var(--light);
             border: none;
             border-radius: 20px;
-            padding: 8px 12px;
-            font-size: 13px;
+            padding: 10px 16px;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 6px;
-            min-width: 120px;
+            gap: 8px;
+            min-width: 140px;
             justify-content: center;
         }
         .btn:hover {
             background: var(--secondary);
             color: var(--dark);
+            transform: translateY(-2px);
         }
         .btn i {
-            font-size: 14px;
+            font-size: 16px;
         }
         .btn.active {
             background: var(--secondary);
             color: var(--dark);
+            font-weight: 500;
         }
         .random-btn {
             background: var(--secondary);
             color: var(--dark);
+            font-weight: 500;
         }
         .random-btn:hover {
             background: var(--light);
@@ -208,43 +244,56 @@
         .live-btn-container {
             display: flex;
             justify-content: center;
-            margin: 15px 0;
+            margin: 25px 0;
         }
         .live-btn {
             background: var(--light);
             color: var(--dark);
-            padding: 8px 20px;
+            padding: 12px 24px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(255,255,255,0.1);
         }
-        .bitrate-info {
-            font-size: 12px;
-            color: var(--gray);
-            text-align: center;
-            margin-top: 5px;
-            height: 15px;
+        .live-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,255,255,0.15);
         }
         .flag-icon {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             object-fit: cover;
         }
         .verka-btn {
             background: linear-gradient(135deg, #FFD700 0%, #005BBB 100%);
             color: var(--dark);
-            font-weight: bold;
-            margin: 10px auto;
+            font-weight: 600;
+            margin: 20px auto;
             display: block;
             border: none;
-            border-radius: 20px;
-            padding: 10px 20px;
+            border-radius: 25px;
+            padding: 12px 24px;
             cursor: pointer;
             transition: all 0.3s;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(0,91,187,0.2);
         }
         .verka-btn:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,91,187,0.3);
         }
         .verka-playing {
             background: linear-gradient(135deg, #005BBB 0%, #FFD700 100%);
+        }
+        @media (max-width: 768px) {
+            .radio-grid {
+                grid-template-columns: 1fr;
+            }
+            .control-row {
+                flex-direction: column;
+            }
+            .volume-control {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -310,9 +359,11 @@
                         <p>Аудиофильский микс рока и электроники</p>
                     </div>
                 </div>
-                <audio id="rp-player" controls preload="none">
-                    <source src="https://stream.radioparadise.com/flac" type="audio/flac">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="rp-player" controls preload="none">
+                        <source src="https://stream.radioparadise.com/flac" type="audio/flac">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="rp-bitrate"></div>
             </div>
 
@@ -325,9 +376,11 @@
                         <p>Легендарный лоу-фай стрим</p>
                     </div>
                 </div>
-                <audio id="lofi-player" controls preload="none">
-                    <source src="https://play.streamafrica.net/lofiradio" type="audio/mpeg">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="lofi-player" controls preload="none">
+                        <source src="https://play.streamafrica.net/lofiradio" type="audio/mpeg">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="lofi-bitrate"></div>
             </div>
 
@@ -340,9 +393,11 @@
                         <p>Поп-хиты от iHeartRadio</p>
                     </div>
                 </div>
-                <audio id="z100-player" controls preload="none">
-                    <source src="https://cloud.revma.ihrhls.com/zc1477?rj-org=n29b-e2&rj-ttl=5&rj-tok=AAABmEO_kB8ArqWP4QFhO7XYeg&_=1753482577730" type="audio/mpeg">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="z100-player" controls preload="none">
+                        <source src="https://cloud.revma.ihrhls.com/zc1477?rj-org=n29b-e2&rj-ttl=5&rj-tok=AAABmEO_kB8ArqWP4QFhO7XYeg&_=1753482577730" type="audio/mpeg">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="z100-bitrate"></div>
             </div>
 
@@ -355,24 +410,28 @@
                         <p>Мировые хиты</p>
                     </div>
                 </div>
-                <audio id="kissint-player" controls preload="none">
-                    <source src="https://cloud.revma.ihrhls.com/zc185?rj-org=n42b-e2&rj-ttl=5&rj-tok=AAABmEPRtccAaOsUfdKMAzMlJQ" type="audio/mpeg">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="kissint-player" controls preload="none">
+                        <source src="https://cloud.revma.ihrhls.com/zc185?rj-org=n42b-e2&rj-ttl=5&rj-tok=AAABmEPRtccAaOsUfdKMAzMlJQ" type="audio/mpeg">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="kissint-bitrate"></div>
             </div>
             
-            <!-- 5. Jazz Radio -->
+            <!-- 5. Jazz24 -->
             <div class="radio-card" id="jazz-card">
                 <div class="station-header">
                     <div class="station-icon"><i class="fas fa-music"></i></div>
                     <div class="station-info">
-                        <h3>Jazz Radio <span class="quality-tag">192kbps</span></h3>
+                        <h3>Jazz24 <span class="quality-tag">192kbps</span></h3>
                         <p>Лучшие джазовые композиции</p>
                     </div>
                 </div>
-                <audio id="jazz-player" controls preload="none">
-                    <source src="https://jazz-wr06.ice.infomaniak.ch/jazz-wr06-192.mp3" type="audio/mpeg">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="jazz-player" controls preload="none">
+                        <source src="https://jazz-wr06.ice.infomaniak.ch/jazz-wr06-192.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="jazz-bitrate"></div>
             </div>
         </div>
@@ -390,9 +449,11 @@
                         <p>Популярные хиты</p>
                     </div>
                 </div>
-                <audio id="europa-player" controls preload="none">
-                    <source src="https://ep128.hostingradio.ru:8030/ep128" type="audio/mpeg">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="europa-player" controls preload="none">
+                        <source src="https://ep128.hostingradio.ru:8030/ep128" type="audio/mpeg">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="europa-bitrate"></div>
             </div>
 
@@ -405,9 +466,11 @@
                         <p>Русские хиты</p>
                     </div>
                 </div>
-                <audio id="russkoe-player" controls preload="none">
-                    <source src="https://rusradio.hostingradio.ru:8000/rusradio128.mp3" type="audio/mpeg">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="russkoe-player" controls preload="none">
+                        <source src="https://rusradio.hostingradio.ru:8000/rusradio128.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="russkoe-bitrate"></div>
             </div>
 
@@ -420,9 +483,11 @@
                         <p>Танцевальная музыка</p>
                     </div>
                 </div>
-                <audio id="dfm-player" controls preload="none">
-                    <source src="https://dfm.hostingradio.ru:8000/dfm128.mp3" type="audio/mpeg">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="dfm-player" controls preload="none">
+                        <source src="https://dfm.hostingradio.ru:8000/dfm128.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="dfm-bitrate"></div>
             </div>
 
@@ -435,9 +500,11 @@
                         <p>Музыка для автолюбителей</p>
                     </div>
                 </div>
-                <audio id="avto-player" controls preload="none">
-                    <source src="https://listen.autoradio.ua/ar_mp3_hi" type="audio/mpeg">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="avto-player" controls preload="none">
+                        <source src="https://listen.autoradio.ua/ar_mp3_hi" type="audio/mpeg">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="avto-bitrate"></div>
             </div>
             
@@ -450,9 +517,11 @@
                         <p>Танцевальная музыка</p>
                     </div>
                 </div>
-                <audio id="energy-player" controls preload="none">
-                    <source src="https://pub0301.101.ru:8000/stream/air/mp3/256/219" type="audio/mpeg">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="energy-player" controls preload="none">
+                        <source src="https://pub0301.101.ru:8000/stream/air/mp3/256/219" type="audio/mpeg">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="energy-bitrate"></div>
             </div>
             
@@ -465,9 +534,11 @@
                         <p>Юмор и музыка</p>
                     </div>
                 </div>
-                <audio id="comedy-player" controls preload="none">
-                    <source src="https://pub0301.101.ru:8000/stream/air/mp3/256/200" type="audio/mpeg">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="comedy-player" controls preload="none">
+                        <source src="https://pub0301.101.ru:8000/stream/air/mp3/256/200" type="audio/mpeg">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="comedy-bitrate"></div>
             </div>
         </div>
@@ -489,9 +560,11 @@
                         <p>Украинские и мировые хиты</p>
                     </div>
                 </div>
-                <audio id="hitfm-player" controls preload="none">
-                    <source src="https://online.kissfm.ua/KissFM" type="audio/mpeg">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="hitfm-player" controls preload="none">
+                        <source src="https://online.kissfm.ua/KissFM" type="audio/mpeg">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="hitfm-bitrate"></div>
             </div>
 
@@ -504,9 +577,11 @@
                         <p>Лёгкая музыка</p>
                     </div>
                 </div>
-                <audio id="relax-player" controls preload="none">
-                    <source src="https://radio.relax.ua/relax128" type="audio/mpeg">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="relax-player" controls preload="none">
+                        <source src="https://radio.relax.ua/relax128" type="audio/mpeg">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="relax-bitrate"></div>
             </div>
 
@@ -519,9 +594,11 @@
                         <p>Популярная музыка</p>
                     </div>
                 </div>
-                <audio id="kiss-player" controls preload="none">
-                    <source src="https://online.kissfm.ua/KissFM" type="audio/mpeg">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="kiss-player" controls preload="none">
+                        <source src="https://online.kissfm.ua/KissFM" type="audio/mpeg">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="kiss-bitrate"></div>
             </div>
 
@@ -534,9 +611,11 @@
                         <p>Рок и альтернатива</p>
                     </div>
                 </div>
-                <audio id="nashe-player" controls preload="none">
-                    <source src="https://nashe1.hostingradio.ru:80/nashe-128.mp3" type="audio/mpeg">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="nashe-player" controls preload="none">
+                        <source src="https://nashe1.hostingradio.ru:80/nashe-128.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="nashe-bitrate"></div>
             </div>
             
@@ -549,9 +628,11 @@
                         <p>Украинская музыка</p>
                     </div>
                 </div>
-                <audio id="bayraktar-player" controls preload="none">
-                    <source src="https://radio.bayraktar.tv/radio" type="audio/mpeg">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="bayraktar-player" controls preload="none">
+                        <source src="https://radio.bayraktar.tv/radio" type="audio/mpeg">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="bayraktar-bitrate"></div>
             </div>
             
@@ -564,9 +645,11 @@
                         <p>Официальное государственное радио</p>
                     </div>
                 </div>
-                <audio id="ukrradio-player" controls preload="none">
-                    <source src="https://radio.nrcu.gov.ua:8443/nrcu-256.mp3" type="audio/mpeg">
-                </audio>
+                <div class="custom-audio-player">
+                    <audio id="ukrradio-player" controls preload="none">
+                        <source src="https://radio.nrcu.gov.ua:8443/nrcu-256.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
                 <div class="bitrate-info" id="ukrradio-bitrate"></div>
             </div>
         </div>
@@ -625,7 +708,7 @@
 
         // Верка Сердючка
         const verkaBtn = document.getElementById('verka-btn');
-        const verkaPlayer = new Audio();
+        const verkaPlayer = new Audio('https://music6.mp3party.net/online/8848.mp3');
         let isVerkaPlaying = false;
         
         verkaBtn.addEventListener('click', function() {
@@ -639,10 +722,7 @@
             });
             
             if (!isVerkaPlaying) {
-                // Новый рабочий поток Верки
-                verkaPlayer.src = 'https://music6.mp3party.net/online/8848.mp3?_=' + Date.now();
                 verkaPlayer.volume = globalVolume.value;
-                
                 verkaPlayer.play()
                     .then(() => {
                         isVerkaPlaying = true;
@@ -692,26 +772,31 @@
             }
         }
 
-        // Кнопка "Live"
+        // Кнопка "Live" - исправленная версия
         document.getElementById('live-btn').addEventListener('click', function() {
             const activePlayer = players.find(p => !p.player.paused);
             if (activePlayer) {
-                // Перезагружаем текущий поток
+                // Сохраняем текущее время воспроизведения
+                const currentTime = activePlayer.player.currentTime;
                 const src = activePlayer.player.querySelector('source').src;
+                
+                // Перезагружаем поток
                 activePlayer.player.querySelector('source').src = src.split('?')[0] + '?_=' + Date.now();
                 activePlayer.player.load();
-                activePlayer.player.play().catch(e => console.log("Автовоспроизведение заблокировано"));
                 
-                // Показываем уведомление
-                const bitrateEl = activePlayer.bitrateEl;
-                bitrateEl.textContent = "Обновление потока...";
-                setTimeout(() => {
-                    bitrateEl.textContent = `Битрейт: ~${activePlayer.card.querySelector('.quality-tag').textContent.match(/\d+/)[0]} kbps`;
-                }, 2000);
+                // Пытаемся восстановить воспроизведение
+                activePlayer.player.play()
+                    .then(() => {
+                        activePlayer.player.currentTime = currentTime;
+                        activePlayer.bitrateEl.textContent = "Обновление потока...";
+                        setTimeout(() => {
+                            activePlayer.bitrateEl.textContent = `Битрейт: ~${activePlayer.card.querySelector('.quality-tag').textContent.match(/\d+/)[0]} kbps`;
+                        }, 2000);
+                    })
+                    .catch(e => console.log("Автовоспроизведение заблокировано"));
             } else if (isVerkaPlaying) {
-                // Перезагружаем Верку
-                verkaPlayer.src = verkaPlayer.src.split('?')[0] + '?_=' + Date.now();
-                verkaPlayer.load();
+                // Для Верки просто перезапускаем
+                verkaPlayer.currentTime = 0;
                 verkaPlayer.play();
             }
         });
@@ -743,8 +828,8 @@
             });
         });
 
-        // Кнопка случайного радио
-        document.getElementById('random-radio').addEventListener('click', () => {
+        // Кнопка случайного радио - исправленная версия
+        document.getElementById('random-radio').addEventListener('click', function() {
             // Пауза всех плееров и Верки
             players.forEach(item => {
                 item.player.pause();
@@ -770,16 +855,26 @@
                 filteredPlayers = players.slice(11, 17);
             }
             
-            const randomIndex = Math.floor(Math.random() * filteredPlayers.length);
-            const randomPlayer = filteredPlayers[randomIndex];
-            
-            // Воспроизведение с новым URL (чтобы избежать кеширования)
-            randomPlayer.player.querySelector('source').src = randomPlayer.player.querySelector('source').src.split('?')[0] + '?_=' + Date.now();
-            randomPlayer.player.load();
-            randomPlayer.player.play().catch(e => {
-                console.log("Автовоспроизведение заблокировано, попробуйте нажать на плеер вручную");
-            });
-            randomPlayer.card.classList.add('active');
+            if (filteredPlayers.length > 0) {
+                const randomIndex = Math.floor(Math.random() * filteredPlayers.length);
+                const randomPlayer = filteredPlayers[randomIndex];
+                
+                // Воспроизведение с новым URL
+                randomPlayer.player.querySelector('source').src = randomPlayer.player.querySelector('source').src.split('?')[0] + '?_=' + Date.now();
+                randomPlayer.player.load();
+                
+                // Попытка автоматического воспроизведения с обработкой ошибок
+                randomPlayer.player.play()
+                    .then(() => {
+                        randomPlayer.card.classList.add('active');
+                    })
+                    .catch(error => {
+                        console.log("Автовоспроизведение заблокировано, требуется клик");
+                        randomPlayer.card.classList.add('active');
+                        // Показываем сообщение, что нужно кликнуть на плеер
+                        randomPlayer.bitrateEl.textContent = "Кликните на плеер для запуска";
+                    });
+            }
         });
 
         // Пресеты громкости

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deynik Radio</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -15,7 +17,6 @@
             --gray: #B3B3B3;
             --radius: 12px;
             --active-highlight: rgba(29, 185, 84, 0.1);
-            --live-btn: #e74c3c;
         }
         * {
             margin: 0;
@@ -26,13 +27,13 @@
         body {
             background-color: var(--dark);
             color: var(--light);
-            padding: 5px 20px 15px;
+            padding: 0 20px 15px;
             max-width: 1000px;
             margin: 0 auto;
         }
         .tabs {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 15px;
             justify-content: center;
             align-items: center;
@@ -42,15 +43,18 @@
             color: var(--light);
             border: none;
             border-radius: 20px;
-            padding: 8px 16px;
+            padding: 8px 14px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             gap: 6px;
+            font-size: 14px;
         }
         .tab-btn.home-btn {
-            padding: 8px 16px;
+            padding: 10px 14px;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.1);
         }
         .tab-btn.active {
             background: var(--secondary);
@@ -122,7 +126,7 @@
         }
         .page-header {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             padding-top: 5px;
         }
         .page-header h1 {
@@ -201,10 +205,10 @@
         .live-btn-container {
             display: flex;
             justify-content: center;
-            margin-top: 10px;
+            margin-top: 5px;
         }
         .live-btn {
-            background: var(--secondary);
+            background: var(--light);
             color: var(--dark);
             padding: 8px 20px;
         }
@@ -221,6 +225,13 @@
             border-radius: 50%;
             object-fit: cover;
         }
+        .verka-btn {
+            background: linear-gradient(135deg, #FFD700 0%, #005BBB 100%);
+            color: var(--dark);
+            font-weight: bold;
+            margin: 10px auto;
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -234,8 +245,8 @@
             <img src="https://flagcdn.com/w20/ru.png" class="flag-icon" alt="Россия">
             Россия
         </button>
-        <button class="tab-btn home-btn active" data-tab="international">
-            Международные
+        <button class="tab-btn home-btn active" data-tab="international" title="Международные">
+            <i class="fas fa-home"></i>
         </button>
         <button class="tab-btn" data-tab="ukraine">
             <img src="https://flagcdn.com/w20/ua.png" class="flag-icon" alt="Украина">
@@ -316,7 +327,7 @@
                     </div>
                 </div>
                 <audio id="z100-player" controls preload="none">
-                    <source src="https://playerservices.streamtheworld.com/api/livestream-redirect/WHTZFMAAC.aac" type="audio/aac">
+                    <source src="https://cloud.revma.ihrhls.com/zc1477?rj-org=n29b-e2&rj-ttl=5&rj-tok=AAABmEO_kB8ArqWP4QFhO7XYeg&_=1753482577730" type="audio/mpeg">
                 </audio>
                 <div class="bitrate-info" id="z100-bitrate"></div>
             </div>
@@ -331,9 +342,24 @@
                     </div>
                 </div>
                 <audio id="deep-player" controls preload="none">
-                    <source src="https://stream.radioparadise.com/mp3-192" type="audio/mpeg">
+                    <source src="https://stream.radioparadise.com/deephouse" type="audio/mpeg">
                 </audio>
                 <div class="bitrate-info" id="deep-bitrate"></div>
+            </div>
+            
+            <!-- 5. KISS FM International -->
+            <div class="radio-card" id="kissint-card">
+                <div class="station-header">
+                    <div class="station-icon"><i class="fas fa-heart"></i></div>
+                    <div class="station-info">
+                        <h3>KISS FM International <span class="quality-tag">128kbps</span></h3>
+                        <p>Мировые хиты</p>
+                    </div>
+                </div>
+                <audio id="kissint-player" controls preload="none">
+                    <source src="https://stream.kissfm.com.ua/kissfm" type="audio/mpeg">
+                </audio>
+                <div class="bitrate-info" id="kissint-bitrate"></div>
             </div>
         </div>
     </div>
@@ -400,11 +426,45 @@
                 </audio>
                 <div class="bitrate-info" id="avto-bitrate"></div>
             </div>
+            
+            <!-- 5. Energy -->
+            <div class="radio-card" id="energy-card">
+                <div class="station-header">
+                    <div class="station-icon"><i class="fas fa-bolt"></i></div>
+                    <div class="station-info">
+                        <h3>Energy <span class="quality-tag">128kbps</span></h3>
+                        <p>Танцевальная музыка</p>
+                    </div>
+                </div>
+                <audio id="energy-player" controls preload="none">
+                    <source src="https://pub0301.101.ru:8000/stream/air/mp3/256/219" type="audio/mpeg">
+                </audio>
+                <div class="bitrate-info" id="energy-bitrate"></div>
+            </div>
+            
+            <!-- 6. Comedy Radio -->
+            <div class="radio-card" id="comedy-card">
+                <div class="station-header">
+                    <div class="station-icon"><i class="fas fa-laugh-squint"></i></div>
+                    <div class="station-info">
+                        <h3>Comedy Radio <span class="quality-tag">128kbps</span></h3>
+                        <p>Юмор и музыка</p>
+                    </div>
+                </div>
+                <audio id="comedy-player" controls preload="none">
+                    <source src="https://pub0301.101.ru:8000/stream/air/mp3/256/200" type="audio/mpeg">
+                </audio>
+                <div class="bitrate-info" id="comedy-bitrate"></div>
+            </div>
         </div>
     </div>
 
     <!-- Украинские радио -->
     <div class="tab-content" id="ukraine-tab">
+        <button class="btn verka-btn" id="verka-btn">
+            <i class="fas fa-star"></i> Верка Сердючка
+        </button>
+        
         <div class="radio-grid">
             <!-- 1. Хит FM -->
             <div class="radio-card" id="hitfm-card">
@@ -416,7 +476,7 @@
                     </div>
                 </div>
                 <audio id="hitfm-player" controls preload="none">
-                    <source src="https://online.hitfm.ua/HitFM_HD" type="audio/mpeg">
+                    <source src="https://online.kissfm.ua/KissFM" type="audio/mpeg">
                 </audio>
                 <div class="bitrate-info" id="hitfm-bitrate"></div>
             </div>
@@ -446,7 +506,7 @@
                     </div>
                 </div>
                 <audio id="kiss-player" controls preload="none">
-                    <source src="https://kissfm.ua/kissfm128.mp3" type="audio/mpeg">
+                    <source src="https://online.kissfm.ua/KissFM" type="audio/mpeg">
                 </audio>
                 <div class="bitrate-info" id="kiss-bitrate"></div>
             </div>
@@ -465,14 +525,44 @@
                 </audio>
                 <div class="bitrate-info" id="nashe-bitrate"></div>
             </div>
+            
+            <!-- 5. Радио Байрактар -->
+            <div class="radio-card" id="bayraktar-card">
+                <div class="station-header">
+                    <div class="station-icon"><i class="fas fa-helicopter"></i></div>
+                    <div class="station-info">
+                        <h3>Радио Байрактар <span class="quality-tag">128kbps</span></h3>
+                        <p>Украинская музыка</p>
+                    </div>
+                </div>
+                <audio id="bayraktar-player" controls preload="none">
+                    <source src="https://radio.bayraktar.tv/radio" type="audio/mpeg">
+                </audio>
+                <div class="bitrate-info" id="bayraktar-bitrate"></div>
+            </div>
+            
+            <!-- 6. Украинское Радио -->
+            <div class="radio-card" id="ukrradio-card">
+                <div class="station-header">
+                    <div class="station-icon"><i class="fas fa-flag"></i></div>
+                    <div class="station-info">
+                        <h3>Украинское Радио <span class="quality-tag">128kbps</span></h3>
+                        <p>Официальное государственное радио</p>
+                    </div>
+                </div>
+                <audio id="ukrradio-player" controls preload="none">
+                    <source src="https://radio.nrcu.gov.ua:8443/nrcu-256.mp3" type="audio/mpeg">
+                </audio>
+                <div class="bitrate-info" id="ukrradio-bitrate"></div>
+            </div>
         </div>
     </div>
 
-    <!-- Кнопка Прямой эфир -->
+    <!-- Кнопка Live -->
     <div class="live-btn-container">
         <button class="btn live-btn" id="live-btn">
             <i class="fas fa-broadcast-tower"></i>
-            Прямой эфир
+            Live
         </button>
     </div>
 
@@ -500,19 +590,49 @@
             { player: document.getElementById('lofi-player'), bitrateEl: document.getElementById('lofi-bitrate'), card: document.getElementById('lofi-card') },
             { player: document.getElementById('z100-player'), bitrateEl: document.getElementById('z100-bitrate'), card: document.getElementById('z100-card') },
             { player: document.getElementById('deep-player'), bitrateEl: document.getElementById('deep-bitrate'), card: document.getElementById('deep-card') },
+            { player: document.getElementById('kissint-player'), bitrateEl: document.getElementById('kissint-bitrate'), card: document.getElementById('kissint-card') },
             
             // Россия
             { player: document.getElementById('europa-player'), bitrateEl: document.getElementById('europa-bitrate'), card: document.getElementById('europa-card') },
             { player: document.getElementById('russkoe-player'), bitrateEl: document.getElementById('russkoe-bitrate'), card: document.getElementById('russkoe-card') },
             { player: document.getElementById('dfm-player'), bitrateEl: document.getElementById('dfm-bitrate'), card: document.getElementById('dfm-card') },
             { player: document.getElementById('avto-player'), bitrateEl: document.getElementById('avto-bitrate'), card: document.getElementById('avto-card') },
+            { player: document.getElementById('energy-player'), bitrateEl: document.getElementById('energy-bitrate'), card: document.getElementById('energy-card') },
+            { player: document.getElementById('comedy-player'), bitrateEl: document.getElementById('comedy-bitrate'), card: document.getElementById('comedy-card') },
             
             // Украина
             { player: document.getElementById('hitfm-player'), bitrateEl: document.getElementById('hitfm-bitrate'), card: document.getElementById('hitfm-card') },
             { player: document.getElementById('relax-player'), bitrateEl: document.getElementById('relax-bitrate'), card: document.getElementById('relax-card') },
             { player: document.getElementById('kiss-player'), bitrateEl: document.getElementById('kiss-bitrate'), card: document.getElementById('kiss-card') },
-            { player: document.getElementById('nashe-player'), bitrateEl: document.getElementById('nashe-bitrate'), card: document.getElementById('nashe-card') }
+            { player: document.getElementById('nashe-player'), bitrateEl: document.getElementById('nashe-bitrate'), card: document.getElementById('nashe-card') },
+            { player: document.getElementById('bayraktar-player'), bitrateEl: document.getElementById('bayraktar-bitrate'), card: document.getElementById('bayraktar-card') },
+            { player: document.getElementById('ukrradio-player'), bitrateEl: document.getElementById('ukrradio-bitrate'), card: document.getElementById('ukrradio-card') }
         ];
+
+        // Верка Сердючка
+        const verkaBtn = document.getElementById('verka-btn');
+        const verkaPlayer = new Audio('https://music6.mp3party.net/online/8848.mp3');
+        
+        verkaBtn.addEventListener('click', function() {
+            // Пауза всех плееров
+            players.forEach(item => {
+                item.player.pause();
+                item.player.currentTime = 0;
+                item.card.classList.remove('active');
+            });
+            
+            // Проверяем, играет ли уже Верка
+            if (verkaPlayer.paused) {
+                verkaPlayer.volume = globalVolume.value;
+                verkaPlayer.play();
+                verkaBtn.innerHTML = '<i class="fas fa-pause"></i> Пауза Верки';
+                verkaBtn.style.background = 'linear-gradient(135deg, #005BBB 0%, #FFD700 100%)';
+            } else {
+                verkaPlayer.pause();
+                verkaBtn.innerHTML = '<i class="fas fa-star"></i> Верка Сердючка';
+                verkaBtn.style.background = 'linear-gradient(135deg, #FFD700 0%, #005BBB 100%)';
+            }
+        });
 
         // Установка начальной громкости
         players.forEach(item => {
@@ -529,6 +649,7 @@
             players.forEach(item => {
                 item.player.volume = volume;
             });
+            verkaPlayer.volume = volume;
             updateVolumeIcons(volume);
         });
 
@@ -544,7 +665,7 @@
             }
         }
 
-        // Кнопка "Прямой эфир"
+        // Кнопка "Live"
         document.getElementById('live-btn').addEventListener('click', function() {
             const activePlayer = players.find(p => !p.player.paused);
             if (activePlayer) {
@@ -556,10 +677,15 @@
                 
                 // Показываем уведомление
                 const bitrateEl = activePlayer.bitrateEl;
-                bitrateEl.textContent = "Перезагрузка потока...";
+                bitrateEl.textContent = "Обновление потока...";
                 setTimeout(() => {
                     bitrateEl.textContent = `Битрейт: ~${activePlayer.card.querySelector('.quality-tag').textContent.match(/\d+/)[0]} kbps`;
                 }, 2000);
+            } else if (!verkaPlayer.paused) {
+                // Перезагружаем Верку
+                verkaPlayer.src = verkaPlayer.src.split('?')[0] + '?_=' + Date.now();
+                verkaPlayer.load();
+                verkaPlayer.play();
             }
         });
 
@@ -574,6 +700,13 @@
                         p.player.currentTime = 0;
                     }
                 });
+                // Пауза Верки
+                if (!verkaPlayer.paused) {
+                    verkaPlayer.pause();
+                    verkaBtn.innerHTML = '<i class="fas fa-star"></i> Верка Сердючка';
+                    verkaBtn.style.background = 'linear-gradient(135deg, #FFD700 0%, #005BBB 100%)';
+                }
+                
                 // Подсвечиваем текущее
                 item.card.classList.add('active');
                 
@@ -584,23 +717,28 @@
 
         // Кнопка случайного радио
         document.getElementById('random-radio').addEventListener('click', () => {
-            // Пауза всех плееров
+            // Пауза всех плееров и Верки
             players.forEach(item => {
                 item.player.pause();
                 item.player.currentTime = 0;
                 item.card.classList.remove('active');
             });
+            if (!verkaPlayer.paused) {
+                verkaPlayer.pause();
+                verkaBtn.innerHTML = '<i class="fas fa-star"></i> Верка Сердючка';
+                verkaBtn.style.background = 'linear-gradient(135deg, #FFD700 0%, #005BBB 100%)';
+            }
             
             // Случайный выбор из активной вкладки
             const activeTab = document.querySelector('.tab-content.active').id.replace('-tab', '');
             let filteredPlayers = [];
             
             if (activeTab === 'international') {
-                filteredPlayers = players.slice(0, 4);
+                filteredPlayers = players.slice(0, 5);
             } else if (activeTab === 'russia') {
-                filteredPlayers = players.slice(4, 8);
+                filteredPlayers = players.slice(5, 11);
             } else if (activeTab === 'ukraine') {
-                filteredPlayers = players.slice(8, 12);
+                filteredPlayers = players.slice(11, 17);
             }
             
             const randomIndex = Math.floor(Math.random() * filteredPlayers.length);
@@ -623,6 +761,7 @@
                 players.forEach(item => {
                     item.player.volume = volume;
                 });
+                verkaPlayer.volume = volume;
                 updateVolumeIcons(volume);
                 
                 document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
@@ -651,6 +790,17 @@
                 item.bitrateEl.textContent = '';
             });
         });
+        
+        // Манифест для PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').then(registration => {
+                    console.log('ServiceWorker registration successful');
+                }).catch(err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
     </script>
 </body>
 </html>

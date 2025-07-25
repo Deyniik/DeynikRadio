@@ -6,7 +6,6 @@
     <title>Deynik Radio</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
-    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -27,9 +26,13 @@
         body {
             background-color: var(--dark);
             color: var(--light);
-            padding: 0 20px 15px;
+            padding: 0 20px;
             max-width: 1000px;
-            margin: 0 auto;
+            margin: 50px auto;
+            min-height: calc(100vh - 100px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .tabs {
             display: flex;
@@ -126,8 +129,7 @@
         }
         .page-header {
             text-align: center;
-            margin-bottom: 10px;
-            padding-top: 5px;
+            margin-bottom: 20px;
         }
         .page-header h1 {
             color: var(--secondary);
@@ -137,13 +139,14 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-bottom: 12px;
+            margin-bottom: 20px;
         }
         .control-row {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 12px;
+            flex-wrap: wrap;
         }
         .volume-control {
             display: flex;
@@ -205,7 +208,7 @@
         .live-btn-container {
             display: flex;
             justify-content: center;
-            margin-top: 5px;
+            margin: 15px 0;
         }
         .live-btn {
             background: var(--light);
@@ -231,6 +234,17 @@
             font-weight: bold;
             margin: 10px auto;
             display: block;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .verka-btn:hover {
+            transform: scale(1.05);
+        }
+        .verka-playing {
+            background: linear-gradient(135deg, #005BBB 0%, #FFD700 100%);
         }
     </style>
 </head>
@@ -332,34 +346,34 @@
                 <div class="bitrate-info" id="z100-bitrate"></div>
             </div>
 
-            <!-- 4. Deep House -->
-            <div class="radio-card" id="deep-card">
-                <div class="station-header">
-                    <div class="station-icon"><i class="fas fa-igloo"></i></div>
-                    <div class="station-info">
-                        <h3>Deep House <span class="quality-tag">192kbps</span></h3>
-                        <p>Глубокий хаус и техно</p>
-                    </div>
-                </div>
-                <audio id="deep-player" controls preload="none">
-                    <source src="https://stream.radioparadise.com/deephouse" type="audio/mpeg">
-                </audio>
-                <div class="bitrate-info" id="deep-bitrate"></div>
-            </div>
-            
-            <!-- 5. KISS FM International -->
+            <!-- 4. KISS FM -->
             <div class="radio-card" id="kissint-card">
                 <div class="station-header">
                     <div class="station-icon"><i class="fas fa-heart"></i></div>
                     <div class="station-info">
-                        <h3>KISS FM International <span class="quality-tag">128kbps</span></h3>
+                        <h3>KISS FM <span class="quality-tag">128kbps</span></h3>
                         <p>Мировые хиты</p>
                     </div>
                 </div>
                 <audio id="kissint-player" controls preload="none">
-                    <source src="https://stream.kissfm.com.ua/kissfm" type="audio/mpeg">
+                    <source src="https://cloud.revma.ihrhls.com/zc185?rj-org=n42b-e2&rj-ttl=5&rj-tok=AAABmEPRtccAaOsUfdKMAzMlJQ" type="audio/mpeg">
                 </audio>
                 <div class="bitrate-info" id="kissint-bitrate"></div>
+            </div>
+            
+            <!-- 5. Jazz Radio -->
+            <div class="radio-card" id="jazz-card">
+                <div class="station-header">
+                    <div class="station-icon"><i class="fas fa-music"></i></div>
+                    <div class="station-info">
+                        <h3>Jazz Radio <span class="quality-tag">192kbps</span></h3>
+                        <p>Лучшие джазовые композиции</p>
+                    </div>
+                </div>
+                <audio id="jazz-player" controls preload="none">
+                    <source src="https://jazz-wr06.ice.infomaniak.ch/jazz-wr06-192.mp3" type="audio/mpeg">
+                </audio>
+                <div class="bitrate-info" id="jazz-bitrate"></div>
             </div>
         </div>
     </div>
@@ -461,7 +475,7 @@
 
     <!-- Украинские радио -->
     <div class="tab-content" id="ukraine-tab">
-        <button class="btn verka-btn" id="verka-btn">
+        <button class="verka-btn" id="verka-btn">
             <i class="fas fa-star"></i> Верка Сердючка
         </button>
         
@@ -496,12 +510,12 @@
                 <div class="bitrate-info" id="relax-bitrate"></div>
             </div>
 
-            <!-- 3. Kiss FM -->
+            <!-- 3. Kiss FM Украина -->
             <div class="radio-card" id="kiss-card">
                 <div class="station-header">
                     <div class="station-icon"><i class="fas fa-heart"></i></div>
                     <div class="station-info">
-                        <h3>Kiss FM <span class="quality-tag">128kbps</span></h3>
+                        <h3>Kiss FM Украина <span class="quality-tag">128kbps</span></h3>
                         <p>Популярная музыка</p>
                     </div>
                 </div>
@@ -589,8 +603,8 @@
             { player: document.getElementById('rp-player'), bitrateEl: document.getElementById('rp-bitrate'), card: document.getElementById('rp-card') },
             { player: document.getElementById('lofi-player'), bitrateEl: document.getElementById('lofi-bitrate'), card: document.getElementById('lofi-card') },
             { player: document.getElementById('z100-player'), bitrateEl: document.getElementById('z100-bitrate'), card: document.getElementById('z100-card') },
-            { player: document.getElementById('deep-player'), bitrateEl: document.getElementById('deep-bitrate'), card: document.getElementById('deep-card') },
             { player: document.getElementById('kissint-player'), bitrateEl: document.getElementById('kissint-bitrate'), card: document.getElementById('kissint-card') },
+            { player: document.getElementById('jazz-player'), bitrateEl: document.getElementById('jazz-bitrate'), card: document.getElementById('jazz-card') },
             
             // Россия
             { player: document.getElementById('europa-player'), bitrateEl: document.getElementById('europa-bitrate'), card: document.getElementById('europa-card') },
@@ -611,26 +625,39 @@
 
         // Верка Сердючка
         const verkaBtn = document.getElementById('verka-btn');
-        const verkaPlayer = new Audio('https://music6.mp3party.net/online/8848.mp3');
+        const verkaPlayer = new Audio();
+        let isVerkaPlaying = false;
         
         verkaBtn.addEventListener('click', function() {
-            // Пауза всех плееров
+            // Пауза всех других плееров
             players.forEach(item => {
-                item.player.pause();
-                item.player.currentTime = 0;
-                item.card.classList.remove('active');
+                if (!item.player.paused) {
+                    item.player.pause();
+                    item.player.currentTime = 0;
+                    item.card.classList.remove('active');
+                }
             });
             
-            // Проверяем, играет ли уже Верка
-            if (verkaPlayer.paused) {
+            if (!isVerkaPlaying) {
+                // Новый рабочий поток Верки
+                verkaPlayer.src = 'https://music6.mp3party.net/online/8848.mp3?_=' + Date.now();
                 verkaPlayer.volume = globalVolume.value;
-                verkaPlayer.play();
-                verkaBtn.innerHTML = '<i class="fas fa-pause"></i> Пауза Верки';
-                verkaBtn.style.background = 'linear-gradient(135deg, #005BBB 0%, #FFD700 100%)';
+                
+                verkaPlayer.play()
+                    .then(() => {
+                        isVerkaPlaying = true;
+                        verkaBtn.innerHTML = '<i class="fas fa-pause"></i> Пауза Верки';
+                        verkaBtn.classList.add('verka-playing');
+                    })
+                    .catch(error => {
+                        console.error("Ошибка воспроизведения:", error);
+                        alert("Нажмите 'Разрешить' в запросе автовоспроизведения или запустите вручную");
+                    });
             } else {
                 verkaPlayer.pause();
+                isVerkaPlaying = false;
                 verkaBtn.innerHTML = '<i class="fas fa-star"></i> Верка Сердючка';
-                verkaBtn.style.background = 'linear-gradient(135deg, #FFD700 0%, #005BBB 100%)';
+                verkaBtn.classList.remove('verka-playing');
             }
         });
 
@@ -681,7 +708,7 @@
                 setTimeout(() => {
                     bitrateEl.textContent = `Битрейт: ~${activePlayer.card.querySelector('.quality-tag').textContent.match(/\d+/)[0]} kbps`;
                 }, 2000);
-            } else if (!verkaPlayer.paused) {
+            } else if (isVerkaPlaying) {
                 // Перезагружаем Верку
                 verkaPlayer.src = verkaPlayer.src.split('?')[0] + '?_=' + Date.now();
                 verkaPlayer.load();
@@ -701,10 +728,11 @@
                     }
                 });
                 // Пауза Верки
-                if (!verkaPlayer.paused) {
+                if (isVerkaPlaying) {
                     verkaPlayer.pause();
+                    isVerkaPlaying = false;
                     verkaBtn.innerHTML = '<i class="fas fa-star"></i> Верка Сердючка';
-                    verkaBtn.style.background = 'linear-gradient(135deg, #FFD700 0%, #005BBB 100%)';
+                    verkaBtn.classList.remove('verka-playing');
                 }
                 
                 // Подсвечиваем текущее
@@ -723,10 +751,11 @@
                 item.player.currentTime = 0;
                 item.card.classList.remove('active');
             });
-            if (!verkaPlayer.paused) {
+            if (isVerkaPlaying) {
                 verkaPlayer.pause();
+                isVerkaPlaying = false;
                 verkaBtn.innerHTML = '<i class="fas fa-star"></i> Верка Сердючка';
-                verkaBtn.style.background = 'linear-gradient(135deg, #FFD700 0%, #005BBB 100%)';
+                verkaBtn.classList.remove('verka-playing');
             }
             
             // Случайный выбор из активной вкладки
@@ -790,17 +819,6 @@
                 item.bitrateEl.textContent = '';
             });
         });
-        
-        // Манифест для PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').then(registration => {
-                    console.log('ServiceWorker registration successful');
-                }).catch(err => {
-                    console.log('ServiceWorker registration failed: ', err);
-                });
-            });
-        }
     </script>
 </body>
 </html>

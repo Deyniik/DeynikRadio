@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deynik Radio</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -14,6 +15,7 @@
             --gray: #B3B3B3;
             --radius: 12px;
             --active-highlight: rgba(29, 185, 84, 0.1);
+            --live-btn: #e74c3c;
         }
         * {
             margin: 0;
@@ -24,14 +26,14 @@
         body {
             background-color: var(--dark);
             color: var(--light);
-            padding: 20px;
+            padding: 5px 20px 15px;
             max-width: 1000px;
             margin: 0 auto;
         }
         .tabs {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             justify-content: center;
             align-items: center;
         }
@@ -48,9 +50,7 @@
             gap: 6px;
         }
         .tab-btn.home-btn {
-            padding: 10px 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
+            padding: 8px 16px;
         }
         .tab-btn.active {
             background: var(--secondary);
@@ -66,6 +66,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
             gap: 15px;
+            margin-bottom: 15px;
         }
         .radio-card {
             background: var(--primary);
@@ -121,7 +122,8 @@
         }
         .page-header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
+            padding-top: 5px;
         }
         .page-header h1 {
             color: var(--secondary);
@@ -130,14 +132,14 @@
         .global-controls {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 12px;
         }
         .control-row {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
         .volume-control {
             display: flex;
@@ -196,6 +198,16 @@
         .random-btn:hover {
             background: var(--light);
         }
+        .live-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .live-btn {
+            background: var(--secondary);
+            color: var(--dark);
+            padding: 8px 20px;
+        }
         .bitrate-info {
             font-size: 12px;
             color: var(--gray);
@@ -223,7 +235,7 @@
             Россия
         </button>
         <button class="tab-btn home-btn active" data-tab="international">
-            <i class="fas fa-home"></i>
+            Международные
         </button>
         <button class="tab-btn" data-tab="ukraine">
             <img src="https://flagcdn.com/w20/ua.png" class="flag-icon" alt="Украина">
@@ -304,7 +316,7 @@
                     </div>
                 </div>
                 <audio id="z100-player" controls preload="none">
-                    <source src="https://stream.revma.ihrhls.com/zc1477" type="audio/mpeg">
+                    <source src="https://playerservices.streamtheworld.com/api/livestream-redirect/WHTZFMAAC.aac" type="audio/aac">
                 </audio>
                 <div class="bitrate-info" id="z100-bitrate"></div>
             </div>
@@ -339,7 +351,7 @@
                     </div>
                 </div>
                 <audio id="europa-player" controls preload="none">
-                    <source src="https://europaplus.hostingradio.ru:8000/europaplus128.mp3" type="audio/mpeg">
+                    <source src="https://ep128.hostingradio.ru:8030/ep128" type="audio/mpeg">
                 </audio>
                 <div class="bitrate-info" id="europa-bitrate"></div>
             </div>
@@ -354,7 +366,7 @@
                     </div>
                 </div>
                 <audio id="russkoe-player" controls preload="none">
-                    <source src="https://rusradio.hostingradio.ru/rusradio128.mp3" type="audio/mpeg">
+                    <source src="https://rusradio.hostingradio.ru:8000/rusradio128.mp3" type="audio/mpeg">
                 </audio>
                 <div class="bitrate-info" id="russkoe-bitrate"></div>
             </div>
@@ -369,7 +381,7 @@
                     </div>
                 </div>
                 <audio id="dfm-player" controls preload="none">
-                    <source src="https://dfm.hostingradio.ru/dfm128.mp3" type="audio/mpeg">
+                    <source src="https://dfm.hostingradio.ru:8000/dfm128.mp3" type="audio/mpeg">
                 </audio>
                 <div class="bitrate-info" id="dfm-bitrate"></div>
             </div>
@@ -384,7 +396,7 @@
                     </div>
                 </div>
                 <audio id="avto-player" controls preload="none">
-                    <source src="https://autoradio.hostingradio.ru/autoradio128.mp3" type="audio/mpeg">
+                    <source src="https://listen.autoradio.ua/ar_mp3_hi" type="audio/mpeg">
                 </audio>
                 <div class="bitrate-info" id="avto-bitrate"></div>
             </div>
@@ -419,7 +431,7 @@
                     </div>
                 </div>
                 <audio id="relax-player" controls preload="none">
-                    <source src="https://radio.relax.ua/relax" type="audio/mpeg">
+                    <source src="https://radio.relax.ua/relax128" type="audio/mpeg">
                 </audio>
                 <div class="bitrate-info" id="relax-bitrate"></div>
             </div>
@@ -434,7 +446,7 @@
                     </div>
                 </div>
                 <audio id="kiss-player" controls preload="none">
-                    <source src="https://kissfm.ua/kiss" type="audio/mpeg">
+                    <source src="https://kissfm.ua/kissfm128.mp3" type="audio/mpeg">
                 </audio>
                 <div class="bitrate-info" id="kiss-bitrate"></div>
             </div>
@@ -449,11 +461,19 @@
                     </div>
                 </div>
                 <audio id="nashe-player" controls preload="none">
-                    <source src="https://nashe1.hostingradio.ru/nashe-128.mp3" type="audio/mpeg">
+                    <source src="https://nashe1.hostingradio.ru:80/nashe-128.mp3" type="audio/mpeg">
                 </audio>
                 <div class="bitrate-info" id="nashe-bitrate"></div>
             </div>
         </div>
+    </div>
+
+    <!-- Кнопка Прямой эфир -->
+    <div class="live-btn-container">
+        <button class="btn live-btn" id="live-btn">
+            <i class="fas fa-broadcast-tower"></i>
+            Прямой эфир
+        </button>
     </div>
 
     <script>
@@ -497,6 +517,10 @@
         // Установка начальной громкости
         players.forEach(item => {
             item.player.volume = globalVolume.value;
+            // Приостановка буферизации при паузе
+            item.player.addEventListener('pause', () => {
+                item.player.currentTime = 0;
+            });
         });
 
         // Синхронизация громкости
@@ -520,6 +544,25 @@
             }
         }
 
+        // Кнопка "Прямой эфир"
+        document.getElementById('live-btn').addEventListener('click', function() {
+            const activePlayer = players.find(p => !p.player.paused);
+            if (activePlayer) {
+                // Перезагружаем текущий поток
+                const src = activePlayer.player.querySelector('source').src;
+                activePlayer.player.querySelector('source').src = src.split('?')[0] + '?_=' + Date.now();
+                activePlayer.player.load();
+                activePlayer.player.play().catch(e => console.log("Автовоспроизведение заблокировано"));
+                
+                // Показываем уведомление
+                const bitrateEl = activePlayer.bitrateEl;
+                bitrateEl.textContent = "Перезагрузка потока...";
+                setTimeout(() => {
+                    bitrateEl.textContent = `Битрейт: ~${activePlayer.card.querySelector('.quality-tag').textContent.match(/\d+/)[0]} kbps`;
+                }, 2000);
+            }
+        });
+
         // Автопауза и подсветка при переключении
         players.forEach(item => {
             item.player.addEventListener('play', () => {
@@ -528,12 +571,13 @@
                     p.card.classList.remove('active');
                     if (p.player !== item.player && !p.player.paused) {
                         p.player.pause();
+                        p.player.currentTime = 0;
                     }
                 });
                 // Подсвечиваем текущее
                 item.card.classList.add('active');
                 
-                // Прокручиваем к активной карточке (если она не в видимой области)
+                // Прокручиваем к активной карточке
                 item.card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             });
         });
@@ -543,6 +587,7 @@
             // Пауза всех плееров
             players.forEach(item => {
                 item.player.pause();
+                item.player.currentTime = 0;
                 item.card.classList.remove('active');
             });
             
@@ -561,14 +606,13 @@
             const randomIndex = Math.floor(Math.random() * filteredPlayers.length);
             const randomPlayer = filteredPlayers[randomIndex];
             
-            // Воспроизведение
+            // Воспроизведение с новым URL (чтобы избежать кеширования)
+            randomPlayer.player.querySelector('source').src = randomPlayer.player.querySelector('source').src.split('?')[0] + '?_=' + Date.now();
+            randomPlayer.player.load();
             randomPlayer.player.play().catch(e => {
-                // Если автовоспроизведение заблокировано, перезагружаем поток
-                randomPlayer.player.load();
-                randomPlayer.player.play();
+                console.log("Автовоспроизведение заблокировано, попробуйте нажать на плеер вручную");
             });
             randomPlayer.card.classList.add('active');
-            randomPlayer.card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         });
 
         // Пресеты громкости
@@ -586,11 +630,10 @@
             });
         });
 
-        // Отображение битрейта (упрощенная версия)
+        // Упрощенное отображение битрейта
         function updateBitrate() {
             players.forEach(item => {
                 if (!item.player.paused) {
-                    // Просто показываем заявленный битрейт
                     const qualityTag = item.card.querySelector('.quality-tag').textContent;
                     const bitrate = qualityTag.match(/\d+/)[0];
                     item.bitrateEl.textContent = `Битрейт: ~${bitrate} kbps`;

@@ -141,7 +141,8 @@
             transform: translate(-50%, -50%);
             border: none;
             object-fit: cover;
-            filter: brightness(0.85) contrast(1.1) saturate(1.1) sepia(0.25);
+            filter: brightness(0.85) contrast(1.1) saturate(1.1) sepia(0.3);
+            box-shadow: 0 0 100px rgba(0,0,0,0.8) inset;
         }
         /* Вертикальное видео для мобильных */
         @media (max-width: 767px) {
@@ -151,50 +152,52 @@
                 transform: translate(-50%, -50%) scale(1.2);
             }
         }
-        /* Горизонтальное видео для ПК */
+        /* Горизонтальное видео для ПК с винтьеткой */
         @media (min-width: 768px) {
             .video-iframe {
-                width: 80%;
-                height: 80%;
+                width: 70%;
+                height: 70%;
+                border-radius: 10px;
+                box-shadow: 
+                    0 0 100px rgba(0,0,0,0.8) inset,
+                    0 0 50px rgba(0,0,0,0.5);
+            }
+            .video-wrapper::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.9) 100%);
+                z-index: 2;
             }
         }
         
-        /* Кнопка пропуска */
-        .skip-btn {
+        /* Аура кнопка на видео */
+        .aura-label {
             position: fixed;
-            bottom: 30px;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255,255,255,0.2);
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.7);
             color: white;
-            border: none;
+            padding: 15px 25px;
             border-radius: 50px;
-            padding: 10px 20px;
-            font-size: 14px;
-            cursor: pointer;
+            font-size: 18px;
             z-index: 1001;
-            display: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             opacity: 0;
-            transition: opacity 0.3s;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: auraFadeInOut 2s ease;
+            box-shadow: 0 0 20px rgba(29, 185, 84, 0.5);
         }
-        .skip-btn.show {
-            display: block;
-            animation: fadeInBtn 0.5s ease forwards 1s;
-        }
-        @keyframes fadeInBtn {
-            to {
-                opacity: 1;
-            }
-        }
-        .skip-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        .skip-timer {
-            display: inline-block;
-            width: 20px;
-            text-align: center;
+        @keyframes auraFadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+            80% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
         }
         
         /* Основной контент */
@@ -632,11 +635,6 @@
         </div>
     </div>
 
-    <!-- Кнопка пропуска видео -->
-    <button class="skip-btn" id="skipBtn">
-        Пропустить через <span class="skip-timer">3</span> сек
-    </button>
-
     <!-- Экран окончания видео -->
     <div class="video-end-screen" id="videoEndScreen">
         <div class="loading-spinner"></div>
@@ -1035,8 +1033,8 @@
         const moodVideo = document.getElementById('moodVideo');
         const mainContent = document.getElementById('mainContent');
         const videoEndScreen = document.getElementById('videoEndScreen');
-        const skipBtn = document.getElementById('skipBtn');
         let selectedMoodBtn = null;
+        let selectedMood = null;
         
         // Параметры видео
         const VIDEO_URL = "https://kinescope.io/embed/fkh7Ju8wproyFnBxswPndD";
@@ -1069,9 +1067,47 @@
         document.querySelectorAll('.mood-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 selectedMoodBtn = this;
+                selectedMood = this.dataset.mood;
+                
+                // Жесткая вибрация на мобильных устройствах
+                if (isMobile && navigator.vibrate) {
+                    navigator.vibrate([100, 50, 100]);
+                }
+                
                 showMoodVideo();
             });
         });
+
+        // Функция показа выбранной ауры
+        function showAuraLabel() {
+            const auraTexts = {
+                'happy': 'Радостная аура',
+                'chill': 'Расслабленная аура',
+                'energetic': 'Энергичная аура',
+                'romantic': 'Романтичная аура',
+                'sad': 'Грустная аура',
+                'focus': 'Сосредоточенная аура'
+            };
+            
+            const icons = {
+                'happy': 'fa-laugh-beam',
+                'chill': 'fa-couch',
+                'energetic': 'fa-bolt',
+                'romantic': 'fa-heart',
+                'sad': 'fa-sad-tear',
+                'focus': 'fa-brain'
+            };
+            
+            const auraLabel = document.createElement('div');
+            auraLabel.className = 'aura-label';
+            auraLabel.innerHTML = `<i class="fas ${icons[selectedMood]}"></i> ${auraTexts[selectedMood]}`;
+            document.body.appendChild(auraLabel);
+            
+            // Удаляем через 2 секунды
+            setTimeout(() => {
+                auraLabel.remove();
+            }, 2000);
+        }
 
         // Функция показа видео
         function showMoodVideo() {
@@ -1098,11 +1134,8 @@
                     introScreen.style.display = 'none';
                     videoContainer.style.display = 'block';
                     
-                    // Показываем кнопку пропуска через 3 секунды
-                    setTimeout(() => {
-                        skipBtn.classList.add('show');
-                        startSkipTimer();
-                    }, 3000);
+                    // Показываем лейбл ауры через 0.5 секунды
+                    setTimeout(showAuraLabel, 500);
                     
                     // Добавляем обработчики пропуска видео
                     if (isMobile) {
@@ -1110,7 +1143,6 @@
                         videoContainer.addEventListener('touchend', endSkipHold);
                     } else {
                         document.addEventListener('keydown', handleKeyPress);
-                        skipBtn.addEventListener('click', skipVideo);
                     }
                 }, 500);
                 
@@ -1119,23 +1151,6 @@
                 }, VIDEO_DURATION);
                 
                 window.videoTimeout = videoTimeout;
-            }, 1000);
-        }
-
-        // Таймер для кнопки пропуска
-        function startSkipTimer() {
-            let seconds = 3;
-            const timerEl = document.querySelector('.skip-timer');
-            timerEl.textContent = seconds;
-            
-            const timer = setInterval(() => {
-                seconds--;
-                timerEl.textContent = seconds;
-                
-                if (seconds <= 0) {
-                    clearInterval(timer);
-                    skipBtn.textContent = "Нажмите, чтобы пропустить";
-                }
             }, 1000);
         }
 
@@ -1150,7 +1165,7 @@
         function startSkipHold() {
             skipHoldTimeout = setTimeout(() => {
                 skipVideo();
-            }, 1500); // Уменьшили время удержания до 1.5 секунд
+            }, 1500); // Время удержания 1.5 секунды
         }
 
         function endSkipHold() {
@@ -1164,7 +1179,6 @@
                 videoContainer.removeEventListener('touchend', endSkipHold);
             } else {
                 document.removeEventListener('keydown', handleKeyPress);
-                skipBtn.removeEventListener('click', skipVideo);
             }
             
             clearTimeout(window.videoTimeout);
@@ -1175,11 +1189,9 @@
         function finishVideo() {
             // Плавное затухание видео
             videoContainer.style.opacity = '0';
-            skipBtn.style.opacity = '0';
             
             setTimeout(() => {
                 videoContainer.style.display = 'none';
-                skipBtn.style.display = 'none';
                 
                 // Показываем экран загрузки
                 videoEndScreen.style.display = 'flex';

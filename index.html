@@ -21,6 +21,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         body {
             background-color: var(--dark);
@@ -137,12 +138,63 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 110%;
-            height: 110%;
-            transform: translate(-50%, -50%) scale(0.9);
+            transform: translate(-50%, -50%);
             border: none;
             object-fit: cover;
-            filter: brightness(0.85) contrast(1.1) saturate(1.1);
+            filter: brightness(0.85) contrast(1.1) saturate(1.1) sepia(0.25);
+        }
+        /* Вертикальное видео для мобильных */
+        @media (max-width: 767px) {
+            .video-iframe {
+                width: 100%;
+                height: 150%;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+        }
+        /* Горизонтальное видео для ПК */
+        @media (min-width: 768px) {
+            .video-iframe {
+                width: 80%;
+                height: 80%;
+            }
+        }
+        
+        /* Кнопка пропуска */
+        .skip-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 1001;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .skip-btn.show {
+            display: block;
+            animation: fadeInBtn 0.5s ease forwards 1s;
+        }
+        @keyframes fadeInBtn {
+            to {
+                opacity: 1;
+            }
+        }
+        .skip-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .skip-timer {
+            display: inline-block;
+            width: 20px;
+            text-align: center;
         }
         
         /* Основной контент */
@@ -538,11 +590,6 @@
             .volume-control, .preset-btn {
                 display: none !important;
             }
-            .video-iframe {
-                width: 115%;
-                height: 115%;
-                transform: translate(-50%, -50%) scale(0.85);
-            }
         }
     </style>
 </head>
@@ -584,6 +631,11 @@
             <iframe id="moodVideo" class="video-iframe" allow="autoplay; fullscreen" allowfullscreen></iframe>
         </div>
     </div>
+
+    <!-- Кнопка пропуска видео -->
+    <button class="skip-btn" id="skipBtn">
+        Пропустить через <span class="skip-timer">3</span> сек
+    </button>
 
     <!-- Экран окончания видео -->
     <div class="video-end-screen" id="videoEndScreen">
@@ -983,6 +1035,7 @@
         const moodVideo = document.getElementById('moodVideo');
         const mainContent = document.getElementById('mainContent');
         const videoEndScreen = document.getElementById('videoEndScreen');
+        const skipBtn = document.getElementById('skipBtn');
         let selectedMoodBtn = null;
         
         // Параметры видео
@@ -1045,12 +1098,19 @@
                     introScreen.style.display = 'none';
                     videoContainer.style.display = 'block';
                     
+                    // Показываем кнопку пропуска через 3 секунды
+                    setTimeout(() => {
+                        skipBtn.classList.add('show');
+                        startSkipTimer();
+                    }, 3000);
+                    
                     // Добавляем обработчики пропуска видео
                     if (isMobile) {
                         videoContainer.addEventListener('touchstart', startSkipHold);
                         videoContainer.addEventListener('touchend', endSkipHold);
                     } else {
                         document.addEventListener('keydown', handleKeyPress);
+                        skipBtn.addEventListener('click', skipVideo);
                     }
                 }, 500);
                 
@@ -1059,6 +1119,23 @@
                 }, VIDEO_DURATION);
                 
                 window.videoTimeout = videoTimeout;
+            }, 1000);
+        }
+
+        // Таймер для кнопки пропуска
+        function startSkipTimer() {
+            let seconds = 3;
+            const timerEl = document.querySelector('.skip-timer');
+            timerEl.textContent = seconds;
+            
+            const timer = setInterval(() => {
+                seconds--;
+                timerEl.textContent = seconds;
+                
+                if (seconds <= 0) {
+                    clearInterval(timer);
+                    skipBtn.textContent = "Нажмите, чтобы пропустить";
+                }
             }, 1000);
         }
 
@@ -1073,7 +1150,7 @@
         function startSkipHold() {
             skipHoldTimeout = setTimeout(() => {
                 skipVideo();
-            }, 3000);
+            }, 1500); // Уменьшили время удержания до 1.5 секунд
         }
 
         function endSkipHold() {
@@ -1087,6 +1164,7 @@
                 videoContainer.removeEventListener('touchend', endSkipHold);
             } else {
                 document.removeEventListener('keydown', handleKeyPress);
+                skipBtn.removeEventListener('click', skipVideo);
             }
             
             clearTimeout(window.videoTimeout);
@@ -1097,9 +1175,11 @@
         function finishVideo() {
             // Плавное затухание видео
             videoContainer.style.opacity = '0';
+            skipBtn.style.opacity = '0';
             
             setTimeout(() => {
                 videoContainer.style.display = 'none';
+                skipBtn.style.display = 'none';
                 
                 // Показываем экран загрузки
                 videoEndScreen.style.display = 'flex';
@@ -1136,6 +1216,11 @@
                             .then(() => {
                                 kissPlayBtn.classList.add('paused');
                                 document.getElementById('kissint-card').classList.add('active');
+                                
+                                // Вибрация на мобильных устройствах
+                                if (isMobile && navigator.vibrate) {
+                                    navigator.vibrate(100);
+                                }
                             })
                             .catch(error => {
                                 console.log("Автовоспроизведение заблокировано");
@@ -1192,6 +1277,11 @@
                         .then(() => {
                             playBtn.classList.add('paused');
                             card.classList.add('active');
+                            
+                            // Вибрация на мобильных устройствах
+                            if (isMobile && navigator.vibrate) {
+                                navigator.vibrate(50);
+                            }
                         })
                         .catch(error => {
                             audio.controls = true;
@@ -1283,6 +1373,11 @@
                     .then(() => {
                         randomPlayer.playBtn.classList.add('paused');
                         randomPlayer.card.classList.add('active');
+                        
+                        // Вибрация на мобильных устройствах
+                        if (isMobile && navigator.vibrate) {
+                            navigator.vibrate(50);
+                        }
                     })
                     .catch(error => {
                         randomPlayer.player.controls = true;
@@ -1340,6 +1435,11 @@
                         isVerkaPlaying = true;
                         verkaBtn.innerHTML = '<i class="fas fa-pause"></i> Пауза Верки';
                         verkaBtn.classList.add('verka-playing');
+                        
+                        // Вибрация на мобильных устройствах
+                        if (isMobile && navigator.vibrate) {
+                            navigator.vibrate(100);
+                        }
                     })
                     .catch(error => {
                         console.error("Ошибка воспроизведения:", error);

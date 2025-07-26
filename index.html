@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#121212">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Deynik Radio</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -22,11 +27,14 @@
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
         }
         body {
             background-color: var(--dark);
             color: var(--light);
             overflow-x: hidden;
+            overscroll-behavior: none;
         }
         
         /* Интро экран */
@@ -143,13 +151,17 @@
             object-fit: cover;
             filter: brightness(0.85) contrast(1.1) saturate(1.1) sepia(0.3);
             box-shadow: 0 0 100px rgba(0,0,0,0.8) inset;
+            -webkit-touch-callout: none;
         }
-        /* Вертикальное видео для мобильных */
+        /* Вертикальное видео для мобильных (как в TikTok) */
         @media (max-width: 767px) {
             .video-iframe {
                 width: 100%;
-                height: 150%;
-                transform: translate(-50%, -50%) scale(1.2);
+                height: 100%;
+                min-width: 100%;
+                min-height: 100%;
+                aspect-ratio: 9/16;
+                object-position: center;
             }
         }
         /* Горизонтальное видео для ПК с винтьеткой */
@@ -190,7 +202,7 @@
             align-items: center;
             gap: 10px;
             opacity: 0;
-            animation: auraFadeInOut 2s ease;
+            animation: auraFadeInOut 2s ease, auraColors 0.2s infinite alternate;
             box-shadow: 0 0 20px rgba(29, 185, 84, 0.5);
         }
         @keyframes auraFadeInOut {
@@ -198,6 +210,12 @@
             20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
             80% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
             100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        }
+        @keyframes auraColors {
+            0% { box-shadow: 0 0 20px rgba(173, 216, 230, 0.7); } /* бледно-синий */
+            33% { box-shadow: 0 0 20px rgba(255, 182, 193, 0.7); } /* бледно-розовый */
+            66% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.7); } /* белый */
+            100% { box-shadow: 0 0 20px rgba(173, 216, 230, 0.7); } /* бледно-синий */
         }
         
         /* Основной контент */
@@ -1049,6 +1067,13 @@
             
             // Начинаем предзагрузку видео сразу
             preloadVideo();
+            
+            // Добавляем манифест для PWA
+            if ('serviceWorker' in navigator && isMobile) {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => console.log('ServiceWorker registered'))
+                    .catch(err => console.log('ServiceWorker not registered', err));
+            }
         });
 
         // Функция предзагрузки видео
@@ -1071,7 +1096,7 @@
                 
                 // Жесткая вибрация на мобильных устройствах
                 if (isMobile && navigator.vibrate) {
-                    navigator.vibrate([100, 50, 100]);
+                    navigator.vibrate([100, 30, 100, 30, 100]);
                 }
                 
                 showMoodVideo();
@@ -1165,7 +1190,7 @@
         function startSkipHold() {
             skipHoldTimeout = setTimeout(() => {
                 skipVideo();
-            }, 1500); // Время удержания 1.5 секунды
+            }, 1000); // Время удержания 1 секунда
         }
 
         function endSkipHold() {
@@ -1464,6 +1489,76 @@
                 verkaBtn.classList.remove('verka-playing');
             }
         });
+    </script>
+
+    <script>
+        // Манифест для PWA
+        const manifest = {
+            "name": "Deynik Radio",
+            "short_name": "DeynikRadio",
+            "description": "Бесплатное радио в максимальном качестве",
+            "start_url": "/",
+            "display": "standalone",
+            "background_color": "#121212",
+            "theme_color": "#1DB954",
+            "icons": [
+                {
+                    "src": "icon-192x192.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                },
+                {
+                    "src": "icon-512x512.png",
+                    "sizes": "512x512",
+                    "type": "image/png"
+                }
+            ]
+        };
+
+        // Создаем файл манифеста динамически
+        const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+        const manifestUrl = URL.createObjectURL(manifestBlob);
+        
+        const link = document.createElement('link');
+        link.rel = 'manifest';
+        link.href = manifestUrl;
+        document.head.appendChild(link);
+
+        // Service Worker для PWA
+        const swCode = `
+            self.addEventListener('install', event => {
+                event.waitUntil(
+                    caches.open('deynik-radio-v1').then(cache => {
+                        return cache.addAll([
+                            '/',
+                            '/index.html',
+                            '/icon-192x192.png',
+                            '/icon-512x512.png'
+                        ]);
+                    })
+                );
+            });
+
+            self.addEventListener('fetch', event => {
+                event.respondWith(
+                    caches.match(event.request).then(response => {
+                        return response || fetch(event.request);
+                    })
+                );
+            });
+        `;
+
+        // Создаем файл service worker динамически
+        if (isMobile) {
+            const swBlob = new Blob([swCode], {type: 'application/javascript'});
+            const swUrl = URL.createObjectURL(swBlob);
+            
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register(swUrl)
+                    .then(registration => console.log('ServiceWorker registered'))
+                    .catch(err => console.log('ServiceWorker not registered', err));
+            }
+        }
     </script>
 </body>
 </html>

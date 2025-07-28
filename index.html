@@ -7,7 +7,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Deynik Radio | Бесплатное радио без АП</title>
+    <title>Deynik Radio | Бесплатное радио</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -102,6 +102,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
         }
         
         /* Шапка */
@@ -188,10 +189,10 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             flex: 1;
             overflow-y: auto;
-            padding: 10px 5px 30px;
+            padding: 10px 5px;
             scrollbar-width: thin;
             scrollbar-color: var(--secondary) transparent;
         }
@@ -555,47 +556,6 @@
             font-size: 13px;
         }
         
-        /* Кнопка Live */
-        .live-btn-container {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-            padding: 0 10px;
-        }
-        
-        .live-btn {
-            background: var(--light);
-            color: var(--dark);
-            padding: 10px 24px;
-            font-weight: 600;
-            border-radius: var(--radius);
-            box-shadow: 0 4px 16px rgba(255,255,255,0.2);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .live-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255,255,255,0.3);
-        }
-        
-        .live-btn.loading::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,255,255,0.5);
-            animation: loadingPulse 1.5s infinite;
-        }
-        
-        @keyframes loadingPulse {
-            0% { opacity: 0.3; }
-            50% { opacity: 0.7; }
-            100% { opacity: 0.3; }
-        }
-        
         /* Кнопка Верки */
         .verka-btn {
             background: linear-gradient(135deg, #FFD700 0%, #005BBB 100%);
@@ -643,6 +603,7 @@
             opacity: 0;
             visibility: hidden;
             transition: var(--transition);
+            cursor: pointer;
         }
         
         .mini-player.visible {
@@ -706,6 +667,145 @@
         .mini-player-btn:hover {
             background: var(--secondary);
             color: var(--dark);
+        }
+        
+        /* Полноэкранный плеер */
+        .fullscreen-player {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .fullscreen-player.active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .fullscreen-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .fullscreen-close:hover {
+            background: var(--secondary);
+            color: var(--dark);
+        }
+        
+        .fullscreen-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .fullscreen-info {
+            text-align: center;
+            margin-bottom: 30px;
+            max-width: 90%;
+        }
+        
+        .fullscreen-info h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-family: var(--font-heading);
+        }
+        
+        .fullscreen-info p {
+            font-size: 16px;
+            color: var(--gray);
+        }
+        
+        .fullscreen-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .fullscreen-play-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--secondary);
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 30px;
+            box-shadow: 0 4px 20px rgba(29, 185, 84, 0.4);
+        }
+        
+        .fullscreen-play-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .fullscreen-volume {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .fullscreen-volume i {
+            font-size: 20px;
+            color: var(--gray);
+        }
+        
+        .fullscreen-volume-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            outline: none;
+        }
+        
+        .fullscreen-volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .fullscreen-volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
         }
         
         /* Селектор ауры */
@@ -833,6 +933,26 @@
                 width: calc(100% - 20px);
                 bottom: 10px;
             }
+            
+            .fullscreen-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 30px;
+            }
+            
+            .fullscreen-info h2 {
+                font-size: 20px;
+            }
+            
+            .fullscreen-info p {
+                font-size: 14px;
+            }
+            
+            .fullscreen-play-btn {
+                width: 70px;
+                height: 70px;
+                font-size: 25px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -871,6 +991,26 @@
                 height: 32px;
                 font-size: 14px;
             }
+            
+            .fullscreen-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 25px;
+            }
+            
+            .fullscreen-info h2 {
+                font-size: 18px;
+            }
+            
+            .fullscreen-info p {
+                font-size: 13px;
+            }
+            
+            .fullscreen-play-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
+            }
         }
     </style>
 </head>
@@ -887,6 +1027,30 @@
             <option value="sad">Грустная</option>
             <option value="focus">Сосредоточенная</option>
         </select>
+    </div>
+
+    <!-- Полноэкранный плеер -->
+    <div class="fullscreen-player" id="fullscreenPlayer">
+        <div class="fullscreen-close" id="fullscreenClose">
+            <i class="fas fa-times"></i>
+        </div>
+        <div class="fullscreen-icon" id="fullscreenIcon">
+            <i class="fas fa-music"></i>
+        </div>
+        <div class="fullscreen-info">
+            <h2 id="fullscreenTitle">Не играет</h2>
+            <p id="fullscreenDescription">Выберите радиостанцию</p>
+        </div>
+        <div class="fullscreen-controls">
+            <button class="fullscreen-play-btn" id="fullscreenPlayBtn">
+                <i class="fas fa-play"></i>
+            </button>
+            <div class="fullscreen-volume">
+                <i class="fas fa-volume-down" id="fullscreenVolumeIcon"></i>
+                <input type="range" class="fullscreen-volume-slider" id="fullscreenVolume" min="0" max="1" step="0.01" value="0.5">
+                <i class="fas fa-volume-up"></i>
+            </div>
+        </div>
     </div>
 
     <!-- Мини-плеер -->
@@ -912,7 +1076,7 @@
     <div class="main-content" id="mainContent">
         <div class="page-header">
             <h1>Deynik Radio</h1>
-            <p>Бесплатное радио в максимальном качестве без авторских прав</p>
+            <p>Бесплатное радио в максимальном качестве</p>
         </div>
 
         <div class="tabs">
@@ -976,7 +1140,7 @@
                     </div>
                     <div class="custom-audio">
                         <audio id="kissint-player" preload="none">
-                            <source src="https://stream.revma.ihrhls.com/zc185" type="audio/mpeg">
+                            <source src="https://cloud.revma.ihrhls.com/zc185?rj-org=n42b-e2&rj-ttl=5&rj-tok=AAABmEPRtccAaOsUfdKMAzMlJQ" type="audio/mpeg">
                         </audio>
                         <div class="play-btn"></div>
                     </div>
@@ -1345,14 +1509,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Кнопка Live -->
-        <div class="live-btn-container">
-            <button class="btn live-btn" id="live-btn">
-                <i class="fas fa-broadcast-tower"></i>
-                Обновить поток
-            </button>
-        </div>
     </div>
 
     <script>
@@ -1366,7 +1522,14 @@
         const miniPlayerDescription = document.getElementById('miniPlayerDescription');
         const miniPlayerPlayBtn = document.getElementById('miniPlayerPlayBtn');
         const miniPlayerRefreshBtn = document.getElementById('miniPlayerRefreshBtn');
-        const liveBtn = document.getElementById('live-btn');
+        const fullscreenPlayer = document.getElementById('fullscreenPlayer');
+        const fullscreenClose = document.getElementById('fullscreenClose');
+        const fullscreenIcon = document.getElementById('fullscreenIcon');
+        const fullscreenTitle = document.getElementById('fullscreenTitle');
+        const fullscreenDescription = document.getElementById('fullscreenDescription');
+        const fullscreenPlayBtn = document.getElementById('fullscreenPlayBtn');
+        const fullscreenVolume = document.getElementById('fullscreenVolume');
+        const fullscreenVolumeIcon = document.getElementById('fullscreenVolumeIcon');
         
         let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         let currentPlayer = null;
@@ -1391,6 +1554,7 @@
                             currentCard.classList.add('active');
                             currentPlayer = kissPlayer;
                             updateMiniPlayer(currentCard);
+                            updateFullscreenPlayer(currentCard);
                             
                             // Вибрация на мобильных устройствах
                             if (isMobile && navigator.vibrate) {
@@ -1427,6 +1591,31 @@
             }
         }
 
+        // Обновление полноэкранного плеера
+        function updateFullscreenPlayer(card) {
+            const header = card.querySelector('.station-header');
+            const icon = header.querySelector('.station-icon i').className;
+            const title = header.querySelector('.station-info h3').childNodes[0].textContent.trim();
+            const description = header.querySelector('.station-info p').textContent;
+            
+            fullscreenIcon.innerHTML = `<i class="${icon}"></i>`;
+            fullscreenTitle.textContent = title;
+            fullscreenDescription.textContent = description;
+            
+            // Обновляем состояние кнопки play/pause
+            if (currentPlayer && !currentPlayer.paused) {
+                fullscreenPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                fullscreenPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+            
+            // Обновляем громкость
+            if (currentPlayer) {
+                fullscreenVolume.value = currentPlayer.volume;
+                updateVolumeIcon(fullscreenVolumeIcon, currentPlayer.volume);
+            }
+        }
+
         // Применение выбранной ауры
         function applyAura(mood) {
             // Удаляем все классы аур
@@ -1441,6 +1630,17 @@
             }
         }
 
+        // Обновление иконки громкости
+        function updateVolumeIcon(icon, volume) {
+            if (volume === 0) {
+                icon.className = 'fas fa-volume-mute';
+            } else if (volume < 0.5) {
+                icon.className = 'fas fa-volume-down';
+            } else {
+                icon.className = 'fas fa-volume-up';
+            }
+        }
+
         // Обработчик изменения выбора ауры
         auraSelect.addEventListener('change', function() {
             const selectedAura = this.value;
@@ -1448,7 +1648,8 @@
         });
 
         // Обработчик кнопки play/pause в мини-плеере
-        miniPlayerPlayBtn.addEventListener('click', function() {
+        miniPlayerPlayBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
             if (currentPlayer) {
                 if (currentPlayer.paused) {
                     currentPlayer.play()
@@ -1457,6 +1658,7 @@
                             if (currentCard) {
                                 currentCard.querySelector('.play-btn').classList.add('paused');
                                 currentCard.classList.add('active');
+                                updateFullscreenPlayer(currentCard);
                             }
                         })
                         .catch(error => {
@@ -1468,16 +1670,70 @@
                     if (currentCard) {
                         currentCard.querySelector('.play-btn').classList.remove('paused');
                         currentCard.classList.remove('active');
+                        updateFullscreenPlayer(currentCard);
                     }
                 }
             }
         });
 
         // Обработчик кнопки обновления в мини-плеере
-        miniPlayerRefreshBtn.addEventListener('click', function() {
+        miniPlayerRefreshBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
             if (currentPlayer && currentCard) {
                 refreshStream(currentPlayer, currentCard);
             }
+        });
+
+        // Обработчик клика по мини-плееру
+        miniPlayer.addEventListener('click', function() {
+            if (currentCard) {
+                fullscreenPlayer.classList.add('active');
+                updateFullscreenPlayer(currentCard);
+            }
+        });
+
+        // Обработчик закрытия полноэкранного плеера
+        fullscreenClose.addEventListener('click', function(e) {
+            e.stopPropagation();
+            fullscreenPlayer.classList.remove('active');
+        });
+
+        // Обработчик кнопки play/pause в полноэкранном плеере
+        fullscreenPlayBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (currentPlayer) {
+                if (currentPlayer.paused) {
+                    currentPlayer.play()
+                        .then(() => {
+                            this.innerHTML = '<i class="fas fa-pause"></i>';
+                            if (currentCard) {
+                                currentCard.querySelector('.play-btn').classList.add('paused');
+                                currentCard.classList.add('active');
+                                miniPlayerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                            }
+                        })
+                        .catch(error => {
+                            console.log("Ошибка воспроизведения:", error);
+                        });
+                } else {
+                    currentPlayer.pause();
+                    this.innerHTML = '<i class="fas fa-play"></i>';
+                    if (currentCard) {
+                        currentCard.querySelector('.play-btn').classList.remove('paused');
+                        currentCard.classList.remove('active');
+                        miniPlayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    }
+                }
+            }
+        });
+
+        // Обработчик изменения громкости в полноэкранном плеере
+        fullscreenVolume.addEventListener('input', function(e) {
+            const volume = parseFloat(e.target.value);
+            if (currentPlayer) {
+                currentPlayer.volume = volume;
+            }
+            updateVolumeIcon(fullscreenVolumeIcon, volume);
         });
 
         // Функция обновления потока
@@ -1491,7 +1747,6 @@
                 player.load();
                 
                 // Показываем состояние загрузки
-                liveBtn.classList.add('loading');
                 bitrateEl.textContent = "Обновление потока...";
                 
                 player.play()
@@ -1499,12 +1754,10 @@
                         player.currentTime = currentTime;
                         setTimeout(() => {
                             bitrateEl.textContent = `Битрейт: ~${card.querySelector('.quality-tag').textContent.match(/\d+/)[0]} kbps`;
-                            liveBtn.classList.remove('loading');
                         }, 2000);
                     })
                     .catch(e => {
                         console.log("Автовоспроизведение заблокировано");
-                        liveBtn.classList.remove('loading');
                     });
             }
         }
@@ -1557,6 +1810,7 @@
                             currentPlayer = audio;
                             currentCard = card;
                             updateMiniPlayer(card);
+                            updateFullscreenPlayer(card);
                             
                             // Вибрация на мобильных устройствах
                             if (isMobile && navigator.vibrate) {
@@ -1574,6 +1828,7 @@
                     playBtn.classList.remove('paused');
                     card.classList.remove('active');
                     miniPlayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    fullscreenPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
                 }
             });
             
@@ -1581,6 +1836,7 @@
                 playBtn.classList.remove('paused');
                 card.classList.remove('active');
                 miniPlayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+                fullscreenPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
             });
             
             audio.volume = globalVolume.value;
@@ -1608,24 +1864,7 @@
             if (currentPlayer) {
                 currentPlayer.volume = volume;
             }
-            updateVolumeIcons(volume);
-        });
-
-        function updateVolumeIcons(volume) {
-            const volumeIcons = document.querySelectorAll('.volume-icon');
-            if (volume === 0) {
-                volumeIcons.forEach(icon => icon.className = 'fas fa-volume-mute volume-icon');
-            } else if (volume < 0.5) {
-                volumeIcons.forEach(icon => icon.className = 'fas fa-volume-down volume-icon');
-            } else {
-                volumeIcons.forEach(icon => icon.className = 'fas fa-volume-up volume-icon');
-            }
-        }
-
-        liveBtn.addEventListener('click', function() {
-            if (currentPlayer && currentCard) {
-                refreshStream(currentPlayer, currentCard);
-            }
+            updateVolumeIcon(fullscreenVolumeIcon, volume);
         });
 
         document.getElementById('random-radio').addEventListener('click', () => {
@@ -1664,6 +1903,7 @@
                         randomPlayer.playBtn.classList.add('paused');
                         randomPlayer.card.classList.add('active');
                         updateMiniPlayer(randomPlayer.card);
+                        updateFullscreenPlayer(randomPlayer.card);
                         
                         // Вибрация на мобильных устройствах
                         if (isMobile && navigator.vibrate) {
@@ -1688,7 +1928,7 @@
                 if (currentPlayer) {
                     currentPlayer.volume = volume;
                 }
-                updateVolumeIcons(volume);
+                updateVolumeIcon(fullscreenVolumeIcon, volume);
                 
                 document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
@@ -1748,6 +1988,12 @@
                         miniPlayerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
                         miniPlayer.classList.add('visible');
                         
+                        // Обновляем полноэкранный плеер
+                        fullscreenIcon.innerHTML = '<i class="fas fa-star"></i>';
+                        fullscreenTitle.textContent = 'Верка Сердючка';
+                        fullscreenDescription.textContent = 'Украинские хиты';
+                        fullscreenPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                        
                         // Вибрация на мобильных устройствах
                         if (isMobile && navigator.vibrate) {
                             navigator.vibrate(100);
@@ -1763,6 +2009,7 @@
                 verkaBtn.innerHTML = '<i class="fas fa-star"></i> Верка Сердючка';
                 verkaBtn.classList.remove('verka-playing');
                 miniPlayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+                fullscreenPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
             }
         });
     </script>

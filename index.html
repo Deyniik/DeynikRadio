@@ -3,15 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#121212">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Deynik Radio | Бесплатное радио</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
-    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #191414;
@@ -22,1996 +16,451 @@
             --radius: 16px;
             --card-radius: 12px;
             --active-highlight: rgba(29, 185, 84, 0.1);
-            --aura-color: #1DB954;
             --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --font-heading: 'Montserrat', sans-serif;
-            --font-body: 'Open Sans', sans-serif;
-        }
-        
-        /* Ауры */
-        body.aura-romantic {
-            --primary: #2a0a1a;
-            --secondary: #ff6b9d;
-            --dark: #1a0510;
-            --aura-color: #ff6b9d;
-        }
-        
-        body.aura-energetic {
-            --primary: #1a0a0a;
-            --secondary: #ffcc00;
-            --dark: #100505;
-            --aura-color: #ff3300;
-        }
-        
-        body.aura-happy {
-            --primary: #1a1a0a;
-            --secondary: #ffcc00;
-            --dark: #101005;
-            --aura-color: #ffff00;
-        }
-        
-        body.aura-chill {
-            --primary: #0a1a1a;
-            --secondary: #00ccff;
-            --dark: #051010;
-            --aura-color: #00ffff;
-        }
-        
-        body.aura-sad {
-            --primary: #0a0a1a;
-            --secondary: #6666ff;
-            --dark: #050510;
-            --aura-color: #9999ff;
-        }
-        
-        body.aura-focus {
-            --primary: #0a1a0a;
-            --secondary: #00ff99;
-            --dark: #051005;
-            --aura-color: #00ff66;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: var(--font-body);
             -webkit-tap-highlight-color: transparent;
-            -webkit-user-select: none;
-            user-select: none;
         }
-        
+
         body {
             background-color: var(--dark);
             color: var(--light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow-x: hidden;
-            overscroll-behavior: none;
-            transition: background-color 0.5s ease;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
 
-        /* Основной контент */
-        .main-content {
-            padding: 20px 15px;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-        
-        /* Шапка */
-        .page-header {
-            text-align: center;
-            margin-bottom: 25px;
-            padding: 0 10px;
-        }
-        
-        .page-header h1 {
-            color: var(--secondary);
-            margin-bottom: 8px;
-            font-size: clamp(1.8rem, 6vw, 2.5rem);
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            font-family: var(--font-heading);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        .page-header p {
-            color: var(--gray);
-            font-size: clamp(0.95rem, 3vw, 1.1rem);
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.5;
-        }
-        
-        /* Вкладки */
-        .tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 25px;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            padding: 0 10px;
-        }
-        
-        .tab-btn {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--light);
-            border: none;
-            border-radius: var(--radius);
-            padding: 10px 16px;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .tab-btn.home-btn {
-            padding: 10px 18px;
-            font-size: 15px;
-        }
-        
-        .tab-btn.active {
-            background: var(--secondary);
-            color: var(--dark);
-            font-weight: 600;
-            box-shadow: 0 4px 16px rgba(29, 185, 84, 0.3);
-        }
-        
-        .tab-btn:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .tab-content {
-            display: none;
-            flex: 1;
-        }
-        
-        .tab-content.active {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        /* Сетка радиостанций */
-        .radio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px 5px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--secondary) transparent;
-        }
-        
-        .radio-grid::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .radio-grid::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        
-        .radio-grid::-webkit-scrollbar-thumb {
-            background-color: var(--secondary);
-            border-radius: 3px;
-        }
-        
-        @media (max-width: 768px) {
-            .radio-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* Карточка радио */
-        .radio-card {
+        /* Стили для чата */
+        .chat-container {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
             background: var(--primary);
-            border-radius: var(--card-radius);
-            padding: 18px;
+            border-radius: var(--radius);
             box-shadow: var(--shadow);
-            transition: var(--transition);
-            border: 1px solid rgba(255,255,255,0.05);
-            min-height: 180px;
+            border: 1px solid rgba(255,255,255,0.1);
             display: flex;
             flex-direction: column;
+            z-index: 1000;
+            transform: translateX(120%);
+            transition: var(--transition);
         }
-        
-        .radio-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+
+        .chat-container.visible {
+            transform: translateX(0);
         }
-        
-        .radio-card.main-card {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, rgba(29, 185, 84, 0.1) 0%, var(--primary) 100%);
-        }
-        
-        .radio-card.active {
-            background: var(--active-highlight);
-            box-shadow: 0 0 0 2px var(--secondary), var(--shadow);
-        }
-        
-        .station-header {
+
+        .chat-header {
+            padding: 12px 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: var(--radius) var(--radius) 0 0;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 15px;
         }
-        
-        .station-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 18px;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        
-        .station-icon.main-icon {
-            width: 50px;
-            height: 50px;
-            font-size: 22px;
-        }
-        
-        .station-info {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .station-info h3 {
-            font-size: 16px;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
+
+        .chat-title {
             font-weight: 600;
-            line-height: 1.4;
-        }
-        
-        .station-info.main-info h3 {
-            font-size: 18px;
-        }
-        
-        .station-info p {
-            font-size: 13px;
-            color: var(--gray);
-            line-height: 1.4;
-        }
-        
-        .main-label {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--light);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            margin-left: 8px;
-            font-weight: 500;
-        }
-        
-        .quality-tag {
-            background: rgba(29, 185, 84, 0.2);
             color: var(--secondary);
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            margin-left: 8px;
-            white-space: nowrap;
         }
-        
-        .no-ap-badge {
-            background: rgba(255, 165, 0, 0.2);
-            color: orange;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            margin-left: 8px;
-            white-space: nowrap;
-            position: relative;
-            cursor: help;
-        }
-        
-        .no-ap-badge::after {
-            content: "Радио без авторских прав - можно использовать в стримах";
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            width: max-content;
-            max-width: 200px;
-            opacity: 0;
-            pointer-events: none;
-            transition: var(--transition);
-            margin-bottom: 5px;
-        }
-        
-        .no-ap-badge:hover::after {
-            opacity: 1;
-        }
-        
-        /* Аудио контролы */
-        .custom-audio {
-            width: 100%;
-            margin-top: auto;
-            position: relative;
-        }
-        
-        .custom-audio audio {
-            width: 100%;
-            height: 40px;
-            opacity: 0;
-            position: absolute;
-            z-index: 2;
-            cursor: pointer;
-        }
-        
-        .play-btn {
-            width: 100%;
-            height: 46px;
-            background: white;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .play-btn:hover {
-            background: #f0f0f0;
-            transform: translateY(-1px);
-        }
-        
-        .play-btn::before {
-            content: "";
-            width: 0;
-            height: 0;
-            border-top: 10px solid transparent;
-            border-left: 16px solid var(--dark);
-            border-bottom: 10px solid transparent;
-            border-radius: 3px;
-            margin-left: 3px;
-            transition: var(--transition);
-        }
-        
-        .play-btn.paused::before {
-            border-left: 5px solid var(--dark);
-            border-right: 5px solid var(--dark);
-            height: 20px;
-            width: 4px;
-            border-radius: 3px;
-            margin-left: 0;
-        }
-        
-        .bitrate-info {
-            font-size: 12px;
+
+        .chat-close {
+            background: none;
+            border: none;
             color: var(--gray);
-            text-align: center;
-            margin-top: 10px;
-            height: 16px;
-            font-weight: 500;
+            cursor: pointer;
+            font-size: 16px;
         }
-        
-        /* Глобальные контролы */
-        .global-controls {
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-bottom: 25px;
-            padding: 0 10px;
+            gap: 10px;
         }
-        
-        .control-row {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            background: rgba(255,255,255,0.1);
-            color: var(--light);
-            border: none;
-            border-radius: var(--radius);
-            padding: 10px 16px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            min-width: 120px;
-            justify-content: center;
-            font-weight: 500;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .btn:hover {
-            background: var(--secondary);
-            color: var(--dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(29, 185, 84, 0.3);
-        }
-        
-        .btn i {
-            font-size: 15px;
-        }
-        
-        .btn.active {
-            background: var(--secondary);
-            color: var(--dark);
-            font-weight: 600;
-        }
-        
-        .random-btn {
-            background: var(--secondary);
-            color: var(--dark);
-            font-weight: 600;
-        }
-        
-        .random-btn:hover {
-            background: var(--light);
-            transform: translateY(-2px);
-        }
-        
-        /* Ползунок громкости */
-        .volume-control {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            max-width: 240px;
-            padding: 8px 12px;
+
+        .message {
             background: rgba(255,255,255,0.05);
-            border-radius: var(--radius);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .volume-slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            outline: none;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-        
-        .volume-slider:hover {
-            background: rgba(255, 255, 255, 0.2);
-            height: 8px;
-        }
-        
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--secondary);
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: 0 0 0 2px rgba(0,0,0,0.2);
-        }
-        
-        .volume-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-            box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.3);
-        }
-        
-        .volume-slider::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--secondary);
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: 0 0 0 2px rgba(0,0,0,0.2);
-        }
-        
-        .volume-slider::-moz-range-thumb:hover {
-            transform: scale(1.2);
-            box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.3);
-        }
-        
-        .volume-icon {
-            color: var(--gray);
-            font-size: 16px;
-            min-width: 20px;
-            text-align: center;
-        }
-        
-        /* Кнопки пресетов громкости */
-        .preset-btn {
-            min-width: auto;
             padding: 8px 12px;
-            font-size: 13px;
+            border-radius: 8px;
+            max-width: 80%;
+            word-wrap: break-word;
+            font-size: 14px;
         }
-        
-        /* Кнопка Верки */
-        .verka-btn {
-            background: linear-gradient(135deg, #FFD700 0%, #005BBB 100%);
+
+        .message.user {
+            align-self: flex-end;
+            background: var(--secondary);
             color: var(--dark);
-            font-weight: 600;
-            margin: 15px auto;
-            display: block;
+        }
+
+        .message-input-container {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .message-input {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
             border: none;
-            border-radius: var(--radius);
-            padding: 12px 24px;
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: white;
+            outline: none;
+        }
+
+        .send-button {
+            background: var(--secondary);
+            color: var(--dark);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            margin-left: 8px;
             cursor: pointer;
-            transition: var(--transition);
-            font-size: 15px;
-            box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
-            max-width: 300px;
-            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        
-        .verka-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
-        }
-        
-        .verka-playing {
-            background: linear-gradient(135deg, #005BBB 0%, #FFD700 100%);
-        }
-        
-        /* Мини-плеер */
-        .mini-player {
+
+        .chat-toggle {
             position: fixed;
             bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 40px);
-            max-width: 500px;
-            background: var(--primary);
-            border-radius: var(--radius);
-            padding: 12px 16px;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 100;
-            border: 1px solid rgba(255,255,255,0.1);
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-        
-        .mini-player.visible {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0);
-        }
-        
-        .mini-player-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--secondary);
+            color: var(--dark);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: var(--shadow);
+            font-size: 24px;
+        }
+
+        /* Стили для авторизации */
+        .auth-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .auth-button {
+            background: #4285F4;
             color: white;
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-        
-        .mini-player-info {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .mini-player-info h4 {
-            font-size: 14px;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .mini-player-info p {
-            font-size: 12px;
-            color: var(--gray);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .mini-player-controls {
+            border: none;
+            border-radius: var(--radius);
+            padding: 10px 15px;
             display: flex;
             align-items: center;
             gap: 8px;
-        }
-        
-        .mini-player-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
             cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
             transition: var(--transition);
         }
-        
-        .mini-player-btn:hover {
-            background: var(--secondary);
-            color: var(--dark);
+
+        .auth-button:hover {
+            opacity: 0.9;
         }
-        
-        /* Полноэкранный плеер */
-        .fullscreen-player {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--dark);
-            z-index: 1000;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .fullscreen-player.active {
-            display: flex;
-            opacity: 1;
-        }
-        
-        .fullscreen-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .fullscreen-close:hover {
-            background: var(--secondary);
-            color: var(--dark);
-        }
-        
-        .fullscreen-icon {
-            width: 100px;
-            height: 100px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 40px;
-            margin-bottom: 30px;
-            box-shadow: var(--shadow);
-        }
-        
-        .fullscreen-info {
-            text-align: center;
-            margin-bottom: 30px;
-            max-width: 90%;
-        }
-        
-        .fullscreen-info h2 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            font-family: var(--font-heading);
-        }
-        
-        .fullscreen-info p {
-            font-size: 16px;
-            color: var(--gray);
-        }
-        
-        .fullscreen-controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        .fullscreen-play-btn {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: var(--secondary);
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 30px;
-            box-shadow: 0 4px 20px rgba(29, 185, 84, 0.4);
-        }
-        
-        .fullscreen-play-btn:hover {
-            transform: scale(1.05);
-        }
-        
-        .fullscreen-volume {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .fullscreen-volume i {
-            font-size: 20px;
-            color: var(--gray);
-        }
-        
-        .fullscreen-volume-slider {
-            flex: 1;
-            -webkit-appearance: none;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            outline: none;
-        }
-        
-        .fullscreen-volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--secondary);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .fullscreen-volume-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-        }
-        
-        /* Селектор ауры */
-        .aura-selector {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-            background: rgba(0,0,0,0.7);
-            border-radius: var(--radius);
-            padding: 10px 14px;
+
+        .user-profile {
             display: flex;
             align-items: center;
             gap: 10px;
-            backdrop-filter: blur(10px);
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            border: 1px solid rgba(255,255,255,0.1);
         }
-        
-        .aura-selector:hover {
-            background: rgba(0,0,0,0.8);
-            transform: translateY(-1px);
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
         }
-        
-        .aura-selector i {
-            color: var(--secondary);
-            font-size: 16px;
-        }
-        
-        .aura-selector select {
+
+        .sign-out-button {
             background: rgba(255,255,255,0.1);
+            color: var(--light);
             border: none;
-            color: white;
-            font-size: 14px;
+            border-radius: var(--radius);
+            padding: 8px 12px;
             cursor: pointer;
-            outline: none;
-            appearance: none;
-            padding: 6px 10px;
-            border-radius: 8px;
+            font-size: 13px;
             transition: var(--transition);
-            font-weight: 500;
         }
-        
-        .aura-selector select:hover {
+
+        .sign-out-button:hover {
             background: rgba(255,255,255,0.2);
         }
-        
-        .aura-selector select option {
-            background: var(--dark);
-            color: white;
+
+        /* Основные стили радио */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: 70px;
         }
-        
-        /* Мобильные стили */
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: var(--secondary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        /* Адаптивность */
         @media (max-width: 768px) {
-            .main-content {
-                padding: 15px 10px;
+            .chat-container {
+                width: calc(100% - 40px);
+                right: 20px;
+                bottom: 70px;
             }
             
-            .tabs {
-                gap: 6px;
-                margin-bottom: 20px;
+            .auth-container {
+                top: 10px;
+                right: 10px;
             }
             
-            .tab-btn {
+            .auth-button {
                 padding: 8px 12px;
                 font-size: 13px;
-            }
-            
-            .tab-btn.home-btn {
-                padding: 8px 14px;
-            }
-            
-            .radio-card {
-                padding: 15px;
-                min-height: 170px;
-            }
-            
-            .station-header {
-                gap: 10px;
-                margin-bottom: 12px;
-            }
-            
-            .station-icon {
-                width: 38px;
-                height: 38px;
-                font-size: 16px;
-            }
-            
-            .station-icon.main-icon {
-                width: 44px;
-                height: 44px;
-                font-size: 20px;
-            }
-            
-            .station-info h3 {
-                font-size: 15px;
-            }
-            
-            .station-info.main-info h3 {
-                font-size: 16px;
-            }
-            
-            .play-btn {
-                height: 42px;
-            }
-            
-            .volume-control {
-                max-width: 200px;
-            }
-            
-            .preset-btn {
-                padding: 6px 10px;
-                font-size: 12px;
-            }
-            
-            .aura-selector {
-                top: 15px;
-                right: 15px;
-                padding: 8px 12px;
-                font-size: 13px;
-            }
-            
-            .mini-player {
-                width: calc(100% - 20px);
-                bottom: 10px;
-            }
-            
-            .fullscreen-icon {
-                width: 80px;
-                height: 80px;
-                font-size: 30px;
-            }
-            
-            .fullscreen-info h2 {
-                font-size: 20px;
-            }
-            
-            .fullscreen-info p {
-                font-size: 14px;
-            }
-            
-            .fullscreen-play-btn {
-                width: 70px;
-                height: 70px;
-                font-size: 25px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .control-row {
-                gap: 8px;
-            }
-            
-            .btn {
-                min-width: 100px;
-                padding: 8px 12px;
-                font-size: 13px;
-            }
-            
-            .volume-control {
-                max-width: 180px;
-                padding: 6px 10px;
-            }
-            
-            .verka-btn {
-                padding: 10px 20px;
-                font-size: 14px;
-            }
-            
-            .mini-player {
-                padding: 10px 12px;
-            }
-            
-            .mini-player-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 14px;
-            }
-            
-            .mini-player-btn {
-                width: 32px;
-                height: 32px;
-                font-size: 14px;
-            }
-            
-            .fullscreen-icon {
-                width: 70px;
-                height: 70px;
-                font-size: 25px;
-            }
-            
-            .fullscreen-info h2 {
-                font-size: 18px;
-            }
-            
-            .fullscreen-info p {
-                font-size: 13px;
-            }
-            
-            .fullscreen-play-btn {
-                width: 60px;
-                height: 60px;
-                font-size: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Селектор ауры -->
-    <div class="aura-selector" id="auraSelector">
-        <i class="fas fa-palette"></i>
-        <select id="auraSelect">
-            <option value="default">Стандартная</option>
-            <option value="happy">Радостная</option>
-            <option value="chill">Расслабленная</option>
-            <option value="energetic">Энергичная</option>
-            <option value="romantic">Романтичная</option>
-            <option value="sad">Грустная</option>
-            <option value="focus">Сосредоточенная</option>
-        </select>
-    </div>
-
-    <!-- Полноэкранный плеер -->
-    <div class="fullscreen-player" id="fullscreenPlayer">
-        <div class="fullscreen-close" id="fullscreenClose">
-            <i class="fas fa-times"></i>
-        </div>
-        <div class="fullscreen-icon" id="fullscreenIcon">
-            <i class="fas fa-music"></i>
-        </div>
-        <div class="fullscreen-info">
-            <h2 id="fullscreenTitle">Не играет</h2>
-            <p id="fullscreenDescription">Выберите радиостанцию</p>
-        </div>
-        <div class="fullscreen-controls">
-            <button class="fullscreen-play-btn" id="fullscreenPlayBtn">
-                <i class="fas fa-play"></i>
-            </button>
-            <div class="fullscreen-volume">
-                <i class="fas fa-volume-down" id="fullscreenVolumeIcon"></i>
-                <input type="range" class="fullscreen-volume-slider" id="fullscreenVolume" min="0" max="1" step="0.01" value="0.5">
-                <i class="fas fa-volume-up"></i>
-            </div>
-        </div>
-    </div>
-
-    <!-- Мини-плеер -->
-    <div class="mini-player" id="miniPlayer">
-        <div class="mini-player-icon" id="miniPlayerIcon">
-            <i class="fas fa-music"></i>
-        </div>
-        <div class="mini-player-info">
-            <h4 id="miniPlayerTitle">Не играет</h4>
-            <p id="miniPlayerDescription">Выберите радиостанцию</p>
-        </div>
-        <div class="mini-player-controls">
-            <button class="mini-player-btn" id="miniPlayerPlayBtn">
-                <i class="fas fa-play"></i>
-            </button>
-            <button class="mini-player-btn" id="miniPlayerRefreshBtn">
-                <i class="fas fa-sync-alt"></i>
-            </button>
-        </div>
+    <!-- Контейнер авторизации -->
+    <div class="auth-container" id="authContainer">
+        <button class="auth-button" id="authButton">
+            <i class="fab fa-google"></i>
+            <span>Войти через Google</span>
+        </button>
     </div>
 
     <!-- Основной контент -->
-    <div class="main-content" id="mainContent">
+    <div class="main-content">
         <div class="page-header">
             <h1>Deynik Radio</h1>
             <p>Бесплатное радио в максимальном качестве</p>
         </div>
+        
+        <!-- Здесь будет ваша разметка радиостанций -->
+    </div>
 
-        <div class="tabs">
-            <button class="tab-btn" data-tab="russia">
-                <img src="https://flagcdn.com/w20/ru.png" class="flag-icon" alt="Россия">
-                Россия
-            </button>
-            <button class="tab-btn home-btn active" data-tab="international" title="Международные">
-                <i class="fas fa-home"></i>
-            </button>
-            <button class="tab-btn" data-tab="ukraine">
-                <img src="https://flagcdn.com/w20/ua.png" class="flag-icon" alt="Украина">
-                Украина
-            </button>
-            <button class="tab-btn" data-tab="lofi">
-                <i class="fas fa-moon"></i> Lo-Fi
+    <!-- Кнопка чата -->
+    <div class="chat-toggle" id="chatToggle">
+        <i class="fas fa-comment-dots"></i>
+    </div>
+
+    <!-- Контейнер чата -->
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header">
+            <div class="chat-title">Чат радио</div>
+            <button class="chat-close" id="chatClose">
+                <i class="fas fa-times"></i>
             </button>
         </div>
-
-        <div class="global-controls">
-            <div class="control-row">
-                <div class="volume-control">
-                    <i class="fas fa-volume-down volume-icon"></i>
-                    <input type="range" class="volume-slider" id="global-volume" min="0" max="1" step="0.01" value="0.5">
-                    <i class="fas fa-volume-up volume-icon"></i>
-                </div>
-                
-                <button class="btn random-btn" id="random-radio">
-                    <i class="fas fa-random"></i>
-                    Случайное
-                </button>
-            </div>
-            
-            <div class="control-row">
-                <button class="btn preset-btn" data-preset="0.3">
-                    <i class="fas fa-comments"></i> Фон
-                </button>
-                <button class="btn preset-btn" data-preset="0.7">
-                    <i class="fas fa-headphones"></i> Музыка
-                </button>
-                <button class="btn preset-btn" data-preset="0.15">
-                    <i class="fas fa-volume-off"></i> Тихо
-                </button>
-                <button class="btn preset-btn" data-preset="1.0">
-                    <i class="fas fa-volume-up"></i> Громко
-                </button>
-            </div>
-        </div>
-
-        <!-- Международные радио -->
-        <div class="tab-content active" id="international-tab">
-            <div class="radio-grid">
-                <!-- 1. KISS FM (главная станция) -->
-                <div class="radio-card main-card" id="kissint-card">
-                    <div class="station-header">
-                        <div class="station-icon main-icon"><i class="fas fa-heart"></i></div>
-                        <div class="station-info main-info">
-                            <h3>KISS FM <span class="quality-tag">128kbps</span> <span class="main-label">Главное радио</span></h3>
-                            <p>Лучшие мировые хиты в отличном качестве</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="kissint-player" preload="none">
-                            <source src="https://cloud.revma.ihrhls.com/zc185?rj-org=n42b-e2&rj-ttl=5&rj-tok=AAABmEPRtccAaOsUfdKMAzMlJQ" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="kissint-bitrate"></div>
-                </div>
-
-                <!-- 2. Radio Paradise -->
-                <div class="radio-card" id="rp-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-music"></i></div>
-                        <div class="station-info">
-                            <h3>Radio Paradise <span class="quality-tag">FLAC 900+kbps</span><span class="no-ap-badge">Без АП</span></h3>
-                            <p>Аудиофильский микс рока и электроники без авторских прав</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="rp-player" preload="none">
-                            <source src="https://stream.radioparadise.com/flac" type="audio/flac">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="rp-bitrate"></div>
-                </div>
-
-                <!-- 3. LoFi Girl -->
-                <div class="radio-card" id="lofi-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-moon"></i></div>
-                        <div class="station-info">
-                            <h3>LoFi Girl <span class="quality-tag">192kbps</span> <span class="no-ap-badge">Без АП</span></h3>
-                            <p>Легендарный лоу-фай стрим без авторских прав</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="lofi-player" preload="none">
-                            <source src="https://play.streamafrica.net/lofiradio" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="lofi-bitrate"></div>
-                </div>
-
-                <!-- 4. Z100 New York -->
-                <div class="radio-card" id="z100-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-broadcast-tower"></i></div>
-                        <div class="station-info">
-                            <h3>Z100 New York <span class="quality-tag">128kbps</span></h3>
-                            <p>Поп-хиты от iHeartRadio</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="z100-player" preload="none">
-                            <source src="https://stream.revma.ihrhls.com/zc1477" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="z100-bitrate"></div>
-                </div>
-                
-                <!-- 5. Jazz24 -->
-                <div class="radio-card" id="jazz-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-music"></i></div>
-                        <div class="station-info">
-                            <h3>Jazz24 <span class="quality-tag">192kbps</span></h3>
-                            <p>Лучшие джазовые композиции</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="jazz-player" preload="none">
-                            <source src="https://jazz-wr06.ice.infomaniak.ch/jazz-wr06-192.mp3" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="jazz-bitrate"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Радио России -->
-        <div class="tab-content" id="russia-tab">
-            <div class="radio-grid">
-                <!-- 1. Европа Плюс -->
-                <div class="radio-card" id="europa-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-globe-europe"></i></div>
-                        <div class="station-info">
-                            <h3>Европа Плюс <span class="quality-tag">128kbps</span></h3>
-                            <p>Популярные хиты</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="europa-player" preload="none">
-                            <source src="https://ep128.hostingradio.ru:8030/ep128" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="europa-bitrate"></div>
-                </div>
-
-                <!-- 2. Русское Радио -->
-                <div class="radio-card" id="russkoe-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-music"></i></div>
-                        <div class="station-info">
-                            <h3>Русское Радио <span class="quality-tag">128kbps</span></h3>
-                            <p>Русские хиты</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="russkoe-player" preload="none">
-                            <source src="https://rusradio.hostingradio.ru:8000/rusradio128.mp3" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="russkoe-bitrate"></div>
-                </div>
-
-                <!-- 3. DFM -->
-                <div class="radio-card" id="dfm-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-headphones"></i></div>
-                        <div class="station-info">
-                            <h3>DFM <span class="quality-tag">128kbps</span></h3>
-                            <p>Танцевальная музыка</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="dfm-player" preload="none">
-                            <source src="https://dfm.hostingradio.ru:8000/dfm128.mp3" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="dfm-bitrate"></div>
-                </div>
-
-                <!-- 4. Авторадио -->
-                <div class="radio-card" id="avto-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-car"></i></div>
-                        <div class="station-info">
-                            <h3>Авторадио <span class="quality-tag">128kbps</span></h3>
-                            <p>Музыка для автолюбителей</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="avto-player" preload="none">
-                            <source src="https://listen.autoradio.ua/ar_mp3_hi" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="avto-bitrate"></div>
-                </div>
-                
-                <!-- 5. Energy -->
-                <div class="radio-card" id="energy-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-bolt"></i></div>
-                        <div class="station-info">
-                            <h3>Energy <span class="quality-tag">128kbps</span></h3>
-                            <p>Танцевальная музыка</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="energy-player" preload="none">
-                            <source src="https://pub0301.101.ru:8000/stream/air/mp3/256/219" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="energy-bitrate"></div>
-                </div>
-                
-                <!-- 6. Comedy Radio -->
-                <div class="radio-card" id="comedy-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-laugh-squint"></i></div>
-                        <div class="station-info">
-                            <h3>Comedy Radio <span class="quality-tag">128kbps</span></h3>
-                            <p>Юмор и музыка</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="comedy-player" preload="none">
-                            <source src="https://pub0301.101.ru:8000/stream/air/mp3/256/200" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="comedy-bitrate"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Украинские радио -->
-        <div class="tab-content" id="ukraine-tab">
-            <button class="verka-btn" id="verka-btn">
-                <i class="fas fa-star"></i> Верка Сердючка
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="message-input-container">
+            <input type="text" class="message-input" id="messageInput" placeholder="Написать сообщение..." disabled>
+            <button class="send-button" id="sendButton" disabled>
+                <i class="fas fa-paper-plane"></i>
             </button>
-            
-            <div class="radio-grid">
-                <!-- 1. Хит FM -->
-                <div class="radio-card" id="hitfm-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-star"></i></div>
-                        <div class="station-info">
-                            <h3>Хит FM <span class="quality-tag">128kbps</span></h3>
-                            <p>Украинские и мировые хиты</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="hitfm-player" preload="none">
-                            <source src="https://online.kissfm.ua/KissFM" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="hitfm-bitrate"></div>
-                </div>
-
-                <!-- 2. Радио Relax -->
-                <div class="radio-card" id="relax-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-spa"></i></div>
-                        <div class="station-info">
-                            <h3>Радио Relax <span class="quality-tag">128kbps</span></h3>
-                            <p>Лёгкая музыка</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="relax-player" preload="none">
-                            <source src="https://radio.relax.ua/relax128" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="relax-bitrate"></div>
-                </div>
-
-                <!-- 3. Kiss FM Украина -->
-                <div class="radio-card" id="kiss-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-heart"></i></div>
-                        <div class="station-info">
-                            <h3>Kiss FM Украина <span class="quality-tag">128kbps</span></h3>
-                            <p>Популярная музыка</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="kiss-player" preload="none">
-                            <source src="https://online.kissfm.ua/KissFM" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="kiss-bitrate"></div>
-                </div>
-
-                <!-- 4. Наше Радио -->
-                <div class="radio-card" id="nashe-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-microphone-alt"></i></div>
-                        <div class="station-info">
-                            <h3>Наше Радио <span class="quality-tag">128kbps</span></h3>
-                            <p>Рок и альтернатива</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="nashe-player" preload="none">
-                            <source src="https://nashe1.hostingradio.ru:80/nashe-128.mp3" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="nashe-bitrate"></div>
-                </div>
-                
-                <!-- 5. Радио Байрактар -->
-                <div class="radio-card" id="bayraktar-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-helicopter"></i></div>
-                        <div class="station-info">
-                            <h3>Радио Байрактар <span class="quality-tag">128kbps</span></h3>
-                            <p>Украинская музыка</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="bayraktar-player" preload="none">
-                            <source src="https://radio.bayraktar.tv/radio" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="bayraktar-bitrate"></div>
-                </div>
-                
-                <!-- 6. Украинское Радио -->
-                <div class="radio-card" id="ukrradio-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-flag"></i></div>
-                        <div class="station-info">
-                            <h3>Украинское Радио <span class="quality-tag">128kbps</span></h3>
-                            <p>Официальное государственное радио</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="ukrradio-player" preload="none">
-                            <source src="https://radio.nrcu.gov.ua:8443/nrcu-256.mp3" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="ukrradio-bitrate"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Lo-Fi радио -->
-        <div class="tab-content" id="lofi-tab">
-            <div class="radio-grid">
-                <!-- 1. Chillhop Radio -->
-                <div class="radio-card main-card" id="chillhop-card">
-                    <div class="station-header">
-                        <div class="station-icon main-icon"><i class="fas fa-moon"></i></div>
-                        <div class="station-info main-info">
-                            <h3>Chillhop Radio <span class="quality-tag">128kbps</span> <span class="no-ap-badge">Без АП</span> <span class="main-label">Лучший Lo-Fi</span></h3>
-                            <p>Расслабляющие биты для работы и отдыха без авторских прав</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="chillhop-player" preload="none">
-                            <source src="https://stream-178.zeno.fm/f3wvbbqmdg8uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJmM3d2YmJxbWRnOHV2IiwiaG9zdCI6InN0cmVhbS0xNzguemVuby5mbSIsInJ0dGwiOjUsImp0aSI6InliWWlGa0V1UVZxRkdfUHVSdzc1aFEiLCJpYXQiOjE3NTM3Mzk5ODksImV4cCI6MTc1Mzc0MDA0OX0.euTaSztCdSWf9UEh8USg2iZrjbk1Zr_cIB6VUCtqXO4" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="chillhop-bitrate"></div>
-                </div>
-
-                <!-- 2. LoFi Hip Hop -->
-                <div class="radio-card" id="lofihiphop-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-headphones"></i></div>
-                        <div class="station-info">
-                            <h3>LoFi Hip Hop <span class="quality-tag">128kbps</span> <span class="no-ap-badge">Без АП</span></h3>
-                            <p>Лучшие хип-хоп биты без авторских прав</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="lofihiphop-player" preload="none">
-                            <source src="https://stream-158.zeno.fm/0r0xa792kwzuv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiIwcjB4YTc5Mmt3enV2IiwiaG9zdCI6InN0cmVhbS0xNTguemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IkRfQXk5NUx5UUJlWTZTa052cDJPdXciLCJpYXQiOjE3NTM3NDAwODAsImV4cCI6MTc1Mzc0MDE0MH0.RrcOQhFX_ENyVJmbYpubG1QhGuz30RuwB65Xg1y1qCM" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="lofihiphop-bitrate"></div>
-                </div>
-
-                <!-- 3. LoFi Girl -->
-                <div class="radio-card" id="lofigirl-card">
-                    <div class="station-header">
-                        <div class="station-icon"><i class="fas fa-moon"></i></div>
-                        <div class="station-info">
-                            <h3>LoFi Girl <span class="quality-tag">192kbps</span> <span class="no-ap-badge">Без АП</span></h3>
-                            <p>Легендарный лоу-фай стрим без авторских прав</p>
-                        </div>
-                    </div>
-                    <div class="custom-audio">
-                        <audio id="lofigirl-player" preload="none">
-                            <source src="https://play.streamafrica.net/lofiradio" type="audio/mpeg">
-                        </audio>
-                        <div class="play-btn"></div>
-                    </div>
-                    <div class="bitrate-info" id="lofigirl-bitrate"></div>
-                </div>
-            </div>
         </div>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+
     <script>
-        // Инициализация элементов
-        const mainContent = document.getElementById('mainContent');
-        const auraSelector = document.getElementById('auraSelector');
-        const auraSelect = document.getElementById('auraSelect');
-        const miniPlayer = document.getElementById('miniPlayer');
-        const miniPlayerIcon = document.getElementById('miniPlayerIcon');
-        const miniPlayerTitle = document.getElementById('miniPlayerTitle');
-        const miniPlayerDescription = document.getElementById('miniPlayerDescription');
-        const miniPlayerPlayBtn = document.getElementById('miniPlayerPlayBtn');
-        const miniPlayerRefreshBtn = document.getElementById('miniPlayerRefreshBtn');
-        const fullscreenPlayer = document.getElementById('fullscreenPlayer');
-        const fullscreenClose = document.getElementById('fullscreenClose');
-        const fullscreenIcon = document.getElementById('fullscreenIcon');
-        const fullscreenTitle = document.getElementById('fullscreenTitle');
-        const fullscreenDescription = document.getElementById('fullscreenDescription');
-        const fullscreenPlayBtn = document.getElementById('fullscreenPlayBtn');
-        const fullscreenVolume = document.getElementById('fullscreenVolume');
-        const fullscreenVolumeIcon = document.getElementById('fullscreenVolumeIcon');
+        // Инициализация Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBk4nxZ1ldNQUCxsbgaeYTkm9stq0o9o2Q",
+            authDomain: "deynik-radio.firebaseapp.com",
+            projectId: "deynik-radio",
+            storageBucket: "deynik-radio.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
         
-        let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        let currentPlayer = null;
-        let currentCard = null;
-        
-        // Автоматически запускаем радио при загрузке
-        document.addEventListener('DOMContentLoaded', () => {
-            // Показываем основной контент сразу
-            mainContent.style.display = 'flex';
-            auraSelector.style.display = 'flex';
-            
-            // Автоматически включаем главное радио (KISS FM)
-            setTimeout(() => {
-                const kissPlayer = document.getElementById('kissint-player');
-                const kissPlayBtn = document.querySelector('#kissint-card .play-btn');
-                currentCard = document.getElementById('kissint-card');
-                
-                if (kissPlayer && kissPlayBtn) {
-                    kissPlayer.play()
-                        .then(() => {
-                            kissPlayBtn.classList.add('paused');
-                            currentCard.classList.add('active');
-                            currentPlayer = kissPlayer;
-                            updateMiniPlayer(currentCard);
-                            updateFullscreenPlayer(currentCard);
-                            
-                            // Вибрация на мобильных устройствах
-                            if (isMobile && navigator.vibrate) {
-                                navigator.vibrate(100);
-                            }
-                        })
-                        .catch(error => {
-                            console.log("Автовоспроизведение заблокировано");
-                            kissPlayer.controls = true;
-                            kissPlayBtn.style.display = 'none';
-                        });
-                }
-            }, 500);
-        });
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-        // Обновление мини-плеера
-        function updateMiniPlayer(card) {
-            const header = card.querySelector('.station-header');
-            const icon = header.querySelector('.station-icon i').className;
-            const title = header.querySelector('.station-info h3').childNodes[0].textContent.trim();
-            const description = header.querySelector('.station-info p').textContent;
-            
-            miniPlayerIcon.innerHTML = `<i class="${icon}"></i>`;
-            miniPlayerTitle.textContent = title;
-            miniPlayerDescription.textContent = description;
-            
-            miniPlayer.classList.add('visible');
-            
-            // Обновляем состояние кнопки play/pause
-            if (currentPlayer && !currentPlayer.paused) {
-                miniPlayerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            } else {
-                miniPlayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
-            }
-        }
+        // Элементы интерфейса
+        const authButton = document.getElementById('authButton');
+        const authContainer = document.getElementById('authContainer');
+        const chatToggle = document.getElementById('chatToggle');
+        const chatContainer = document.getElementById('chatContainer');
+        const chatClose = document.getElementById('chatClose');
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
 
-        // Обновление полноэкранного плеера
-        function updateFullscreenPlayer(card) {
-            const header = card.querySelector('.station-header');
-            const icon = header.querySelector('.station-icon i').className;
-            const title = header.querySelector('.station-info h3').childNodes[0].textContent.trim();
-            const description = header.querySelector('.station-info p').textContent;
-            
-            fullscreenIcon.innerHTML = `<i class="${icon}"></i>`;
-            fullscreenTitle.textContent = title;
-            fullscreenDescription.textContent = description;
-            
-            // Обновляем состояние кнопки play/pause
-            if (currentPlayer && !currentPlayer.paused) {
-                fullscreenPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            } else {
-                fullscreenPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
-            }
-            
-            // Обновляем громкость
-            if (currentPlayer) {
-                fullscreenVolume.value = currentPlayer.volume;
-                updateVolumeIcon(fullscreenVolumeIcon, currentPlayer.volume);
-            }
-        }
+        let currentUser = null;
+        let chatVisible = false;
 
-        // Применение выбранной ауры
-        function applyAura(mood) {
-            // Удаляем все классы аур
-            document.body.classList.remove(
-                'aura-happy', 'aura-chill', 'aura-energetic', 
-                'aura-romantic', 'aura-sad', 'aura-focus'
-            );
-            
-            // Добавляем нужный класс
-            if (mood && mood !== 'default') {
-                document.body.classList.add(`aura-${mood}`);
-            }
-        }
-
-        // Обновление иконки громкости
-        function updateVolumeIcon(icon, volume) {
-            if (volume === 0) {
-                icon.className = 'fas fa-volume-mute';
-            } else if (volume < 0.5) {
-                icon.className = 'fas fa-volume-down';
-            } else {
-                icon.className = 'fas fa-volume-up';
-            }
-        }
-
-        // Обработчик изменения выбора ауры
-        auraSelect.addEventListener('change', function() {
-            const selectedAura = this.value;
-            applyAura(selectedAura);
-        });
-
-        // Обработчик кнопки play/pause в мини-плеере
-        miniPlayerPlayBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            if (currentPlayer) {
-                if (currentPlayer.paused) {
-                    currentPlayer.play()
-                        .then(() => {
-                            this.innerHTML = '<i class="fas fa-pause"></i>';
-                            if (currentCard) {
-                                currentCard.querySelector('.play-btn').classList.add('paused');
-                                currentCard.classList.add('active');
-                                updateFullscreenPlayer(currentCard);
-                            }
-                        })
-                        .catch(error => {
-                            console.log("Ошибка воспроизведения:", error);
-                        });
-                } else {
-                    currentPlayer.pause();
-                    this.innerHTML = '<i class="fas fa-play"></i>';
-                    if (currentCard) {
-                        currentCard.querySelector('.play-btn').classList.remove('paused');
-                        currentCard.classList.remove('active');
-                        updateFullscreenPlayer(currentCard);
-                    }
-                }
-            }
-        });
-
-        // Обработчик кнопки обновления в мини-плеере
-        miniPlayerRefreshBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            if (currentPlayer && currentCard) {
-                refreshStream(currentPlayer, currentCard);
-            }
-        });
-
-        // Обработчик клика по мини-плееру
-        miniPlayer.addEventListener('click', function() {
-            if (currentCard) {
-                fullscreenPlayer.classList.add('active');
-                updateFullscreenPlayer(currentCard);
-            }
-        });
-
-        // Обработчик закрытия полноэкранного плеера
-        fullscreenClose.addEventListener('click', function(e) {
-            e.stopPropagation();
-            fullscreenPlayer.classList.remove('active');
-        });
-
-        // Обработчик кнопки play/pause в полноэкранном плеере
-        fullscreenPlayBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            if (currentPlayer) {
-                if (currentPlayer.paused) {
-                    currentPlayer.play()
-                        .then(() => {
-                            this.innerHTML = '<i class="fas fa-pause"></i>';
-                            if (currentCard) {
-                                currentCard.querySelector('.play-btn').classList.add('paused');
-                                currentCard.classList.add('active');
-                                miniPlayerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                            }
-                        })
-                        .catch(error => {
-                            console.log("Ошибка воспроизведения:", error);
-                        });
-                } else {
-                    currentPlayer.pause();
-                    this.innerHTML = '<i class="fas fa-play"></i>';
-                    if (currentCard) {
-                        currentCard.querySelector('.play-btn').classList.remove('paused');
-                        currentCard.classList.remove('active');
-                        miniPlayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
-                    }
-                }
-            }
-        });
-
-        // Обработчик изменения громкости в полноэкранном плеере
-        fullscreenVolume.addEventListener('input', function(e) {
-            const volume = parseFloat(e.target.value);
-            if (currentPlayer) {
-                currentPlayer.volume = volume;
-            }
-            updateVolumeIcon(fullscreenVolumeIcon, volume);
-        });
-
-        // Функция обновления потока
-        function refreshStream(player, card) {
-            if (!player.paused) {
-                const currentTime = player.currentTime;
-                const src = player.querySelector('source').src;
-                const bitrateEl = card.querySelector('.bitrate-info');
-                
-                player.querySelector('source').src = src.split('?')[0] + '?_=' + Date.now();
-                player.load();
-                
-                // Показываем состояние загрузки
-                bitrateEl.textContent = "Обновление потока...";
-                
-                player.play()
-                    .then(() => {
-                        player.currentTime = currentTime;
-                        setTimeout(() => {
-                            bitrateEl.textContent = `Битрейт: ~${card.querySelector('.quality-tag').textContent.match(/\d+/)[0]} kbps`;
-                        }, 2000);
-                    })
-                    .catch(e => {
-                        console.log("Автовоспроизведение заблокировано");
-                    });
-            }
-        }
-
-        // Остальной JavaScript код (управление радио)
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                tabBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                const tabId = btn.dataset.tab + '-tab';
-                document.querySelectorAll('.tab-content').forEach(tab => {
-                    tab.classList.remove('active');
+        // Вход через Google
+        const signInWithGoogle = () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    currentUser = result.user;
+                    updateAuthUI();
+                    loadChatMessages();
+                })
+                .catch((error) => {
+                    console.error("Ошибка входа:", error);
+                    alert("Ошибка при входе. Попробуйте еще раз.");
                 });
-                document.getElementById(tabId).classList.add('active');
-            });
-        });
+        };
 
-        const globalVolume = document.getElementById('global-volume');
-        const players = [];
-        
-        document.querySelectorAll('.custom-audio').forEach((container, index) => {
-            const audio = container.querySelector('audio');
-            const playBtn = container.querySelector('.play-btn');
-            const card = container.closest('.radio-card');
-            const bitrateEl = container.nextElementSibling;
-            
-            players.push({
-                player: audio,
-                playBtn: playBtn,
-                card: card,
-                bitrateEl: bitrateEl
-            });
-            
-            playBtn.addEventListener('click', () => {
-                if (audio.paused) {
-                    players.forEach(item => {
-                        if (item.player !== audio) {
-                            item.player.pause();
-                            item.playBtn.classList.remove('paused');
-                            item.card.classList.remove('active');
-                        }
-                    });
-                    
-                    audio.play()
-                        .then(() => {
-                            playBtn.classList.add('paused');
-                            card.classList.add('active');
-                            currentPlayer = audio;
-                            currentCard = card;
-                            updateMiniPlayer(card);
-                            updateFullscreenPlayer(card);
-                            
-                            // Вибрация на мобильных устройствах
-                            if (isMobile && navigator.vibrate) {
-                                navigator.vibrate(50);
-                            }
-                        })
-                        .catch(error => {
-                            console.log("Автовоспроизведение заблокировано");
-                            audio.controls = true;
-                            playBtn.style.display = 'none';
-                            audio.play();
-                        });
-                } else {
-                    audio.pause();
-                    playBtn.classList.remove('paused');
-                    card.classList.remove('active');
-                    miniPlayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
-                    fullscreenPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+        // Выход
+        const signOut = () => {
+            auth.signOut().then(() => {
+                currentUser = null;
+                updateAuthUI();
+                chatMessages.innerHTML = '';
+                if (chatVisible) {
+                    toggleChat();
                 }
             });
-            
-            audio.addEventListener('ended', () => {
-                playBtn.classList.remove('paused');
-                card.classList.remove('active');
-                miniPlayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
-                fullscreenPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
-            });
-            
-            audio.volume = globalVolume.value;
-            
-            // Обработка ошибок воспроизведения
-            audio.addEventListener('error', (e) => {
-                console.log("Ошибка воспроизведения:", e);
-                playBtn.style.display = 'flex'; // Всегда показываем кнопку
-                playBtn.classList.remove('paused');
-                card.classList.remove('active');
+        };
+
+        // Обновление UI авторизации
+        const updateAuthUI = () => {
+            if (currentUser) {
+                authContainer.innerHTML = `
+                    <div class="user-profile">
+                        <img src="${currentUser.photoURL}" class="user-avatar" alt="${currentUser.displayName}">
+                        <button class="sign-out-button" id="signOutButton">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Выйти</span>
+                        </button>
+                    </div>
+                `;
+                document.getElementById('signOutButton').addEventListener('click', signOut);
                 
-                // Показываем сообщение об ошибке
-                bitrateEl.textContent = "Ошибка загрузки";
-                setTimeout(() => {
-                    bitrateEl.textContent = "";
-                }, 2000);
-            });
-        });
-
-        globalVolume.addEventListener('input', (e) => {
-            const volume = parseFloat(e.target.value);
-            players.forEach(item => {
-                item.player.volume = volume;
-            });
-            if (currentPlayer) {
-                currentPlayer.volume = volume;
-            }
-            updateVolumeIcon(fullscreenVolumeIcon, volume);
-        });
-
-        document.getElementById('random-radio').addEventListener('click', () => {
-            players.forEach(item => {
-                if (!item.player.paused) {
-                    item.player.pause();
-                    item.playBtn.classList.remove('paused');
-                    item.card.classList.remove('active');
-                }
-            });
-            
-            const activeTab = document.querySelector('.tab-content.active').id.replace('-tab', '');
-            let filteredPlayers = [];
-            
-            if (activeTab === 'international') {
-                filteredPlayers = players.slice(0, 5);
-            } else if (activeTab === 'russia') {
-                filteredPlayers = players.slice(5, 11);
-            } else if (activeTab === 'ukraine') {
-                filteredPlayers = players.slice(11, 17);
-            } else if (activeTab === 'lofi') {
-                filteredPlayers = players.slice(17, 20);
-            }
-            
-            if (filteredPlayers.length > 0) {
-                const randomIndex = Math.floor(Math.random() * filteredPlayers.length);
-                const randomPlayer = filteredPlayers[randomIndex];
-                currentPlayer = randomPlayer.player;
-                currentCard = randomPlayer.card;
-                
-                randomPlayer.player.querySelector('source').src = randomPlayer.player.querySelector('source').src.split('?')[0] + '?_=' + Date.now();
-                randomPlayer.player.load();
-                
-                randomPlayer.player.play()
-                    .then(() => {
-                        randomPlayer.playBtn.classList.add('paused');
-                        randomPlayer.card.classList.add('active');
-                        updateMiniPlayer(randomPlayer.card);
-                        updateFullscreenPlayer(randomPlayer.card);
-                        
-                        // Вибрация на мобильных устройствах
-                        if (isMobile && navigator.vibrate) {
-                            navigator.vibrate(50);
-                        }
-                    })
-                    .catch(error => {
-                        randomPlayer.player.controls = true;
-                        randomPlayer.playBtn.style.display = 'none';
-                        randomPlayer.player.play();
-                    });
-            }
-        });
-
-        document.querySelectorAll('.preset-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const volume = parseFloat(this.dataset.preset);
-                globalVolume.value = volume;
-                players.forEach(item => {
-                    item.player.volume = volume;
-                });
-                if (currentPlayer) {
-                    currentPlayer.volume = volume;
-                }
-                updateVolumeIcon(fullscreenVolumeIcon, volume);
-                
-                document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-
-        function updateBitrate() {
-            players.forEach(item => {
-                if (!item.player.paused) {
-                    const qualityTag = item.card.querySelector('.quality-tag').textContent;
-                    const bitrate = qualityTag.match(/\d+/)[0];
-                    item.bitrateEl.textContent = `Битрейт: ~${bitrate} kbps`;
-                } else {
-                    if (item.bitrateEl.textContent !== "Ошибка загрузки") {
-                        item.bitrateEl.textContent = '';
-                    }
-                }
-            });
-        }
-
-        setInterval(updateBitrate, 3000);
-
-        const verkaBtn = document.getElementById('verka-btn');
-        const verkaPlayer = new Audio('https://music6.mp3party.net/online/8848.mp3');
-        let isVerkaPlaying = false;
-        
-        verkaPlayer.addEventListener('error', (e) => {
-            console.log("Ошибка воспроизведения Верки:", e);
-            verkaBtn.innerHTML = '<i class="fas fa-star"></i> Верка Сердючка';
-            verkaBtn.classList.remove('verka-playing');
-            isVerkaPlaying = false;
-        });
-        
-        verkaBtn.addEventListener('click', function() {
-            players.forEach(item => {
-                if (!item.player.paused) {
-                    item.player.pause();
-                    item.playBtn.classList.remove('paused');
-                    item.card.classList.remove('active');
-                }
-            });
-            
-            if (!isVerkaPlaying) {
-                verkaPlayer.volume = globalVolume.value;
-                verkaPlayer.play()
-                    .then(() => {
-                        isVerkaPlaying = true;
-                        verkaBtn.innerHTML = '<i class="fas fa-pause"></i> Пауза Верки';
-                        verkaBtn.classList.add('verka-playing');
-                        currentPlayer = verkaPlayer;
-                        currentCard = null;
-                        
-                        // Обновляем мини-плеер
-                        miniPlayerIcon.innerHTML = '<i class="fas fa-star"></i>';
-                        miniPlayerTitle.textContent = 'Верка Сердючка';
-                        miniPlayerDescription.textContent = 'Украинские хиты';
-                        miniPlayerPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                        miniPlayer.classList.add('visible');
-                        
-                        // Обновляем полноэкранный плеер
-                        fullscreenIcon.innerHTML = '<i class="fas fa-star"></i>';
-                        fullscreenTitle.textContent = 'Верка Сердючка';
-                        fullscreenDescription.textContent = 'Украинские хиты';
-                        fullscreenPlayBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                        
-                        // Вибрация на мобильных устройствах
-                        if (isMobile && navigator.vibrate) {
-                            navigator.vibrate(100);
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Ошибка воспроизведения:", error);
-                        alert("Нажмите 'Разрешить' в запросе автовоспроизведения или запустите вручную");
-                    });
+                // Активируем чат
+                messageInput.disabled = false;
+                sendButton.disabled = false;
             } else {
-                verkaPlayer.pause();
-                isVerkaPlaying = false;
-                verkaBtn.innerHTML = '<i class="fas fa-star"></i> Верка Сердючка';
-                verkaBtn.classList.remove('verka-playing');
-                miniPlayerPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
-                fullscreenPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+                authContainer.innerHTML = `
+                    <button class="auth-button" id="authButton">
+                        <i class="fab fa-google"></i>
+                        <span>Войти через Google</span>
+                    </button>
+                `;
+                document.getElementById('authButton').addEventListener('click', signInWithGoogle);
+                
+                // Деактивируем чат
+                messageInput.disabled = true;
+                sendButton.disabled = true;
+            }
+        };
+
+        // Загрузка сообщений чата
+        const loadChatMessages = () => {
+            db.collection("chatMessages")
+                .orderBy("timestamp", "asc")
+                .limit(100)
+                .onSnapshot((snapshot) => {
+                    chatMessages.innerHTML = '';
+                    snapshot.forEach((doc) => {
+                        const message = doc.data();
+                        addMessageToChat(message);
+                    });
+                    scrollChatToBottom();
+                });
+        };
+
+        // Добавление сообщения в чат
+        const addMessageToChat = (message) => {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            
+            if (message.userId === currentUser?.uid) {
+                messageElement.classList.add('user');
+            }
+            
+            messageElement.innerHTML = `
+                <strong>${message.userName}:</strong> ${message.text}
+            `;
+            chatMessages.appendChild(messageElement);
+        };
+
+        // Прокрутка чата вниз
+        const scrollChatToBottom = () => {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        };
+
+        // Отправка сообщения
+        const sendMessage = () => {
+            const text = messageInput.value.trim();
+            if (text && currentUser) {
+                db.collection("chatMessages").add({
+                    text: text,
+                    userId: currentUser.uid,
+                    userName: currentUser.displayName,
+                    userAvatar: currentUser.photoURL,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                messageInput.value = '';
+            }
+        };
+
+        // Переключение видимости чата
+        const toggleChat = () => {
+            chatVisible = !chatVisible;
+            chatContainer.classList.toggle('visible');
+        };
+
+        // Обработчики событий
+        chatToggle.addEventListener('click', toggleChat);
+        chatClose.addEventListener('click', toggleChat);
+
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
             }
         });
+
+        sendButton.addEventListener('click', sendMessage);
+
+        // Инициализация при загрузке
+        auth.onAuthStateChanged((user) => {
+            currentUser = user;
+            updateAuthUI();
+            if (user) {
+                loadChatMessages();
+            }
+        });
+
+        // Первоначальная настройка UI
+        updateAuthUI();
     </script>
 </body>
 </html>

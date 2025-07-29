@@ -863,14 +863,52 @@
             color: white;
         }
         
+        /* Кнопка Google Auth */
+        .google-auth-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            border: none;
+            border-radius: var(--radius);
+            padding: 8px 14px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            height: 40px;
+        }
+        
+        .google-auth-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .google-auth-btn i {
+            font-size: 16px;
+            color: #4285F4;
+        }
+        
+        .user-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        
         /* Кнопка чата */
         .chat-btn {
             position: fixed;
             bottom: 80px;
             right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
             background: var(--secondary);
             color: var(--dark);
             display: flex;
@@ -887,7 +925,7 @@
         }
         
         .chat-btn i {
-            font-size: 24px;
+            font-size: 20px;
         }
         
         .chat-btn.unread::after {
@@ -1071,45 +1109,6 @@
         
         .chat-input button i {
             font-size: 18px;
-        }
-        
-        /* Кнопка Google Auth */
-        .google-auth-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: white;
-            color: #4285F4;
-            border: none;
-            border-radius: var(--radius);
-            padding: 10px 16px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            min-width: 120px;
-            justify-content: center;
-            font-weight: 500;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            z-index: 100;
-        }
-        
-        .google-auth-btn:hover {
-            background: #f0f0f0;
-            transform: translateY(-2px);
-        }
-        
-        .google-auth-btn i {
-            font-size: 18px;
-        }
-        
-        .user-avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            margin-right: 8px;
         }
         
         /* Мобильные стили */
@@ -1892,7 +1891,8 @@
                 }
             }, 500);
             
-            // Инициализация чата
+            // Инициализация аутентификации и чата
+            initAuth();
             initChat();
         });
 
@@ -2343,18 +2343,20 @@
         function initAuth() {
             auth.onAuthStateChanged(user => {
                 if (user) {
-                    // Пользователь вошел в систему
+                    console.log("Пользователь авторизован:", user.uid);
                     currentUser = user;
                     updateAuthButton(user);
                     chatInput.disabled = false;
                     sendMessageBtn.disabled = false;
                 } else {
-                    // Пользователь вышел из системы
+                    console.log("Пользователь не авторизован");
                     currentUser = null;
                     updateAuthButton(null);
                     chatInput.disabled = true;
                     sendMessageBtn.disabled = true;
                 }
+            }, error => {
+                console.error("Ошибка аутентификации:", error);
             });
         }
         
@@ -2409,9 +2411,6 @@
                 signInWithGoogle();
             }
         });
-        
-        // Инициализация аутентификации
-        initAuth();
         
         // Функции для работы с чатом
         function initChat() {
@@ -2502,27 +2501,39 @@
         }
         
         function sendMessage() {
-            if (!currentUser) return;
-            
+            if (!currentUser) {
+                console.error("Пользователь не авторизован");
+                alert("Для отправки сообщений войдите через Google");
+                return;
+            }
+
             const text = chatInput.value.trim();
-            if (!text) return;
-            
+            if (!text) {
+                console.error("Пустое сообщение");
+                return;
+            }
+
+            console.log("Попытка отправить сообщение:", text);
+
             const message = {
                 text: text,
                 name: currentUser.displayName || 'Аноним',
                 userId: currentUser.uid,
                 photoURL: currentUser.photoURL || '',
-                timestamp: Date.now()
+                timestamp: firebase.database.ServerValue.TIMESTAMP
             };
-            
+
             // Добавляем сообщение в базу данных
-            database.ref('messages').push(message)
+            const newMessageRef = database.ref('messages').push();
+            newMessageRef.set(message)
                 .then(() => {
+                    console.log("Сообщение успешно отправлено");
                     chatInput.value = '';
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
                 })
                 .catch(error => {
                     console.error('Ошибка отправки сообщения:', error);
-                    alert('Не удалось отправить сообщение. Пожалуйста, попробуйте снова.');
+                    alert('Ошибка: ' + error.message);
                 });
         }
     </script>

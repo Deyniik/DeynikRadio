@@ -1427,7 +1427,7 @@
         <!-- Международные радио -->
         <div class="tab-content active" id="international-tab">
             <div class="radio-grid">
-                <!-- 1. KISS FM (главная станция) -->
+                <!-- 1. KISS FM -->
                 <div class="radio-card main-card" id="kissint-card">
                     <div class="station-header">
                         <div class="station-icon main-icon"><i class="fas fa-heart"></i></div>
@@ -1445,7 +1445,25 @@
                     <div class="bitrate-info" id="kissint-bitrate"></div>
                 </div>
 
-                <!-- 2. Radio Paradise -->
+                <!-- 2. Lady Gaga Radio -->
+                <div class="radio-card" id="gaga-card">
+                    <div class="station-header">
+                        <div class="station-icon"><i class="fas fa-paw"></i></div>
+                        <div class="station-info">
+                            <h3>Lady Gaga Radio <span class="quality-tag">128kbps</span></h3>
+                            <p>Всем молчать! Играет мать!</p>
+                        </div>
+                    </div>
+                    <div class="custom-audio">
+                        <audio id="gaga-player" preload="none">
+                            <source src="https://2.mystreaming.net/er/ladygagahits/icecast.audio" type="audio/mpeg">
+                        </audio>
+                        <div class="play-btn"></div>
+                    </div>
+                    <div class="bitrate-info" id="gaga-bitrate"></div>
+                </div>
+
+                <!-- 3. Radio Paradise -->
                 <div class="radio-card" id="rp-card">
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-music"></i></div>
@@ -1463,7 +1481,7 @@
                     <div class="bitrate-info" id="rp-bitrate"></div>
                 </div>
 
-                <!-- 3. LoFi Girl -->
+                <!-- 4. LoFi Girl -->
                 <div class="radio-card" id="lofi-card">
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-moon"></i></div>
@@ -1481,7 +1499,7 @@
                     <div class="bitrate-info" id="lofi-bitrate"></div>
                 </div>
 
-                <!-- 4. Z100 New York -->
+                <!-- 5. Z100 New York -->
                 <div class="radio-card" id="z100-card">
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-broadcast-tower"></i></div>
@@ -1499,7 +1517,7 @@
                     <div class="bitrate-info" id="z100-bitrate"></div>
                 </div>
                 
-                <!-- 5. Jazz24 -->
+                <!-- 6. Jazz24 -->
                 <div class="radio-card" id="jazz-card">
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-music"></i></div>
@@ -2206,13 +2224,13 @@
             let filteredPlayers = [];
             
             if (activeTab === 'international') {
-                filteredPlayers = players.slice(0, 5);
+                filteredPlayers = players.slice(0, 6); // Обновлено до 6, так как добавили Lady Gaga
             } else if (activeTab === 'russia') {
-                filteredPlayers = players.slice(5, 11);
+                filteredPlayers = players.slice(6, 12);
             } else if (activeTab === 'ukraine') {
-                filteredPlayers = players.slice(11, 17);
+                filteredPlayers = players.slice(12, 18);
             } else if (activeTab === 'lofi') {
-                filteredPlayers = players.slice(17, 20);
+                filteredPlayers = players.slice(18, 21);
             }
             
             if (filteredPlayers.length > 0) {

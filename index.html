@@ -7,7 +7,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Deynik Radio</title>
+    <title>Deynik Radio | Бесплатное радио с чатом</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -89,12 +89,12 @@
         body {
             background-color: var(--dark);
             color: var(--light);
-            overflow-x: hidden;
             overscroll-behavior: none;
             transition: background-color 0.5s ease;
             height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
 
         /* Основной контент */
@@ -228,9 +228,10 @@
             box-shadow: var(--shadow);
             transition: var(--transition);
             border: 1px solid rgba(255,255,255,0.05);
-            min-height: 180px;
+            height: 180px;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
         
         .radio-card:hover {
@@ -356,6 +357,32 @@
         
         .no-ap-badge:hover::after {
             opacity: 1;
+        }
+        
+        /* Кнопка избранного */
+        .favorite-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 2;
+        }
+        
+        .favorite-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .favorite-btn.active {
+            background: var(--secondary);
+            color: var(--dark);
         }
         
         /* Аудио контролы */
@@ -992,6 +1019,46 @@
             color: var(--dark);
         }
         
+        .online-users {
+            padding: 10px 15px;
+            background: rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        
+        .online-users::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .online-user {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            min-width: 50px;
+        }
+        
+        .online-user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--secondary);
+        }
+        
+        .online-user-name {
+            font-size: 10px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 50px;
+        }
+        
         .chat-messages {
             flex: 1;
             padding: 15px;
@@ -1111,6 +1178,103 @@
             font-size: 18px;
         }
         
+        /* Боковое меню */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background: var(--primary);
+            z-index: 999;
+            transition: var(--transition);
+            padding: 20px;
+            overflow-y: auto;
+            border-left: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar.open {
+            right: 0;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-header h3 {
+            font-size: 18px;
+            color: var(--secondary);
+        }
+        
+        .sidebar-close {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .sidebar-close:hover {
+            background: var(--secondary);
+            color: var(--dark);
+        }
+        
+        .sidebar-item {
+            padding: 12px 15px;
+            border-radius: var(--radius);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-item i {
+            width: 20px;
+            text-align: center;
+            color: var(--secondary);
+        }
+        
+        .sidebar-btn {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--secondary);
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .sidebar-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .sidebar-btn i {
+            font-size: 20px;
+        }
+        
         /* Мобильные стили */
         @media (max-width: 768px) {
             .main-content {
@@ -1133,7 +1297,7 @@
             
             .radio-card {
                 padding: 15px;
-                min-height: 170px;
+                height: 170px;
             }
             
             .station-header {
@@ -1227,6 +1391,16 @@
                 padding: 8px 12px;
                 font-size: 13px;
             }
+            
+            .sidebar {
+                width: 280px;
+            }
+            
+            .sidebar-btn {
+                width: 45px;
+                height: 45px;
+                top: 70px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -1308,6 +1482,21 @@
         </select>
     </div>
 
+    <!-- Боковое меню -->
+    <button class="sidebar-btn" id="sidebarBtn">
+        <i class="fas fa-star"></i>
+    </button>
+    
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Избранное</h3>
+            <div class="sidebar-close" id="sidebarClose">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div id="favoritesList"></div>
+    </div>
+
     <!-- Чат -->
     <button class="chat-btn" id="chatBtn">
         <i class="fas fa-comment-dots"></i>
@@ -1320,6 +1509,7 @@
                 <i class="fas fa-times"></i>
             </div>
         </div>
+        <div class="online-users" id="onlineUsers"></div>
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input">
             <input type="text" id="chatInput" placeholder="Напишите сообщение..." disabled>
@@ -1429,6 +1619,9 @@
             <div class="radio-grid">
                 <!-- 1. KISS FM -->
                 <div class="radio-card main-card" id="kissint-card">
+                    <div class="favorite-btn" data-station="kissint">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon main-icon"><i class="fas fa-heart"></i></div>
                         <div class="station-info main-info">
@@ -1447,6 +1640,9 @@
 
                 <!-- 2. Lady Gaga Radio -->
                 <div class="radio-card" id="gaga-card">
+                    <div class="favorite-btn" data-station="gaga">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-paw"></i></div>
                         <div class="station-info">
@@ -1465,6 +1661,9 @@
 
                 <!-- 3. Radio Paradise -->
                 <div class="radio-card" id="rp-card">
+                    <div class="favorite-btn" data-station="rp">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-music"></i></div>
                         <div class="station-info">
@@ -1483,6 +1682,9 @@
 
                 <!-- 4. LoFi Girl -->
                 <div class="radio-card" id="lofi-card">
+                    <div class="favorite-btn" data-station="lofi">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-moon"></i></div>
                         <div class="station-info">
@@ -1501,6 +1703,9 @@
 
                 <!-- 5. Z100 New York -->
                 <div class="radio-card" id="z100-card">
+                    <div class="favorite-btn" data-station="z100">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-broadcast-tower"></i></div>
                         <div class="station-info">
@@ -1519,6 +1724,9 @@
                 
                 <!-- 6. Jazz24 -->
                 <div class="radio-card" id="jazz-card">
+                    <div class="favorite-btn" data-station="jazz">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-music"></i></div>
                         <div class="station-info">
@@ -1542,6 +1750,9 @@
             <div class="radio-grid">
                 <!-- 1. Европа Плюс -->
                 <div class="radio-card" id="europa-card">
+                    <div class="favorite-btn" data-station="europa">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-globe-europe"></i></div>
                         <div class="station-info">
@@ -1560,6 +1771,9 @@
 
                 <!-- 2. Русское Радио -->
                 <div class="radio-card" id="russkoe-card">
+                    <div class="favorite-btn" data-station="russkoe">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-music"></i></div>
                         <div class="station-info">
@@ -1578,6 +1792,9 @@
 
                 <!-- 3. DFM -->
                 <div class="radio-card" id="dfm-card">
+                    <div class="favorite-btn" data-station="dfm">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-headphones"></i></div>
                         <div class="station-info">
@@ -1596,6 +1813,9 @@
 
                 <!-- 4. Авторадио -->
                 <div class="radio-card" id="avto-card">
+                    <div class="favorite-btn" data-station="avto">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-car"></i></div>
                         <div class="station-info">
@@ -1614,6 +1834,9 @@
                 
                 <!-- 5. Energy -->
                 <div class="radio-card" id="energy-card">
+                    <div class="favorite-btn" data-station="energy">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-bolt"></i></div>
                         <div class="station-info">
@@ -1632,6 +1855,9 @@
                 
                 <!-- 6. Comedy Radio -->
                 <div class="radio-card" id="comedy-card">
+                    <div class="favorite-btn" data-station="comedy">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-laugh-squint"></i></div>
                         <div class="station-info">
@@ -1659,6 +1885,9 @@
             <div class="radio-grid">
                 <!-- 1. Хит FM -->
                 <div class="radio-card" id="hitfm-card">
+                    <div class="favorite-btn" data-station="hitfm">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-star"></i></div>
                         <div class="station-info">
@@ -1677,6 +1906,9 @@
 
                 <!-- 2. Радио Relax -->
                 <div class="radio-card" id="relax-card">
+                    <div class="favorite-btn" data-station="relax">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-spa"></i></div>
                         <div class="station-info">
@@ -1695,6 +1927,9 @@
 
                 <!-- 3. Kiss FM Украина -->
                 <div class="radio-card" id="kiss-card">
+                    <div class="favorite-btn" data-station="kiss">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-heart"></i></div>
                         <div class="station-info">
@@ -1713,6 +1948,9 @@
 
                 <!-- 4. Наше Радио -->
                 <div class="radio-card" id="nashe-card">
+                    <div class="favorite-btn" data-station="nashe">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-microphone-alt"></i></div>
                         <div class="station-info">
@@ -1731,6 +1969,9 @@
                 
                 <!-- 5. Радио Байрактар -->
                 <div class="radio-card" id="bayraktar-card">
+                    <div class="favorite-btn" data-station="bayraktar">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-helicopter"></i></div>
                         <div class="station-info">
@@ -1749,6 +1990,9 @@
                 
                 <!-- 6. Украинское Радио -->
                 <div class="radio-card" id="ukrradio-card">
+                    <div class="favorite-btn" data-station="ukrradio">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-flag"></i></div>
                         <div class="station-info">
@@ -1772,6 +2016,9 @@
             <div class="radio-grid">
                 <!-- 1. Chillhop Radio -->
                 <div class="radio-card main-card" id="chillhop-card">
+                    <div class="favorite-btn" data-station="chillhop">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon main-icon"><i class="fas fa-moon"></i></div>
                         <div class="station-info main-info">
@@ -1790,6 +2037,9 @@
 
                 <!-- 2. LoFi Hip Hop -->
                 <div class="radio-card" id="lofihiphop-card">
+                    <div class="favorite-btn" data-station="lofihiphop">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-headphones"></i></div>
                         <div class="station-info">
@@ -1808,6 +2058,9 @@
 
                 <!-- 3. LoFi Girl -->
                 <div class="radio-card" id="lofigirl-card">
+                    <div class="favorite-btn" data-station="lofigirl">
+                        <i class="far fa-star"></i>
+                    </div>
                     <div class="station-header">
                         <div class="station-icon"><i class="fas fa-moon"></i></div>
                         <div class="station-info">
@@ -1865,15 +2118,22 @@
         const chatBtn = document.getElementById('chatBtn');
         const chatContainer = document.getElementById('chatContainer');
         const chatClose = document.getElementById('chatClose');
+        const onlineUsers = document.getElementById('onlineUsers');
         const chatMessages = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         const sendMessageBtn = document.getElementById('sendMessageBtn');
+        const sidebarBtn = document.getElementById('sidebarBtn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarClose = document.getElementById('sidebarClose');
+        const favoritesList = document.getElementById('favoritesList');
         
         let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         let currentPlayer = null;
         let currentCard = null;
         let currentUser = null;
         let unreadMessages = 0;
+        let favorites = [];
+        let onlineUsersList = {};
         
         // Автоматически запускаем радио при загрузке
         document.addEventListener('DOMContentLoaded', () => {
@@ -1912,6 +2172,8 @@
             // Инициализация аутентификации и чата
             initAuth();
             initChat();
+            initFavorites();
+            initSidebar();
         });
 
         // Обновление мини-плеера
@@ -2366,12 +2628,21 @@
                     updateAuthButton(user);
                     chatInput.disabled = false;
                     sendMessageBtn.disabled = false;
+                    
+                    // Обновляем статус онлайн
+                    updateOnlineStatus(true);
+                    
+                    // Загружаем избранное для пользователя
+                    loadFavorites();
                 } else {
                     console.log("Пользователь не авторизован");
                     currentUser = null;
                     updateAuthButton(null);
                     chatInput.disabled = true;
                     sendMessageBtn.disabled = true;
+                    
+                    // Обновляем статус онлайн
+                    updateOnlineStatus(false);
                 }
             }, error => {
                 console.error("Ошибка аутентификации:", error);
@@ -2446,6 +2717,9 @@
             
             // Загрузка сообщений
             loadMessages();
+            
+            // Следим за онлайн пользователями
+            trackOnlineUsers();
         }
         
         function toggleChat() {
@@ -2553,6 +2827,225 @@
                     console.error('Ошибка отправки сообщения:', error);
                     alert('Ошибка: ' + error.message);
                 });
+        }
+        
+        // Функции для работы с онлайн пользователями
+        function trackOnlineUsers() {
+            // Ссылка на статус пользователя
+            const userStatusRef = database.ref('/status/' + (currentUser ? currentUser.uid : 'anonymous'));
+            
+            // Ссылка на список онлайн пользователей
+            const onlineUsersRef = database.ref('/onlineUsers');
+            
+            // Слушаем изменения в списке онлайн пользователей
+            onlineUsersRef.on('value', (snapshot) => {
+                onlineUsersList = snapshot.val() || {};
+                updateOnlineUsersUI();
+            });
+            
+            // Обновляем статус пользователя при аутентификации
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    // Пользователь вошел в систему
+                    const userStatusRef = database.ref('/status/' + user.uid);
+                    
+                    // Устанавливаем статус "онлайн"
+                    database.ref('.info/connected').on('value', (snapshot) => {
+                        if (snapshot.val() === false) return;
+                        
+                        userStatusRef.onDisconnect().set({
+                            status: 'offline',
+                            lastChanged: firebase.database.ServerValue.TIMESTAMP
+                        }).then(() => {
+                            userStatusRef.set({
+                                status: 'online',
+                                lastChanged: firebase.database.ServerValue.TIMESTAMP,
+                                name: user.displayName,
+                                photoURL: user.photoURL
+                            });
+                            
+                            // Добавляем пользователя в список онлайн
+                            onlineUsersRef.child(user.uid).set({
+                                name: user.displayName,
+                                photoURL: user.photoURL,
+                                lastSeen: firebase.database.ServerValue.TIMESTAMP
+                            });
+                            
+                            onlineUsersRef.child(user.uid).onDisconnect().remove();
+                        });
+                    });
+                }
+            });
+        }
+        
+        function updateOnlineStatus(isOnline) {
+            if (!currentUser) return;
+            
+            const userStatusRef = database.ref('/status/' + currentUser.uid);
+            const onlineUsersRef = database.ref('/onlineUsers/' + currentUser.uid);
+            
+            if (isOnline) {
+                userStatusRef.set({
+                    status: 'online',
+                    lastChanged: firebase.database.ServerValue.TIMESTAMP,
+                    name: currentUser.displayName,
+                    photoURL: currentUser.photoURL
+                });
+                
+                onlineUsersRef.set({
+                    name: currentUser.displayName,
+                    photoURL: currentUser.photoURL,
+                    lastSeen: firebase.database.ServerValue.TIMESTAMP
+                });
+                
+                onlineUsersRef.onDisconnect().remove();
+            } else {
+                userStatusRef.set({
+                    status: 'offline',
+                    lastChanged: firebase.database.ServerValue.TIMESTAMP
+                });
+                
+                onlineUsersRef.remove();
+            }
+        }
+        
+        function updateOnlineUsersUI() {
+            onlineUsers.innerHTML = '';
+            
+            Object.keys(onlineUsersList).forEach(uid => {
+                const user = onlineUsersList[uid];
+                
+                const userElement = document.createElement('div');
+                userElement.className = 'online-user';
+                userElement.innerHTML = `
+                    <img src="${user.photoURL || 'https://via.placeholder.com/32'}" class="online-user-avatar" alt="${user.name}">
+                    <span class="online-user-name">${user.name || 'Пользователь'}</span>
+                `;
+                
+                onlineUsers.appendChild(userElement);
+            });
+        }
+        
+        // Функции для работы с избранным
+        function initFavorites() {
+            // Обработчики кнопок избранного
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const stationId = this.dataset.station;
+                    toggleFavorite(stationId, this);
+                });
+            });
+        }
+        
+        function loadFavorites() {
+            if (!currentUser) return;
+            
+            const favoritesRef = database.ref('favorites/' + currentUser.uid);
+            
+            favoritesRef.on('value', (snapshot) => {
+                favorites = snapshot.val() || [];
+                updateFavoriteButtons();
+                updateFavoritesList();
+            });
+        }
+        
+        function toggleFavorite(stationId, button) {
+            if (!currentUser) {
+                alert('Для добавления в избранное войдите через Google');
+                return;
+            }
+            
+            const favoritesRef = database.ref('favorites/' + currentUser.uid);
+            const isFavorite = favorites.includes(stationId);
+            
+            if (isFavorite) {
+                // Удаляем из избранного
+                favoritesRef.child(stationId).remove();
+            } else {
+                // Добавляем в избранное
+                favoritesRef.child(stationId).set(true);
+            }
+        }
+        
+        function updateFavoriteButtons() {
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                const stationId = btn.dataset.station;
+                const isFavorite = favorites.includes(stationId);
+                
+                if (isFavorite) {
+                    btn.innerHTML = '<i class="fas fa-star"></i>';
+                    btn.classList.add('active');
+                } else {
+                    btn.innerHTML = '<i class="far fa-star"></i>';
+                    btn.classList.remove('active');
+                }
+            });
+        }
+        
+        function updateFavoritesList() {
+            if (!favorites || favorites.length === 0) {
+                favoritesList.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">Нет избранных станций</p>';
+                return;
+            }
+            
+            favoritesList.innerHTML = '';
+            
+            favorites.forEach(stationId => {
+                const card = document.getElementById(`${stationId}-card`);
+                if (card) {
+                    const clone = card.cloneNode(true);
+                    clone.id = `${stationId}-favorite-card`;
+                    clone.style.marginBottom = '15px';
+                    
+                    // Удаляем кнопку избранного в клоне
+                    const favoriteBtn = clone.querySelector('.favorite-btn');
+                    if (favoriteBtn) {
+                        favoriteBtn.style.display = 'none';
+                    }
+                    
+                    // Добавляем кнопку удаления из избранного
+                    const removeBtn = document.createElement('div');
+                    removeBtn.className = 'favorite-btn active';
+                    removeBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+                    removeBtn.style.position = 'absolute';
+                    removeBtn.style.top = '15px';
+                    removeBtn.style.right = '15px';
+                    removeBtn.style.zIndex = '2';
+                    removeBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        toggleFavorite(stationId);
+                    });
+                    
+                    clone.appendChild(removeBtn);
+                    
+                    // Обработчик клика для воспроизведения
+                    const playBtn = clone.querySelector('.play-btn');
+                    if (playBtn) {
+                        playBtn.addEventListener('click', () => {
+                            const originalCard = document.getElementById(`${stationId}-card`);
+                            if (originalCard) {
+                                const originalPlayBtn = originalCard.querySelector('.play-btn');
+                                if (originalPlayBtn) {
+                                    originalPlayBtn.click();
+                                }
+                            }
+                        });
+                    }
+                    
+                    favoritesList.appendChild(clone);
+                }
+            });
+        }
+        
+        // Функции для работы с боковым меню
+        function initSidebar() {
+            sidebarBtn.addEventListener('click', toggleSidebar);
+            sidebarClose.addEventListener('click', toggleSidebar);
+        }
+        
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
         }
     </script>
 </body>

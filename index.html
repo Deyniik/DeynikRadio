@@ -3,10 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deynik Lo Fi</title>
+    <title>Deynik Radio</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+    
+    <!-- Мета-теги для красивого шаринга -->
+    <meta property="og:title" content="Deynik Radio">
+    <meta property="og:description" content="Слушайте лучшие радиостанции в стильном ретро-интерфейсе">
+    <meta property="og:image" content="https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif">
+    <meta property="og:url" content="https://deyniik.github.io/DeynikRadio/">
+    <meta name="twitter:card" content="summary_large_image">
+    
     <style>
         * {
             margin: 0;
@@ -273,7 +281,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: background 1s ease;
+            transition: background 0.5s ease;
         }
         
         .playback-indicator {
@@ -378,6 +386,16 @@
             align-items: center;
             font-size: 1.3rem;
             box-shadow: 0 0 12px rgba(29, 185, 84, 0.5);
+            transition: transform 0.3s ease;
+        }
+        
+        .player-icon.playing {
+            animation: rotate 10s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         
         .station-text {
@@ -536,6 +554,31 @@
             margin: 5px 0;
         }
         
+        /* Ретро-линии */
+        .retro-line {
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(29, 185, 84, 0.3) 20%, 
+                rgba(29, 185, 84, 0.5) 50%, 
+                rgba(29, 185, 84, 0.3) 80%, 
+                transparent 100%);
+            margin: 8px 0;
+            width: 100%;
+        }
+        
+        .retro-line-thick {
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(29, 185, 84, 0.4) 20%, 
+                rgba(29, 185, 84, 0.7) 50%, 
+                rgba(29, 185, 84, 0.4) 80%, 
+                transparent 100%);
+            margin: 10px 0;
+            width: 100%;
+        }
+        
         @media (max-width: 900px) {
             .content {
                 flex-direction: column;
@@ -660,6 +703,141 @@
             0% { opacity: 0.6; }
             50% { opacity: 1; }
             100% { opacity: 0.6; }
+        }
+        
+        /* Модальные окна */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+        
+        .modal-content {
+            background-color: #191414;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            border: 2px solid #1DB954;
+            position: relative;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #1DB954;
+        }
+        
+        /* Кнопки комнат */
+        .room-btn {
+            background: rgba(29, 185, 84, 0.2);
+            border: 1px solid #1DB954;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .room-btn:hover {
+            background: rgba(29, 185, 84, 0.4);
+        }
+        
+        .room-btn.danger {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff0000;
+        }
+        
+        .room-btn.danger:hover {
+            background: rgba(255, 0, 0, 0.4);
+        }
+        
+        /* Шаринг */
+        .share-preview {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+        
+        .share-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+        
+        .share-info {
+            flex: 1;
+        }
+        
+        .share-info h4 {
+            color: #1DB954;
+            margin-bottom: 5px;
+        }
+        
+        .share-info p {
+            color: #B3B3B3;
+            font-size: 0.9rem;
+            margin-bottom: 3px;
+        }
+        
+        .share-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .share-option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .share-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1DB954;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
         
         /* Темы */
@@ -802,7 +980,7 @@
     
     <div class="container" id="mainContainer">
         <header>
-            <h1>Deynik Lo Fi</h1>
+            <h1>Deynik Radio</h1>
             <button class="theme-switcher" id="themeSwitcher">
                 <i class="fas fa-palette"></i> Ретро
             </button>
@@ -816,6 +994,8 @@
                 </div>
                 <input type="text" class="search-box" placeholder="Поиск станций...">
                 
+                <div class="retro-line"></div>
+                
                 <ul class="station-list">
                     <div class="category-title">Международные</div>
                     <li class="active" data-station="kissint"><span class="station-icon"><i class="fas fa-heart"></i></span> KISS FM</li>
@@ -825,11 +1005,14 @@
                     <li data-station="z100"><span class="station-icon"><i class="fas fa-broadcast-tower"></i></span> Z100 New York</li>
                     <li data-station="jazz"><span class="station-icon"><i class="fas fa-music"></i></span> Jazz24</li>
                     
+                    <div class="retro-line"></div>
                     <div class="category-title">Lo-Fi</div>
                     <li data-station="chillhop"><span class="station-icon"><i class="fas fa-moon"></i></span> Chillhop Radio</li>
                     <li data-station="lofihiphop"><span class="station-icon"><i class="fas fa-headphones"></i></span> LoFi Hip Hop</li>
                     <li data-station="lofigirl"><span class="station-icon"><i class="fas fa-moon"></i></span> LoFi Girl</li>
                 </ul>
+                
+                <div class="retro-line-thick"></div>
                 
                 <div class="random-station-btn" id="random-station-btn">
                     <i class="fas fa-random"></i> Случайное радио
@@ -864,11 +1047,14 @@
             
             <div class="side-panel crt-effect">
                 <h2>Сейчас играет</h2>
+                <div class="retro-line"></div>
                 <div style="margin: 15px 0;">
                     <h3 id="current-station">KISS FM</h3>
                     <p>Текущий трек: <span style="color: #1DB954;" id="current-track-info">"Coffee Break"</span></p>
                     <p>Исполнитель: <span style="color: #1DB954;" id="current-artist-info">Beatsmith</span></p>
                 </div>
+                
+                <div class="retro-line"></div>
                 
                 <div style="margin-top: 20px;">
                     <h3>Следующий трек</h3>
@@ -876,10 +1062,14 @@
                     <p id="next-artist">Ambient Rain</p>
                 </div>
                 
+                <div class="retro-line"></div>
+                
                 <div style="margin-top: 20px;">
                     <h3>Качество</h3>
                     <p id="quality">128 kbps</p>
                 </div>
+                
+                <div class="retro-line-thick"></div>
             </div>
         </div>
         
@@ -898,12 +1088,19 @@
                 <button class="btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
                 <button class="btn btn-play" id="play-btn"><i class="fas fa-play"></i></button>
                 <button class="btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
-            </div>
-            
-            <div class="player-right">
                 <button class="btn" id="refresh-btn" title="Обновить поток">
                     <i class="fas fa-sync-alt"></i>
                 </button>
+            </div>
+            
+            <div class="player-right">
+                <button class="btn" id="room-btn" title="Совместное прослушивание">
+                    <i class="fas fa-users"></i>
+                </button>
+                <button class="btn" id="share-btn" title="Поделиться">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+                
                 <div class="volume-container">
                     <span class="volume-icon"><i class="fas fa-volume-down"></i></span>
                     <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
@@ -913,6 +1110,75 @@
             </div>
         </div>
     </div>
+    
+    <!-- Модальное окно комнаты -->
+    <div class="modal" id="room-modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>🎧 Совместное прослушивание</h3>
+            
+            <div id="room-create-section">
+                <button id="create-room-btn" class="room-btn">
+                    <i class="fas fa-plus"></i> Создать комнату
+                </button>
+                <div style="text-align: center; margin: 10px 0;">или</div>
+                <button id="show-join-btn" class="room-btn">
+                    <i class="fas fa-sign-in-alt"></i> Присоединиться к комнате
+                </button>
+            </div>
+            
+            <div id="room-join-section" style="display: none;">
+                <input type="text" id="room-code-input" placeholder="Введите код комнаты">
+                <button id="join-room-btn" class="room-btn">
+                    <i class="fas fa-sign-in-alt"></i> Присоединиться
+                </button>
+                <button id="back-to-main-btn" class="room-btn">
+                    <i class="fas fa-arrow-left"></i> Назад
+                </button>
+            </div>
+            
+            <div id="room-active-section" style="display: none;">
+                <h4>Комната активна 🎵</h4>
+                <p>Код: <strong id="room-code-display"></strong></p>
+                <div id="users-list">
+                    <div class="user-item">Вы (Ведущий)</div>
+                </div>
+                <button id="copy-room-code" class="room-btn">
+                    <i class="fas fa-copy"></i> Скопировать код
+                </button>
+                <button id="leave-room" class="room-btn danger">
+                    <i class="fas fa-times"></i> Покинуть комнату
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно шаринга -->
+    <div class="modal" id="share-modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>📢 Поделиться</h3>
+            
+            <div class="share-preview">
+                <img src="https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif" 
+                     alt="Обложка" class="share-image">
+                <div class="share-info">
+                    <h4 id="share-track">Coffee Break</h4>
+                    <p id="share-artist">Beatsmith</p>
+                    <p id="share-station">KISS FM</p>
+                </div>
+            </div>
+            
+            <div class="share-buttons">
+                <button class="share-option" id="copy-link">
+                    <i class="fas fa-link"></i> Скопировать ссылку
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Уведомление -->
+    <div class="notification" id="notification">Текст уведомления</div>
 
     <script>
         // Объект с радиостанциями
@@ -1062,6 +1328,8 @@
             const mainGif = document.getElementById('mainGif');
             const playbackIndicator = document.getElementById('playback-indicator');
             const themeSwitcher = document.getElementById('themeSwitcher');
+            const roomBtn = document.getElementById('room-btn');
+            const shareBtn = document.getElementById('share-btn');
             
             let isPlaying = false;
             let audio = null;
@@ -1104,6 +1372,7 @@
                 
                 if (isPlaying) {
                     playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                    document.getElementById('player-icon').classList.add('playing');
                     // Запускаем радиостанцию
                     if (!audio) {
                         audio = new Audio(radioStations[currentStation].url);
@@ -1114,6 +1383,7 @@
                     startVisualization();
                 } else {
                     playButton.innerHTML = '<i class="fas fa-play"></i>';
+                    document.getElementById('player-icon').classList.remove('playing');
                     if (audio) {
                         audio.pause();
                     }
@@ -1138,6 +1408,7 @@
                 // Автоматически снимаем паузу при переключении радиостанций
                 isPlaying = true;
                 playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                document.getElementById('player-icon').classList.add('playing');
                 
                 changeStation();
             });
@@ -1149,6 +1420,7 @@
                 // Автоматически снимаем паузу при переключении радиостанций
                 isPlaying = true;
                 playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                document.getElementById('player-icon').classList.add('playing');
                 
                 changeStation();
             });
@@ -1160,6 +1432,7 @@
                 // Автоматически снимаем паузу при переключении радиостанций
                 isPlaying = true;
                 playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                document.getElementById('player-icon').classList.add('playing');
                 
                 changeStation();
             });
@@ -1201,6 +1474,7 @@
                     // Автоматически снимаем паузу при переключении радиостанций
                     isPlaying = true;
                     playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                    document.getElementById('player-icon').classList.add('playing');
                     
                     changeStation();
                 });
@@ -1273,7 +1547,14 @@
             // Функция смены гифки
             function changeGif() {
                 const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
-                mainGif.style.backgroundImage = `url('${randomGif}')`;
+                
+                // Создаем временное изображение для предзагрузки
+                const tempImg = new Image();
+                tempImg.onload = function() {
+                    // Когда изображение загружено, устанавливаем его как фон
+                    mainGif.style.backgroundImage = `url('${randomGif}')`;
+                };
+                tempImg.src = randomGif;
             }
             
             // Функция визуализации
@@ -1299,6 +1580,181 @@
                     bar.style.height = '2px';
                 });
             }
+            
+            // Менеджер комнат
+            class RoomManager {
+                constructor() {
+                    this.roomId = null;
+                    this.isHost = false;
+                    this.users = new Set();
+                }
+
+                // Создание комнаты
+                async createRoom() {
+                    this.roomId = this.generateRoomCode();
+                    this.isHost = true;
+                    
+                    // Сохраняем в localStorage (вместо Firebase для демо)
+                    this.saveRoomState({
+                        host: true,
+                        station: currentStation,
+                        isPlaying: isPlaying,
+                        users: [this.getUserInfo()]
+                    });
+                    
+                    this.showRoomInterface();
+                    this.showNotification('Комната создана! Поделитесь кодом с друзьями.');
+                }
+
+                // Присоединение к комнате
+                async joinRoom(roomCode) {
+                    this.roomId = roomCode;
+                    this.isHost = false;
+                    
+                    const roomData = this.getRoomData(roomCode);
+                    if (roomData) {
+                        // Синхронизируем с ведущим
+                        this.syncWithHost(roomData);
+                        this.showRoomInterface();
+                        this.showNotification('Вы присоединились к комнате!');
+                    } else {
+                        this.showNotification('Комната не найдена');
+                    }
+                }
+
+                // Синхронизация с ведущим
+                syncWithHost(roomData) {
+                    if (roomData.station !== currentStation) {
+                        this.changeStation(roomData.station);
+                    }
+                    if (roomData.isPlaying !== isPlaying) {
+                        roomData.isPlaying ? this.play() : this.pause();
+                    }
+                }
+
+                generateRoomCode() {
+                    return Math.random().toString(36).substr(2, 6).toUpperCase();
+                }
+
+                showRoomInterface() {
+                    document.getElementById('room-code-display').textContent = this.roomId;
+                    document.getElementById('room-active-section').style.display = 'block';
+                    document.getElementById('room-create-section').style.display = 'none';
+                    document.getElementById('room-join-section').style.display = 'none';
+                }
+
+                saveRoomState(data) {
+                    localStorage.setItem(`room_${this.roomId}`, JSON.stringify(data));
+                }
+
+                getRoomData(roomCode) {
+                    const data = localStorage.getItem(`room_${roomCode}`);
+                    return data ? JSON.parse(data) : null;
+                }
+
+                getUserInfo() {
+                    return {
+                        name: 'Пользователь ' + Math.floor(Math.random() * 1000),
+                        id: Date.now()
+                    };
+                }
+
+                showNotification(message) {
+                    const notification = document.getElementById('notification');
+                    notification.textContent = message;
+                    notification.style.opacity = 1;
+                    
+                    setTimeout(() => {
+                        notification.style.opacity = 0;
+                    }, 3000);
+                }
+            }
+
+            // Менеджер шаринга
+            class ShareManager {
+                constructor() {
+                    this.shareData = {
+                        title: 'Deynik Radio',
+                        text: 'Слушайте лучшие радиостанции в стильном ретро-интерфейсе',
+                        url: 'https://deyniik.github.io/DeynikRadio/'
+                    };
+                }
+
+                // Копирование ссылки
+                async copyLink() {
+                    try {
+                        await navigator.clipboard.writeText(this.shareData.url);
+                        this.showNotification('Ссылка скопирована!');
+                    } catch (err) {
+                        console.error('Ошибка копирования:', err);
+                    }
+                }
+
+                showNotification(message) {
+                    const notification = document.getElementById('notification');
+                    notification.textContent = message;
+                    notification.style.opacity = 1;
+                    
+                    setTimeout(() => {
+                        notification.style.opacity = 0;
+                    }, 3000);
+                }
+            }
+
+            // Инициализация менеджеров
+            const roomManager = new RoomManager();
+            const shareManager = new ShareManager();
+
+            // Обработчики кнопок комнат
+            document.getElementById('create-room-btn').addEventListener('click', () => {
+                roomManager.createRoom();
+            });
+
+            document.getElementById('show-join-btn').addEventListener('click', () => {
+                document.getElementById('room-create-section').style.display = 'none';
+                document.getElementById('room-join-section').style.display = 'block';
+            });
+
+            document.getElementById('back-to-main-btn').addEventListener('click', () => {
+                document.getElementById('room-join-section').style.display = 'none';
+                document.getElementById('room-create-section').style.display = 'block';
+            });
+
+            document.getElementById('join-room-btn').addEventListener('click', () => {
+                const code = document.getElementById('room-code-input').value;
+                roomManager.joinRoom(code);
+            });
+
+            document.getElementById('copy-room-code').addEventListener('click', () => {
+                navigator.clipboard.writeText(roomManager.roomId);
+                roomManager.showNotification('Код комнаты скопирован!');
+            });
+
+            // Обработчики кнопок шаринга
+            document.getElementById('copy-link').addEventListener('click', () => {
+                shareManager.copyLink();
+            });
+
+            // Открытие/закрытие модальных окон
+            roomBtn.addEventListener('click', () => {
+                document.getElementById('room-modal').style.display = 'block';
+            });
+
+            shareBtn.addEventListener('click', () => {
+                document.getElementById('share-modal').style.display = 'block';
+            });
+
+            document.querySelectorAll('.close').forEach(closeBtn => {
+                closeBtn.addEventListener('click', () => {
+                    closeBtn.closest('.modal').style.display = 'none';
+                });
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
+                }
+            });
         }
     </script>
 </body>

@@ -103,34 +103,6 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             flex-shrink: 0;
             position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .google-login-btn {
-            background: rgba(40, 40, 40, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .google-login-btn:hover {
-            background: rgba(29, 185, 84, 0.3);
-            transform: scale(1.05);
         }
         
         h1 {
@@ -142,6 +114,9 @@
         }
         
         .theme-switcher {
+            position: absolute;
+            top: 5px;
+            right: 5px;
             background: rgba(40, 40, 40, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
@@ -150,9 +125,7 @@
             cursor: pointer;
             font-size: 0.8rem;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            z-index: 10;
         }
         
         .theme-switcher:hover {
@@ -642,11 +615,6 @@
                 margin-bottom: 10px;
                 align-self: flex-end;
             }
-            
-            header {
-                flex-direction: column;
-                gap: 10px;
-            }
         }
         
         @media (max-width: 600px) {
@@ -1009,11 +977,6 @@
     
     <div class="container" id="mainContainer">
         <header>
-            <div class="header-left">
-                <button class="google-login-btn" id="googleLoginBtn">
-                    <i class="fab fa-google"></i> Войти через Google
-                </button>
-            </div>
             <h1>Deynik Radio</h1>
             <button class="theme-switcher" id="themeSwitcher">
                 <i class="fas fa-palette"></i> Ретро
@@ -1024,7 +987,7 @@
             <div class="side-panel left-panel crt-effect">
                 <div class="stations-header">
                     <h2>Радиостанции</h2>
-                    <span class="station-count">10</span>
+                    <span class="station-count">9</span>
                 </div>
                 <input type="text" class="search-box" placeholder="Поиск станций...">
                 
@@ -1043,9 +1006,6 @@
                     <li data-station="chillhop"><span class="station-icon"><i class="fas fa-moon"></i></span> Chillhop Radio</li>
                     <li data-station="lofihiphop"><span class="station-icon"><i class="fas fa-headphones"></i></span> LoFi Hip Hop</li>
                     <li data-station="lofigirl"><span class="station-icon"><i class="fas fa-moon"></i></span> LoFi Girl</li>
-                    
-                    <div class="category-title">Тематические</div>
-                    <li data-station="halloween"><span class="station-icon"><i class="fas fa-ghost"></i></span> Halloween Radio</li>
                 </ul>
                 
                 <div class="random-station-btn" id="random-station-btn">
@@ -1079,8 +1039,7 @@
                 </div>
             </div>
             
-            <!-- Правая панель: здесь добавлен чат под информацией -->
-            <div class="side-panel crt-effect" style="min-width:340px;">
+            <div class="side-panel crt-effect">
                 <h2>Сейчас играет</h2>
                 <div style="margin: 15px 0;">
                     <h3 id="current-station">KISS FM</h3>
@@ -1098,19 +1057,6 @@
                     <h3>Качество</h3>
                     <p id="quality">128 kbps</p>
                 </div>
-
-                <!-- ****************** ЧАТ ****************** -->
-                <div style="margin-top: 20px;">
-                    <h3>Чат слушателей</h3>
-                    <div class="chat-box" id="chatBox" aria-live="polite">
-                        <div id="chatMessages" class="chat-messages" role="log" aria-atomic="false"></div>
-                        <div class="chat-input">
-                            <input id="chatInput" type="text" placeholder="Введите сообщение..." aria-label="Сообщение в чат">
-                            <button id="sendBtn" title="Отправить сообщение">Отправить</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- ****************************************** -->
             </div>
         </div>
         
@@ -1152,7 +1098,7 @@
         </div>
     </div>
     
-    <!-- Модальные окна, шаринг, комната (как были в оригинале) -->
+    <!-- Модальное окно комнаты -->
     <div class="modal" id="room-modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -1194,6 +1140,7 @@
         </div>
     </div>
     
+    <!-- Модальное окно шаринга -->
     <div class="modal" id="share-modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -1218,9 +1165,9 @@
         </div>
     </div>
     
+    <!-- Уведомление -->
     <div class="notification" id="notification">Текст уведомления</div>
 
-    <!-- Основной старый скрипт сайта (радиостанции, визуализация, управление) -->
     <script>
         // Объект с радиостанциями
         const radioStations = {
@@ -1322,17 +1269,6 @@
                 nextArtist: "LoFi Girl",
                 quality: "192kbps",
                 icon: "fas fa-moon"
-            },
-            halloween: {
-                name: "Halloween Radio",
-                url: "https://radio1.streamserver.link:8000/hrm-aac",
-                description: "Музыка для Хэллоуина и ужастиков",
-                currentTrack: "Spooky Sounds",
-                currentArtist: "Halloween FM",
-                nextTrack: "Scary Tunes",
-                nextArtist: "Halloween FM",
-                quality: "128kbps",
-                icon: "fas fa-ghost"
             }
         };
 
@@ -1390,7 +1326,6 @@
             const themeSwitcher = document.getElementById('themeSwitcher');
             const roomBtn = document.getElementById('room-btn');
             const shareBtn = document.getElementById('share-btn');
-            const googleLoginBtn = document.getElementById('googleLoginBtn');
             
             let isPlaying = false;
             let audio = null;
@@ -1425,11 +1360,6 @@
                     currentTheme = 'retro';
                     themeSwitcher.innerHTML = '<i class="fas fa-palette"></i> Ретро';
                 }
-            });
-            
-            // Обработчик кнопки Google Login
-            googleLoginBtn.addEventListener('click', function() {
-                showNotification('Функция входа через Google скоро будет доступна!');
             });
             
             // Обработчик кнопки воспроизведения
@@ -1670,156 +1600,8 @@
                 }
             }
 
-            // Менеджер комнат
-            class RoomManager {
-                constructor() {
-                    this.rooms = {};
-                    this.currentRoom = null;
-                    this.userId = this.generateId();
-                    this.initEventListeners();
-                }
-
-                generateId() {
-                    return Math.random().toString(36).substring(2, 10);
-                }
-
-                initEventListeners() {
-                    document.getElementById('create-room-btn').addEventListener('click', () => {
-                        this.createRoom();
-                    });
-
-                    document.getElementById('show-join-btn').addEventListener('click', () => {
-                        document.getElementById('room-create-section').style.display = 'none';
-                        document.getElementById('room-join-section').style.display = 'block';
-                    });
-
-                    document.getElementById('back-to-main-btn').addEventListener('click', () => {
-                        document.getElementById('room-join-section').style.display = 'none';
-                        document.getElementById('room-create-section').style.display = 'block';
-                    });
-
-                    document.getElementById('join-room-btn').addEventListener('click', () => {
-                        const roomCode = document.getElementById('room-code-input').value.trim();
-                        if (roomCode) {
-                            this.joinRoom(roomCode);
-                        } else {
-                            showNotification('Введите код комнаты');
-                        }
-                    });
-
-                    document.getElementById('copy-room-code').addEventListener('click', () => {
-                        this.copyRoomCode();
-                    });
-
-                    document.getElementById('leave-room').addEventListener('click', () => {
-                        this.leaveRoom();
-                    });
-                }
-
-                createRoom() {
-                    const roomCode = this.generateId();
-                    this.currentRoom = roomCode;
-                    
-                    // Создаем комнату
-                    this.rooms[roomCode] = {
-                        host: this.userId,
-                        users: [this.userId],
-                        currentStation: currentStation
-                    };
-
-                    // Показываем информацию о комнате
-                    document.getElementById('room-create-section').style.display = 'none';
-                    document.getElementById('room-join-section').style.display = 'none';
-                    document.getElementById('room-active-section').style.display = 'block';
-                    document.getElementById('room-code-display').textContent = roomCode;
-
-                    showNotification('Комната создана! Пригласите друзей с помощью кода.');
-                }
-
-                joinRoom(roomCode) {
-                    if (this.rooms[roomCode]) {
-                        this.currentRoom = roomCode;
-                        this.rooms[roomCode].users.push(this.userId);
-                        
-                        // Переключаемся на станцию ведущего
-                        const hostStation = this.rooms[roomCode].currentStation;
-                        currentStationIndex = stationIds.indexOf(hostStation);
-                        changeStation();
-                        
-                        // Показываем информацию о комнате
-                        document.getElementById('room-create-section').style.display = 'none';
-                        document.getElementById('room-join-section').style.display = 'none';
-                        document.getElementById('room-active-section').style.display = 'block';
-                        document.getElementById('room-code-display').textContent = roomCode;
-                        
-                        // Обновляем список пользователей
-                        this.updateUsersList();
-
-                        showNotification('Вы присоединились к комнате!');
-                    } else {
-                        showNotification('Комната не найдена');
-                    }
-                }
-
-                updateUsersList() {
-                    const usersList = document.getElementById('users-list');
-                    usersList.innerHTML = '';
-                    
-                    if (this.currentRoom && this.rooms[this.currentRoom]) {
-                        this.rooms[this.currentRoom].users.forEach(user => {
-                            const userItem = document.createElement('div');
-                            userItem.className = 'user-item';
-                            userItem.textContent = user === this.userId ? 'Вы' : `Пользователь ${user.substring(0, 4)}`;
-                            usersList.appendChild(userItem);
-                        });
-                    }
-                }
-
-                copyRoomCode() {
-                    if (this.currentRoom) {
-                        navigator.clipboard.writeText(this.currentRoom);
-                        showNotification('Код комнаты скопирован!');
-                    }
-                }
-
-                leaveRoom() {
-                    if (this.currentRoom && this.rooms[this.currentRoom]) {
-                        // Удаляем пользователя из комнаты
-                        const userIndex = this.rooms[this.currentRoom].users.indexOf(this.userId);
-                        if (userIndex !== -1) {
-                            this.rooms[this.currentRoom].users.splice(userIndex, 1);
-                        }
-                        
-                        // Если комната пуста, удаляем её
-                        if (this.rooms[this.currentRoom].users.length === 0) {
-                            delete this.rooms[this.currentRoom];
-                        }
-                        
-                        this.currentRoom = null;
-                        
-                        // Возвращаемся к основному экрану
-                        document.getElementById('room-active-section').style.display = 'none';
-                        document.getElementById('room-create-section').style.display = 'block';
-                        
-                        showNotification('Вы покинули комнату');
-                    }
-                }
-            }
-
-            // Инициализация менеджеров
+            // Инициализация менеджера шаринга
             const shareManager = new ShareManager();
-            const roomManager = new RoomManager();
-
-            // Функция показа уведомлений
-            function showNotification(message) {
-                const notification = document.getElementById('notification');
-                notification.textContent = message;
-                notification.style.opacity = 1;
-                
-                setTimeout(() => {
-                    notification.style.opacity = 0;
-                }, 3000);
-            }
 
             // Обработчики кнопок шаринга
             document.getElementById('copy-link').addEventListener('click', () => {
@@ -1847,123 +1629,6 @@
                 }
             });
         }
-    </script>
-
-    <!-- Firebase + Chat (модульный импорт) -->
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-      import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-      import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
-
-      // 🔑 ВСТАВЬ СВОИ КЛЮЧИ FIREBASE НИЖЕ:
-      const firebaseConfig = {
-        apiKey: "AIzaSyBk4nxZ1ldNQUCxsbgaeYTkm9stq0o9o2Q",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        projectId: "
-deygram-e4814",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "1:591207353726:web:d20f5e648d3daf86fcb72f",
-        databaseURL: "YOUR_DATABASE_URL"
-      };
-
-      // Инициализация Firebase
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
-      const db = getDatabase(app);
-      const provider = new GoogleAuthProvider();
-
-      // Элементы чата
-      const loginBtn = document.getElementById("googleLoginBtn");
-      const chatInput = document.getElementById("chatInput");
-      const sendBtn = document.getElementById("sendBtn");
-      const chatMessages = document.getElementById("chatMessages");
-
-      let currentUser = null;
-
-      // Управление логином/логаутом
-      loginBtn.addEventListener("click", () => {
-        if (currentUser) {
-          signOut(auth).catch(err => console.error(err));
-        } else {
-          signInWithPopup(auth, provider).catch(err => console.error(err));
-        }
-      });
-
-      onAuthStateChanged(auth, user => {
-        if (user) {
-          currentUser = user;
-          loginBtn.textContent = `Выйти (${user.displayName})`;
-        } else {
-          currentUser = null;
-          loginBtn.innerHTML = '<i class="fab fa-google"></i> Войти через Google';
-        }
-      });
-
-      // Отправка сообщения
-      sendBtn.addEventListener("click", sendMessage);
-      chatInput.addEventListener("keydown", (e) => { if (e.key === "Enter") sendMessage(); });
-
-      function sendMessage() {
-        if (!currentUser) {
-          alert("Сначала войдите через Google!");
-          return;
-        }
-        const text = chatInput.value.trim();
-        if (!text) return;
-        push(ref(db, "chat"), {
-          user: currentUser.displayName || "Аноним",
-          uid: currentUser.uid,
-          message: text,
-          timestamp: Date.now()
-        });
-        chatInput.value = "";
-      }
-
-      // При поступлении нового сообщения — рендерим
-      onChildAdded(ref(db, "chat"), snapshot => {
-        const data = snapshot.val();
-        renderMessage(data);
-      });
-
-      // Утилита для форматирования времени
-      function formatTime(ts) {
-        const d = new Date(ts);
-        const hh = String(d.getHours()).padStart(2, "0");
-        const mm = String(d.getMinutes()).padStart(2, "0");
-        return `${hh}:${mm}`;
-      }
-
-      // Рендер сообщения в чат
-      function renderMessage(data) {
-        const el = document.createElement("div");
-        el.classList.add("chat-message");
-        // Если currentUser может быть ещё null при первом рендере, сравниваем по uid
-        if (currentUser && data.uid === currentUser.uid) {
-          el.classList.add("self");
-        } else if (!currentUser && false) {
-          // ничего
-        } else {
-          el.classList.add("other");
-        }
-
-        const time = data.timestamp ? formatTime(data.timestamp) : "";
-        el.innerHTML = `<strong style="display:block;margin-bottom:3px;">${escapeHtml(data.user)} <span style="font-weight:normal;color:#ccc;font-size:0.8rem;margin-left:6px;">${time}</span></strong>
-                        <div style="white-space:pre-wrap;">${escapeHtml(data.message)}</div>`;
-        chatMessages.appendChild(el);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-
-      // Простая экранировка HTML
-      function escapeHtml(text) {
-        if (!text && text !== 0) return "";
-        return String(text)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#039;");
-      }
     </script>
 </body>
 </html>

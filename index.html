@@ -11,6 +11,7 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     
     <!-- Мета-теги для красивого шаринга -->
     <meta property="og:title" content="Deynik Radio">
@@ -641,6 +642,114 @@
             width: 100%;
         }
         
+        /* Стили для чата */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 10px;
+        }
+        
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: #1DB954;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 200px;
+            margin-bottom: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: #1DB954 #191414;
+        }
+        
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: #191414;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background-color: #1DB954;
+            border-radius: 2px;
+        }
+        
+        .message {
+            padding: 6px 8px;
+            margin: 4px 0;
+            background: rgba(40, 40, 40, 0.6);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            line-height: 1.2;
+        }
+        
+        .message-user {
+            font-weight: bold;
+            color: #1DB954;
+            margin-right: 5px;
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            color: #888;
+            margin-left: 5px;
+        }
+        
+        .chat-input-container {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .chat-input {
+            flex: 1;
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            outline: none;
+        }
+        
+        .chat-input:focus {
+            border-color: #1DB954;
+        }
+        
+        .chat-send-btn {
+            background: rgba(29, 185, 84, 0.3);
+            border: 1px solid #1DB954;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .chat-send-btn:hover:not(:disabled) {
+            background: rgba(29, 185, 84, 0.5);
+        }
+        
+        .chat-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .chat-login-prompt {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
         @media (max-width: 900px) {
             .content {
                 flex-direction: column;
@@ -694,6 +803,10 @@
             .user-name {
                 max-width: 80px;
             }
+            
+            .chat-messages {
+                max-height: 150px;
+            }
         }
         
         @media (max-width: 600px) {
@@ -721,6 +834,10 @@
             
             .user-name {
                 display: none;
+            }
+            
+            .chat-messages {
+                max-height: 120px;
             }
         }
         
@@ -1145,14 +1262,27 @@
                 </div>
                 
                 <div style="margin-top: 20px;">
-                    <h3>Следующий трек</h3>
-                    <p id="next-track">"Rainy Window"</p>
-                    <p id="next-artist">Ambient Rain</p>
-                </div>
-                
-                <div style="margin-top: 20px;">
                     <h3>Качество</h3>
                     <p id="quality">128 kbps</p>
+                </div>
+                
+                <!-- Чат -->
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <i class="fas fa-comments"></i>
+                        <h3>Чат</h3>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="chat-login-prompt" id="chat-login-prompt">
+                            Войдите через Google, чтобы общаться в чате
+                        </div>
+                    </div>
+                    <div class="chat-input-container" id="chat-input-container" style="display: none;">
+                        <input type="text" class="chat-input" id="chat-input" placeholder="Введите сообщение..." maxlength="200">
+                        <button class="chat-send-btn" id="chat-send-btn" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1212,6 +1342,7 @@
         // Инициализируем Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
+        const db = firebase.firestore();
 
         // Объект с радиостанциями
         const radioStations = {
@@ -1381,6 +1512,11 @@
             const themeSwitcher = document.getElementById('themeSwitcher');
             const roomBtn = document.getElementById('room-btn');
             const shareBtn = document.getElementById('share-btn');
+            const chatInput = document.getElementById('chat-input');
+            const chatSendBtn = document.getElementById('chat-send-btn');
+            const chatMessages = document.getElementById('chat-messages');
+            const chatLoginPrompt = document.getElementById('chat-login-prompt');
+            const chatInputContainer = document.getElementById('chat-input-container');
             
             let isPlaying = false;
             let audio = null;
@@ -1388,6 +1524,7 @@
             let currentStation = stationIds[currentStationIndex];
             let visualizationInterval = null;
             let currentTheme = 'retro';
+            let chatUnsubscribe = null;
             
             // Инициализация
             updateStationInfo();
@@ -1411,6 +1548,13 @@
                         </div>
                     `;
                     
+                    // Показываем чат для авторизованных пользователей
+                    chatLoginPrompt.style.display = 'none';
+                    chatInputContainer.style.display = 'flex';
+                    
+                    // Загружаем историю чата
+                    loadChatHistory();
+                    
                     // Добавляем обработчик для профиля
                     document.getElementById('user-profile').addEventListener('click', function() {
                         showNotification(`Вы вошли как: ${displayName}`);
@@ -1423,6 +1567,17 @@
                             <i class="fab fa-google"></i> Войти через Google
                         </button>
                     `;
+                    
+                    // Скрываем чат для неавторизованных пользователей
+                    chatLoginPrompt.style.display = 'block';
+                    chatInputContainer.style.display = 'none';
+                    chatMessages.innerHTML = '<div class="chat-login-prompt">Войдите через Google, чтобы общаться в чате</div>';
+                    
+                    // Отписываемся от обновлений чата
+                    if (chatUnsubscribe) {
+                        chatUnsubscribe();
+                        chatUnsubscribe = null;
+                    }
                     
                     // Добавляем обработчик для кнопки входа
                     document.getElementById('googleLoginBtn').addEventListener('click', signInWithGoogle);
@@ -1454,10 +1609,92 @@
                     });
             }
             
+            // Функции для работы с чатом
+            function loadChatHistory() {
+                // Отписываемся от предыдущих обновлений
+                if (chatUnsubscribe) {
+                    chatUnsubscribe();
+                }
+                
+                // Подписываемся на обновления чата
+                chatUnsubscribe = db.collection('chat')
+                    .orderBy('timestamp', 'asc')
+                    .limit(50)
+                    .onSnapshot((snapshot) => {
+                        chatMessages.innerHTML = '';
+                        snapshot.forEach((doc) => {
+                            const message = doc.data();
+                            addMessageToChat(message);
+                        });
+                        scrollChatToBottom();
+                    });
+            }
+            
+            function addMessageToChat(message) {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message';
+                
+                const time = new Date(message.timestamp?.toDate() || message.timestamp);
+                const timeString = time.toLocaleTimeString('ru-RU', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                messageElement.innerHTML = `
+                    <span class="message-user">${message.userName}:</span>
+                    ${message.text}
+                    <span class="message-time">${timeString}</span>
+                `;
+                
+                chatMessages.appendChild(messageElement);
+            }
+            
+            function scrollChatToBottom() {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            function sendMessage() {
+                const user = auth.currentUser;
+                if (!user) return;
+                
+                const messageText = chatInput.value.trim();
+                if (messageText === '') return;
+                
+                const message = {
+                    text: messageText,
+                    userName: user.displayName || 'Аноним',
+                    userId: user.uid,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                db.collection('chat').add(message)
+                    .then(() => {
+                        chatInput.value = '';
+                        scrollChatToBottom();
+                    })
+                    .catch((error) => {
+                        console.error('Ошибка отправки сообщения:', error);
+                        showNotification('Ошибка отправки сообщения');
+                    });
+            }
+            
             // Слушатель состояния аутентификации
             auth.onAuthStateChanged((user) => {
                 updateAuthUI(user);
             });
+            
+            // Обработчики чата
+            chatInput.addEventListener('input', function() {
+                chatSendBtn.disabled = this.value.trim() === '';
+            });
+            
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !chatSendBtn.disabled) {
+                    sendMessage();
+                }
+            });
+            
+            chatSendBtn.addEventListener('click', sendMessage);
             
             // Обновление процента громкости
             function updateVolumePercentage() {
@@ -1647,8 +1884,6 @@
                 document.getElementById('current-station').textContent = station.name;
                 document.getElementById('current-track-info').textContent = station.currentTrack;
                 document.getElementById('current-artist-info').textContent = station.currentArtist;
-                document.getElementById('next-track').textContent = station.nextTrack;
-                document.getElementById('next-artist').textContent = station.nextArtist;
                 document.getElementById('quality').textContent = station.quality;
                 
                 document.getElementById('player-station').textContent = station.name;
@@ -1699,9 +1934,6 @@
                     notification.style.opacity = 0;
                 }, 3000);
             }
-
-            // Обработчики для модальных окон (остаются без изменений)
-            // ... существующий код для модальных окон ...
         }
     </script>
 </body>

@@ -1609,74 +1609,129 @@
                     });
             }
             
-            // Функции для работы с чатом
-            function loadChatHistory() {
-                // Отписываемся от предыдущих обновлений
-                if (chatUnsubscribe) {
-                    chatUnsubscribe();
-                }
-                
-                // Подписываемся на обновления чата
-                chatUnsubscribe = db.collection('chat')
-                    .orderBy('timestamp', 'asc')
-                    .limit(50)
-                    .onSnapshot((snapshot) => {
-                        chatMessages.innerHTML = '';
-                        snapshot.forEach((doc) => {
-                            const message = doc.data();
-                            addMessageToChat(message);
-                        });
-                        scrollChatToBottom();
-                    });
+// Функции для работы с чатом
+function loadChatHistory() {
+    // Отписываемся от предыдущих обновлений
+    if (chatUnsubscribe) {
+        chatUnsubscribe();
+    }
+    
+    console.log('Загрузка истории чата...');
+    
+    // Подписываемся на обновления чата
+    chatUnsubscribe = db.collection('chat')
+        .orderBy('timestamp', 'desc')
+        .limit(50)
+        .onSnapshot((snapshot) => {
+            console.log('Получены данные чата:', snapshot.size, 'сообщений');
+            
+            chatMessages.innerHTML = '';
+            
+            if (snapshot.empty) {
+                chatMessages.innerHTML = '<div class="message">Чат пуст. Будьте первым!</div>';
+                return;
             }
             
-            function addMessageToChat(message) {
-                const messageElement = document.createElement('div');
-                messageElement.className = 'message';
-                
-                const time = new Date(message.timestamp?.toDate() || message.timestamp);
-                const timeString = time.toLocaleTimeString('ru-RU', { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
+            const messages = [];
+            
+            snapshot.forEach((doc) => {
+                const messageData = doc.data();
+                messages.push({
+                    id: doc.id,
+                    ...messageData
                 });
-                
-                messageElement.innerHTML = `
-                    <span class="message-user">${message.userName}:</span>
-                    ${message.text}
-                    <span class="message-time">${timeString}</span>
-                `;
-                
-                chatMessages.appendChild(messageElement);
-            }
+            });
             
-            function scrollChatToBottom() {
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
+            // Сортируем сообщения по времени (старые -> новые)
+            messages.sort((a, b) => {
+                const timeA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
+                const timeB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(b.timestamp);
+                return timeA - timeB;
+            });
             
-            function sendMessage() {
-                const user = auth.currentUser;
-                if (!user) return;
-                
-                const messageText = chatInput.value.trim();
-                if (messageText === '') return;
-                
-                const message = {
-                    text: messageText,
-                    userName: user.displayName || 'Аноним',
-                    userId: user.uid,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                };
-                
-                db.collection('chat').add(message)
-                    .then(() => {
-                        chatInput.value = '';
-                        scrollChatToBottom();
-                    })
-                    .catch((error) => {
-                        console.error('Ошибка отправки сообщения:', error);
-                        showNotification('Ошибка отправки сообщения');
-                    });
-            }
+            messages.forEach((message) => {
+                addMessageToChat(message);
+            });
+            
+            scrollChatToBottom();
+            
+        }, (error) => {
+            console.error('Ошибка загрузки чата:', error);
+            chatMessages.innerHTML = '<div class="message">Ошибка загрузки чата</div>';
+        });
+}
+
+function addMessageToChat(message) {
+    const messageElement = document.createElement('div');
+    messageElement.className = 'message';
+    messageElement.id = 'msg-' + (message.id || Date.now());
+    
+    let timeString = 'только что';
+    try {
+        if (message.timestamp) {
+            const time = message.timestamp.toDate ? message.timestamp.toDate() : new Date(message.timestamp);
+            timeString = time.toLocaleTimeString('ru-RU', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+        }
+    } catch (e) {
+        console.warn('Ошибка форматирования времени:', e);
+    }
+    
+    messageElement.innerHTML = `
+        <span class="message-user">${message.userName || 'Аноним'}:</span>
+        ${message.text || ''}
+        <span class="message-time">${timeString}</span>
+    `;
+    
+    chatMessages.appendChild(messageElement);
+}
+
+function sendMessage() {
+    const user = auth.currentUser;
+    if (!user) {
+        showNotification('Войдите в систему для отправки сообщений');
+        return;
+    }
+    
+    const messageText = chatInput.value.trim();
+    if (messageText === '') return;
+    
+    // Ограничение длины сообщения
+    if (messageText.length > 200) {
+        showNotification('Сообщение слишком длинное (макс. 200 символов)');
+        return;
+    }
+    
+    const message = {
+        text: messageText,
+        userName: user.displayName || 'Аноним',
+        userId: user.uid,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    
+    console.log('Отправка сообщения:', message);
+    
+    // Блокируем кнопку отправки
+    chatSendBtn.disabled = true;
+    chatSendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    
+    db.collection('chat').add(message)
+        .then((docRef) => {
+            console.log('Сообщение отправлено с ID:', docRef.id);
+            chatInput.value = '';
+            showNotification('Сообщение отправлено!');
+        })
+        .catch((error) => {
+            console.error('Ошибка отправки сообщения:', error);
+            showNotification('Ошибка отправки: ' + error.message);
+        })
+        .finally(() => {
+            chatSendBtn.disabled = false;
+            chatSendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+        });
+}
             
             // Слушатель состояния аутентификации
             auth.onAuthStateChanged((user) => {

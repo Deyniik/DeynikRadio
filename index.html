@@ -1993,3 +1993,2144 @@ function sendMessage() {
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deynik Radio</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Мета-теги для красивого шаринга -->
+    <meta property="og:title" content="Deynik Radio">
+    <meta property="og:description" content="Слушайте лучшие радиостанции в стильном ретро-интерфейсе">
+    <meta property="og:image" content="https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif">
+    <meta property="og:url" content="https://deyniik.github.io/DeynikRadio/">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: #121212;
+            color: #FFFFFF;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            overflow: hidden;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        
+        /* Экран загрузки */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #121212;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-gif {
+            width: 200px;
+            height: 200px;
+            background: url('https://i.pinimg.com/originals/3b/06/ee/3b06ee2cc6a317ccdc098b4ab36a8388.gif') center/cover no-repeat;
+        }
+        
+        .loading-text {
+            margin-top: 20px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #1DB954;
+            text-shadow: 0 0 10px rgba(29, 185, 84, 0.7);
+            letter-spacing: 1px;
+            animation: flicker 1.5s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 27%, 29%, 31%, 33%, 35%, 37%, 39%, 80%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 10px rgba(29, 185, 84, 0.7), 0 0 20px rgba(29, 185, 84, 0.5);
+            }
+            20%, 22%, 24%, 26%, 28%, 30%, 32%, 34%, 36%, 38%, 40%, 60% {
+                opacity: 0.6;
+                text-shadow: 0 0 5px rgba(29, 185, 84, 0.5);
+            }
+            65%, 70%, 75% {
+                opacity: 0.9;
+                text-shadow: 0 0 15px rgba(29, 185, 84, 0.6), 0 0 25px rgba(29, 185, 84, 0.4);
+            }
+            85%, 90%, 95% {
+                opacity: 0.7;
+                text-shadow: 0 0 8px rgba(29, 185, 84, 0.6);
+            }
+        }
+        
+        .container {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-height: 100vh;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        header {
+            text-align: center;
+            padding: 8px 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .google-login-btn {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .google-login-btn:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.05);
+        }
+        
+        /* Стили для профиля пользователя */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .user-profile:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .user-avatar {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .user-name {
+            font-size: 0.8rem;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        /* Выпадающее меню пользователя */
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(40, 40, 40, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 0;
+            margin-top: 5px;
+            min-width: 150px;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .user-dropdown.show {
+            display: block;
+        }
+        
+        .dropdown-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(29, 185, 84, 0.2);
+        }
+        
+        .dropdown-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 5px 0;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            color: #1DB954;
+            text-shadow: 0 0 10px rgba(29, 185, 84, 0.5);
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+        
+        .theme-switcher {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .theme-switcher:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .content {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            flex: 1;
+            gap: 15px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        
+        .side-panel {
+            flex: 1;
+            background: #191414;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            min-width: 180px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .left-panel {
+            text-align: right;
+        }
+        
+        .stations-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .search-box {
+            background: rgba(40, 40, 40, 0.8);
+            border: none;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .station-list {
+            list-style: none;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #1DB954 #191414;
+            padding-right: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .station-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .station-list::-webkit-scrollbar-track {
+            background: #191414;
+        }
+        
+        .station-list::-webkit-scrollbar-thumb {
+            background-color: #1DB954;
+            border-radius: 5px;
+        }
+        
+        .station-list li {
+            padding: 10px 12px;
+            margin: 4px 0;
+            background: rgba(40, 40, 40, 0.8);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid #1DB954;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .station-list li:hover {
+            background: rgba(29, 185, 84, 0.2);
+            transform: translateX(-3px);
+        }
+        
+        .station-list li.active {
+            background: rgba(29, 185, 84, 0.3);
+            border-left: 3px solid #1DB954;
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
+        }
+        
+        .station-icon {
+            margin-right: 10px;
+            font-size: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .random-station-btn {
+            background: rgba(29, 185, 84, 0.2);
+            border: 1px solid rgba(29, 185, 84, 0.5);
+            color: #1DB954;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 36px;
+        }
+        
+        .random-station-btn:hover {
+            background: rgba(29, 185, 84, 0.3);
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .gif-container {
+            flex: 3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #191414;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .gif-placeholder {
+            width: 100%;
+            height: 100%;
+            background: url('https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif') center/cover no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.5s ease;
+        }
+        
+        .playback-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 12px;
+            border: 2px solid rgba(29, 185, 84, 0.3);
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            animation: softPulse 3s infinite ease-in-out;
+        }
+        
+        @keyframes softPulse {
+            0%, 100% {
+                border-width: 2px;
+                box-shadow: 0 0 5px rgba(29, 185, 84, 0.2);
+                opacity: 0.5;
+            }
+            50% {
+                border-width: 3px;
+                box-shadow: 0 0 15px rgba(29, 185, 84, 0.3);
+                opacity: 0.7;
+            }
+        }
+        
+        .visualization {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 2px;
+            padding: 0 20px;
+            z-index: 2;
+        }
+        
+        .bar {
+            width: 4px;
+            background: #1DB954;
+            border-radius: 2px 2px 0 0;
+            transition: height 0.2s ease;
+        }
+        
+        .now-playing {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            text-align: center;
+            z-index: 2;
+        }
+        
+        .now-playing h3 {
+            font-size: 1rem;
+            color: #1DB954;
+            margin-bottom: 5px;
+        }
+        
+        .now-playing p {
+            font-size: 0.8rem;
+            color: #B3B3B3;
+        }
+        
+        .player-container {
+            background: #191414;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            height: auto;
+            flex-shrink: 0;
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 90px;
+            transition: all 0.3s ease;
+        }
+        
+        .player-left {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .player-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3rem;
+            box-shadow: 0 0 12px rgba(29, 185, 84, 0.5);
+            transition: transform 0.3s ease;
+        }
+        
+        .player-icon.playing {
+            animation: rotate 10s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .station-text {
+            flex: 1;
+        }
+        
+        .station-text h2 {
+            font-size: 1.4rem;
+            margin-bottom: 3px;
+            color: #1DB954;
+        }
+        
+        .station-text p {
+            color: #B3B3B3;
+            font-size: 0.9rem;
+        }
+        
+        .player-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            gap: 10px;
+        }
+        
+        .player-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex: 1;
+            gap: 15px;
+        }
+        
+        .btn {
+            background: rgba(50, 50, 50, 0.8);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:hover {
+            background: rgba(29, 185, 84, 0.4);
+            transform: scale(1.05);
+        }
+        
+        .btn-play {
+            background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
+            width: 50px;
+            height: 50px;
+            font-size: 1.3rem;
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.6);
+        }
+        
+        .btn-play:hover {
+            box-shadow: 0 0 20px rgba(29, 185, 84, 0.8);
+        }
+        
+        /* Новая красивая регулировка громкости */
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 160px;
+            background: rgba(40, 40, 40, 0.8);
+            padding: 10px 15px;
+            border-radius: 25px;
+            position: relative;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .volume-container:hover {
+            background: rgba(50, 50, 50, 0.9);
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.2);
+        }
+        
+        .volume-slider {
+            flex: 1;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(80, 80, 80, 0.5);
+            outline: none;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .volume-slider:hover {
+            background: rgba(100, 100, 100, 0.7);
+        }
+        
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1DB954;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.7);
+            transition: all 0.2s ease;
+            border: 3px solid #ffffff;
+        }
+        
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.9);
+        }
+        
+        .volume-percentage {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(29, 185, 84, 0.9);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .volume-container:hover .volume-percentage {
+            opacity: 1;
+        }
+        
+        .volume-icon {
+            font-size: 1.1rem;
+            color: #1DB954;
+            width: 24px;
+            text-align: center;
+        }
+        
+        /* Ретро-линии */
+        .retro-line {
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(29, 185, 84, 0.3) 20%, 
+                rgba(29, 185, 84, 0.5) 50%, 
+                rgba(29, 185, 84, 0.3) 80%, 
+                transparent 100%);
+            margin: 8px 0;
+            width: 100%;
+        }
+        
+        .retro-line-thick {
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(29, 185, 84, 0.4) 20%, 
+                rgba(29, 185, 84, 0.7) 50%, 
+                rgba(29, 185, 84, 0.4) 80%, 
+                transparent 100%);
+            margin: 10px 0;
+            width: 100%;
+        }
+        
+        /* Стили для чата */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 10px;
+            min-height: 200px;
+        }
+        
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            color: #1DB954;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            max-height: none;
+            margin-bottom: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: #1DB954 #191414;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: #191414;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background-color: #1DB954;
+            border-radius: 2px;
+        }
+        
+        .message {
+            padding: 6px 8px;
+            margin: 4px 0;
+            background: rgba(40, 40, 40, 0.6);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            line-height: 1.2;
+            word-wrap: break-word;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .message-user {
+            font-weight: bold;
+            color: #1DB954;
+            margin-right: 5px;
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            color: #888;
+            margin-left: 5px;
+        }
+        
+        .chat-input-container {
+            display: flex;
+            gap: 8px;
+            margin-top: auto;
+        }
+        
+        .chat-input {
+            flex: 1;
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            outline: none;
+            height: 36px;
+            box-sizing: border-box;
+        }
+        
+        .chat-input:focus {
+            border-color: #1DB954;
+        }
+        
+        .chat-send-btn {
+            background: rgba(29, 185, 84, 0.3);
+            border: 1px solid #1DB954;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chat-send-btn:hover:not(:disabled) {
+            background: rgba(29, 185, 84, 0.5);
+        }
+        
+        .chat-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .chat-login-prompt {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 900px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .side-panel {
+                width: 100%;
+                height: 200px;
+                margin-bottom: 12px;
+            }
+            
+            .gif-container {
+                width: 100%;
+                height: 250px;
+                order: -1;
+            }
+            
+            .player-container {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .player-left, .player-center, .player-right {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .volume-container {
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            .station-list li {
+                display: inline-block;
+                margin: 4px;
+                width: calc(50% - 8px);
+            }
+            
+            .theme-switcher {
+                position: relative;
+                margin-bottom: 10px;
+                align-self: flex-end;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .user-name {
+                max-width: 80px;
+            }
+            
+            .chat-messages {
+                max-height: 150px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .station-list li {
+                width: 100%;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .player-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
+            
+            .station-text h2 {
+                font-size: 1.2rem;
+            }
+            
+            .loading-text {
+                font-size: 2.5rem;
+            }
+            
+            .user-name {
+                display: none;
+            }
+            
+            .chat-messages {
+                max-height: 120px;
+            }
+        }
+        
+        /* Ретро-стили */
+        .retro-border {
+            border: 2px solid #1DB954;
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.5);
+        }
+        
+        .crt-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .crt-effect::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0.1) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 3px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        .vintage-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0.1) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.1;
+        }
+        
+        .category-title {
+            font-size: 0.9rem;
+            color: #1DB954;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            padding-bottom: 3px;
+            border-bottom: 1px solid rgba(29, 185, 84, 0.3);
+        }
+        
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        
+        /* Модальные окна */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+        
+        .modal-content {
+            background-color: #191414;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            border: 2px solid #1DB954;
+            position: relative;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #1DB954;
+        }
+        
+        /* Кнопки комнат */
+        .room-btn {
+            background: rgba(29, 185, 84, 0.2);
+            border: 1px solid #1DB954;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .room-btn:hover {
+            background: rgba(29, 185, 84, 0.4);
+        }
+        
+        .room-btn.danger {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff0000;
+        }
+        
+        .room-btn.danger:hover {
+            background: rgba(255, 0, 0, 0.4);
+        }
+        
+        /* Шаринг */
+        .share-preview {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+        
+        .share-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            margin-right: 15px;
+            background: #1DB954;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .share-info {
+            flex: 1;
+        }
+        
+        .share-info h4 {
+            color: #1DB954;
+            margin-bottom: 5px;
+        }
+        
+        .share-info p {
+            color: #B3B3B3;
+            font-size: 0.9rem;
+            margin-bottom: 3px;
+        }
+        
+        .share-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .share-option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .share-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1DB954;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .notification.show {
+            opacity: 1;
+        }
+        
+        /* Темы */
+        body.retro-theme {
+            background-color: #121212;
+            color: #FFFFFF;
+        }
+        
+        body.retro-theme .vintage-overlay {
+            display: block;
+        }
+        
+        body.retro-theme .side-panel,
+        body.retro-theme .player-container,
+        body.retro-theme .gif-container {
+            background: #191414;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        body.retro-theme .crt-effect::after {
+            display: block;
+        }
+        
+        body.cyber-theme {
+            background-color: #0a0a16;
+            color: #00ffea;
+        }
+        
+        body.cyber-theme .vintage-overlay {
+            display: none;
+        }
+        
+        body.cyber-theme .side-panel,
+        body.cyber-theme .player-container,
+        body.cyber-theme .gif-container {
+            background: #0d0d1a;
+            border: 1px solid rgba(0, 255, 234, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 234, 0.2);
+        }
+        
+        body.cyber-theme h1,
+        body.cyber-theme .station-list li.active,
+        body.cyber-theme .now-playing h3,
+        body.cyber-theme .station-text h2,
+        body.cyber-theme .category-title {
+            color: #00ffea;
+            text-shadow: 0 0 10px rgba(0, 255, 234, 0.7);
+        }
+        
+        body.cyber-theme .station-list li {
+            border-left: 3px solid #00ffea;
+            background: rgba(20, 20, 40, 0.8);
+        }
+        
+        body.cyber-theme .btn-play {
+            background: linear-gradient(135deg, #00ffea 0%, #0d0d1a 100%);
+            box-shadow: 0 0 15px rgba(0, 255, 234, 0.6);
+        }
+        
+        body.cyber-theme .volume-slider::-webkit-slider-thumb {
+            background: #00ffea;
+            box-shadow: 0 0 8px rgba(0, 255, 234, 0.7);
+        }
+        
+        body.cyber-theme .volume-percentage {
+            background: rgba(0, 255, 234, 0.9);
+        }
+        
+        body.cyber-theme .volume-icon {
+            color: #00ffea;
+        }
+        
+        body.cyber-theme .crt-effect::after {
+            display: none;
+        }
+        
+        body.matrix-theme {
+            background-color: #000f0a;
+            color: #00ff41;
+        }
+        
+        body.matrix-theme .vintage-overlay {
+            display: none;
+        }
+        
+        body.matrix-theme .side-panel,
+        body.matrix-theme .player-container,
+        body.matrix-theme .gif-container {
+            background: #00150d;
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+        }
+        
+        body.matrix-theme h1,
+        body.matrix-theme .station-list li.active,
+        body.matrix-theme .now-playing h3,
+        body.matrix-theme .station-text h2,
+        body.matrix-theme .category-title {
+            color: #00ff41;
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.7);
+        }
+        
+        body.matrix-theme .station-list li {
+            border-left: 3px solid #00ff41;
+            background: rgba(0, 30, 15, 0.8);
+        }
+        
+        body.matrix-theme .btn-play {
+            background: linear-gradient(135deg, #00ff41 0%, #00150d 100%);
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.6);
+        }
+        
+        body.matrix-theme .volume-slider::-webkit-slider-thumb {
+            background: #00ff41;
+            box-shadow: 0 0 8px rgba(0, 255, 65, 0.7);
+        }
+        
+        body.matrix-theme .volume-percentage {
+            background: rgba(0, 255, 65, 0.9);
+        }
+        
+        body.matrix-theme .volume-icon {
+            color: #00ff41;
+        }
+        
+        body.matrix-theme .crt-effect::after {
+            display: none;
+        }
+    </style>
+</head>
+<body class="retro-theme">
+    <div class="vintage-overlay"></div>
+    
+    <!-- Экран загрузки -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-gif"></div>
+        <div class="loading-text">Deynik Radio</div>
+    </div>
+    
+    <!-- Модальное окно для шаринга -->
+    <div class="modal" id="shareModal">
+        <div class="modal-content">
+            <span class="close" id="closeShareModal">&times;</span>
+            <h3>Поделиться радио</h3>
+            <div class="share-preview">
+                <div class="share-image">
+                    <i class="fas fa-radio"></i>
+                </div>
+                <div class="share-info">
+                    <h4>Deynik Radio</h4>
+                    <p>Слушайте лучшие радиостанции</p>
+                    <p style="font-size: 0.8rem; color: #888;">https://deyniik.github.io/DeynikRadio/</p>
+                </div>
+            </div>
+            <div class="share-buttons">
+                <button class="share-option" id="copyLinkBtn">
+                    <i class="fas fa-copy"></i> Скопировать ссылку
+                </button>
+                <button class="share-option" onclick="window.open('https://twitter.com/intent/tweet?text=Слушайте%20лучшие%20радиостанции%20на%20Deynik%20Radio!&url=https://deyniik.github.io/DeynikRadio/', '_blank')">
+                    <i class="fab fa-twitter"></i> Поделиться в Twitter
+                </button>
+                <button class="share-option" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://deyniik.github.io/DeynikRadio/', '_blank')">
+                    <i class="fab fa-facebook"></i> Поделиться в Facebook
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container" id="mainContainer">
+        <header>
+            <div class="header-left">
+                <div id="auth-section">
+                    <button class="google-login-btn" id="googleLoginBtn">
+                        <i class="fab fa-google"></i> Войти через Google
+                    </button>
+                </div>
+            </div>
+            <h1>Deynik Radio</h1>
+            <button class="theme-switcher" id="themeSwitcher">
+                <i class="fas fa-palette"></i> Ретро
+            </button>
+        </header>
+        
+        <div class="content">
+            <div class="side-panel left-panel crt-effect">
+                <div class="stations-header">
+                    <h2>Радиостанции</h2>
+                    <span class="station-count">11</span>
+                </div>
+                <input type="text" class="search-box" placeholder="Поиск станций...">
+                
+                <div class="retro-line"></div>
+                
+                <ul class="station-list">
+                    <div class="category-title">Международные</div>
+                    <li class="active" data-station="kissint"><span class="station-icon"><i class="fas fa-heart"></i></span> KISS FM</li>
+                    <li data-station="gaga"><span class="station-icon"><i class="fas fa-paw"></i></span> Lady Gaga Radio</li>
+                    <li data-station="rp"><span class="station-icon"><i class="fas fa-music"></i></span> Radio Paradise</li>
+                    <li data-station="lofi"><span class="station-icon"><i class="fas fa-moon"></i></span> LoFi Girl</li>
+                    <li data-station="z100"><span class="station-icon"><i class="fas fa-broadcast-tower"></i></span> Z100 New York</li>
+                    <li data-station="jazz"><span class="station-icon"><i class="fas fa-music"></i></span> Jazz24</li>
+                    
+                    <div class="category-title">Lo-Fi</div>
+                    <li data-station="chillhop"><span class="station-icon"><i class="fas fa-moon"></i></span> Chillhop Radio</li>
+                    <li data-station="lofihiphop"><span class="station-icon"><i class="fas fa-headphones"></i></span> LoFi Hip Hop</li>
+                    <li data-station="lofigirl"><span class="station-icon"><i class="fas fa-moon"></i></span> LoFi Girl</li>
+                    <li data-station="minecraft"><span class="station-icon"><i class="fas fa-cube"></i></span> MINECRAFT Lo Fi</li>
+                    
+                    <div class="category-title">Тематические</div>
+                    <li data-station="halloween"><span class="station-icon"><i class="fas fa-ghost"></i></span> Halloween Radio</li>
+                </ul>
+                
+                <div class="random-station-btn" id="random-station-btn">
+                    <i class="fas fa-random"></i> Случайное радио
+                </div>
+            </div>
+            
+            <div class="gif-container crt-effect">
+                <div class="gif-placeholder" id="mainGif"></div>
+                <div class="playback-indicator" id="playback-indicator"></div>
+                <div class="visualization" id="visualization">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                <div class="now-playing">
+                    <h3>Сейчас играет: <span id="current-track">"Coffee Break"</span></h3>
+                    <p>Исполнитель: <span id="current-artist">Beatsmith</span></p>
+                </div>
+            </div>
+            
+            <div class="side-panel crt-effect">
+                <h2>Сейчас играет</h2>
+                <div style="margin: 15px 0;">
+                    <h3 id="current-station">KISS FM</h3>
+                    <p>Текущий трек: <span style="color: #1DB954;" id="current-track-info">"Coffee Break"</span></p>
+                    <p>Исполнитель: <span style="color: #1DB954;" id="current-artist-info">Beatsmith</span></p>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h3>Качество</h3>
+                    <p id="quality">128 kbps</p>
+                </div>
+                
+                <!-- Чат -->
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <i class="fas fa-comments"></i>
+                        <h3>Чат</h3>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message">
+                            <span class="message-user">Система:</span>
+                            Добро пожаловать в чат Deynik Radio!
+                            <span class="message-time">только что</span>
+                        </div>
+                    </div>
+                    <div class="chat-input-container" id="chat-input-container">
+                        <input type="text" class="chat-input" id="chat-input" placeholder="Введите сообщение..." maxlength="200">
+                        <button class="chat-send-btn" id="chat-send-btn" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="player-container crt-effect">
+            <div class="player-left">
+                <div class="player-icon" id="player-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="station-text">
+                    <h2 id="player-station">KISS FM</h2>
+                    <p id="player-description">Лучшие мировые хиты в отличном качестве</p>
+                </div>
+            </div>
+            
+            <div class="player-center">
+                <button class="btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
+                <button class="btn btn-play" id="play-btn"><i class="fas fa-play"></i></button>
+                <button class="btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
+            </div>
+            
+            <div class="player-right">
+                <button class="btn" id="refresh-btn" title="Обновить поток">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button class="btn" id="room-btn" title="Совместное прослушивание">
+                    <i class="fas fa-users"></i>
+                </button>
+                <button class="btn" id="share-btn" title="Поделиться">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+                
+                <div class="volume-container">
+                    <span class="volume-icon"><i class="fas fa-volume-down"></i></span>
+                    <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
+                    <span class="volume-percentage" id="volume-percentage">70%</span>
+                    <span class="volume-icon"><i class="fas fa-volume-up"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Уведомление -->
+    <div class="notification" id="notification">Текст уведомления</div>
+
+    <script>
+        // Инициализация Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBk4nxZ1ldNQUCxsbgaeYTkm9stq0o9o2Q",
+            authDomain: "deygram-e4814.firebaseapp.com",
+            projectId: "deygram-e4814",
+            storageBucket: "deygram-e4814.firebasestorage.app",
+            messagingSenderId: "591207353726",
+            appId: "1:591207353726:web:d20f5e648d3daf86fcb72f"
+        };
+
+        // Инициализируем Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Объект с радиостанциями
+        const radioStations = {
+            kissint: {
+                name: "KISS FM",
+                url: "https://cloud.revma.ihrhls.com/zc185?rj-org=n08a-e2&rj-ttl=5&rj-tok=AAABmWcyp-cAjUh581g70H83Ow",
+                description: "Лучшие мировые хиты в отличном качестве",
+                currentTrack: "Популярные хиты",
+                currentArtist: "KISS FM",
+                nextTrack: "Следующий хит",
+                nextArtist: "KISS FM",
+                quality: "128kbps",
+                icon: "fas fa-heart"
+            },
+            gaga: {
+                name: "Lady Gaga Radio",
+                url: "https://2.mystreaming.net/er/ladygagahits/icecast.audio",
+                description: "Всем молчать! Играет мать!",
+                currentTrack: "Lady Gaga Hits",
+                currentArtist: "Lady Gaga",
+                nextTrack: "Next Gaga Track",
+                nextArtist: "Lady Gaga",
+                quality: "128kbps",
+                icon: "fas fa-paw"
+            },
+            rp: {
+                name: "Radio Paradise",
+                url: "https://stream.radioparadise.com/flac",
+                description: "Аудиофильский микс рока и электроники без авторских прав",
+                currentTrack: "Eclectic Mix",
+                currentArtist: "Radio Paradise",
+                nextTrack: "Next Track",
+                nextArtist: "Radio Paradise",
+                quality: "FLAC 900+kbps",
+                icon: "fas fa-music"
+            },
+            lofi: {
+                name: "LoFi Girl",
+                url: "https://play.streamafrica.net/lofiradio",
+                description: "Легендарный лоу-фай стрим без авторских прав",
+                currentTrack: "Chill Beats",
+                currentArtist: "LoFi Artist",
+                nextTrack: "Relaxing Vibes",
+                nextArtist: "LoFi Producer",
+                quality: "192kbps",
+                icon: "fas fa-moon"
+            },
+            z100: {
+                name: "Z100 New York",
+                url: "https://stream.revma.ihrhls.com/zc1477",
+                description: "Поп-хиты от iHeartRadio",
+                currentTrack: "Top 40 Hit",
+                currentArtist: "Popular Artist",
+                nextTrack: "Next Pop Hit",
+                nextArtist: "Chart Topper",
+                quality: "128kbps",
+                icon: "fas fa-broadcast-tower"
+            },
+            jazz: {
+                name: "Jazz24",
+                url: "https://knkx-live-a.edge.audiocdn.com/6285_128k?aw_0_1st.playerid=jazz24.org&uuid=s9a9vs32",
+                description: "Лучшие джазовые композиции",
+                currentTrack: "Smooth Jazz",
+                currentArtist: "Jazz Master",
+                nextTrack: "Cool Jazz",
+                nextArtist: "Jazz Legend",
+                quality: "192kbps",
+                icon: "fas fa-music"
+            },
+            chillhop: {
+                name: "Chillhop Radio",
+                url: "https://stream-178.zeno.fm/f3wvbbqmdg8uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJmM3d2YmJxbWRnOHV2IiwiaG9zdCI6InS0cmVhbS0xNzguemVuby.фм",
+                description: "Расслабляющие биты для работы и отдыха без авторских прав",
+                currentTrack: "Chill Beats",
+                currentArtist: "Chillhop Music",
+                nextTrack: "Relaxing Vibes",
+                nextArtist: "Chillhop Producer",
+                quality: "128kbps",
+                icon: "fas fa-moon"
+            },
+            lofihiphop: {
+                name: "LoFi Hip Hop",
+                url: "https://stream-158.zeno.fm/0r0xa792kwzuv",
+                description: "Лучшие хип-хоп биты без авторских прав",
+                currentTrack: "Hip Hop Beats",
+                currentArtist: "LoFi Artist",
+                nextTrack: "Next Hip Hop",
+                nextArtist: "LoFi Producer",
+                quality: "128kbps",
+                icon: "fas fa-headphones"
+            },
+            lofigirl: {
+                name: "LoFi Girl",
+                url: "https://play.streamafrica.net/lofiradio",
+                description: "Легендарный лоу-фай стрим без авторских прав",
+                currentTrack: "Study Beats",
+                currentArtist: "LoFi Girl",
+                nextTrack: "Chill Vibes",
+                nextArtist: "LoFi Girl",
+                quality: "192kbps",
+                icon: "fas fa-moon"
+            },
+            minecraft: {
+                name: "MINECRAFT Lo Fi",
+                url: "https://stream-173.zeno.fm/kp41ftw3zehvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJrcDQxZnR3M3plaHZ2IiwiaG9zdCI6InN0cmVhbS0xNzMuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6Ii1MelctMUFsUmtLeHZoaWkwUXBSZWciLCJpYXQiOjE3NTg2NDUyNDAsImV4cCI6MTc1ODY0NTMwMH0.Ef_7t2RVX9WvfCeKorGs2acDLze7Sp8n5bzo3Ix58xE",
+                description: "Уютные Minecraft саундтреки в Lo-Fi аранжировке",
+                currentTrack: "Minecraft Ambience",
+                currentArtist: "C418 Lo-Fi Remix",
+                nextTrack: "Sweden Chill",
+                nextArtist: "Minecraft Lofi",
+                quality: "128kbps",
+                icon: "fas fa-cube"
+            },
+            halloween: {
+                name: "Halloween Radio",
+                url: "https://radio1.streamserver.link:8000/hrm-aac",
+                description: "Музыка для Хэллоуина и ужастиков",
+                currentTrack: "Spooky Sounds",
+                currentArtist: "Halloween FM",
+                nextTrack: "Scary Tunes",
+                nextArtist: "Halloween FM",
+                quality: "128kbps",
+                icon: "fas fa-ghost"
+            }
+        };
+
+        // Массив с гифками
+        const gifs = [
+            'https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif',
+            'https://i.pinimg.com/originals/20/c8/3d/20c83d1cb257a6c4e5f68960ef0c3046.gif',
+            'https://i.pinimg.com/originals/9a/99/a1/9a99a10635e27f336c2cd6bec02b2aae.gif',
+            'https://i.pinimg.com/originals/13/45/50/13455040862ac9b8e465185878838cf1.gif',
+            'https://i.pinimg.com/originals/93/08/1e/93081e266f7f0b20778d2736978b2e84.gif',
+            'https://i.gifer.com/YMm7.gif',
+            'https://i.pinimg.com/originals/51/7d/50/517d50010dfe6e71d17548cae0f6f0dc.gif',
+            'https://i.pinimg.com/originals/43/1c/e5/431ce5d15aab86f66a91ec9a07c9114f.gif',
+            'https://i.pinimg.com/originals/61/af/12/61af12d5fb3c469039dbdf63d783c95d.gif',
+            'https://i.pinimg.com/originals/2f/10/ce/2f10ce69b96c0611989308b0abc68e70.gif',
+            'https://i.pinimg.com/originals/6a/d2/ee/6ad2ee191d434a996766b500a1eb197e.gif',
+            'https://markiled.github.io/Images/Art/Commissions/Commission-2020-Mar-Raul.gif',
+            'https://i.pinimg.com/originals/6e/fb/de/6efbde2becc91166553e90ca975aaf07.gif'
+        ];
+
+        // Массив ID станций для навигации
+        const stationIds = Object.keys(radioStations);
+        
+        // Предзагрузка гифок
+        function preloadGifs() {
+            gifs.forEach(gif => {
+                const img = new Image();
+                img.src = gif;
+            });
+        }
+        
+        // Показываем экран загрузки при открытии
+        document.addEventListener('DOMContentLoaded', function() {
+            preloadGifs();
+            
+            setTimeout(() => {
+                document.getElementById('loadingScreen').style.opacity = '0';
+                document.getElementById('mainContainer').style.opacity = '1';
+                
+                setTimeout(() => {
+                    document.getElementById('loadingScreen').style.display = 'none';
+                }, 500);
+                
+                initApp();
+            }, 1500);
+        });
+        
+        function initApp() {
+            const playButton = document.getElementById('play-btn');
+            const prevButton = document.getElementById('prev-btn');
+            const nextButton = document.getElementById('next-btn');
+            const refreshButton = document.getElementById('refresh-btn');
+            const randomStationBtn = document.getElementById('random-station-btn');
+            const volumeSlider = document.getElementById('volume-slider');
+            const volumePercentage = document.getElementById('volume-percentage');
+            const stationItems = document.querySelectorAll('.station-list li');
+            const searchBox = document.querySelector('.search-box');
+            const visualization = document.getElementById('visualization');
+            const bars = visualization.querySelectorAll('.bar');
+            const mainGif = document.getElementById('mainGif');
+            const playbackIndicator = document.getElementById('playback-indicator');
+            const themeSwitcher = document.getElementById('themeSwitcher');
+            const roomBtn = document.getElementById('room-btn');
+            const shareBtn = document.getElementById('share-btn');
+            const chatInput = document.getElementById('chat-input');
+            const chatSendBtn = document.getElementById('chat-send-btn');
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInputContainer = document.getElementById('chat-input-container');
+            const shareModal = document.getElementById('shareModal');
+            const closeShareModal = document.getElementById('closeShareModal');
+            const copyLinkBtn = document.getElementById('copyLinkBtn');
+            
+            let isPlaying = false;
+            let audio = null;
+            let currentStationIndex = 0;
+            let currentStation = stationIds[currentStationIndex];
+            let visualizationInterval = null;
+            let currentTheme = 'retro';
+            let chatUnsubscribe = null;
+            
+            // Инициализация
+            updateStationInfo();
+            changeGif();
+            updateVolumePercentage();
+            
+            // Функции для работы с аутентификацией
+            function updateAuthUI(user) {
+                const authSection = document.getElementById('auth-section');
+                
+                if (user) {
+                    // Пользователь вошел в систему
+                    const displayName = user.displayName || 'Пользователь';
+                    const email = user.email || '';
+                    const firstLetter = displayName.charAt(0).toUpperCase();
+                    
+                    authSection.innerHTML = `
+                        <div class="user-profile" id="user-profile">
+                            <div class="user-avatar">${firstLetter}</div>
+                            <div class="user-name">${displayName}</div>
+                            <div class="user-dropdown" id="user-dropdown">
+                                <div class="dropdown-item" id="sign-out-btn">
+                                    <i class="fas fa-sign-out-alt"></i> Выйти
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Загружаем историю чата
+                    loadChatHistory();
+                    
+                    // Добавляем обработчик для профиля
+                    document.getElementById('user-profile').addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        document.getElementById('user-dropdown').classList.toggle('show');
+                    });
+                    
+                    // Добавляем обработчик для выхода
+                    document.getElementById('sign-out-btn').addEventListener('click', function() {
+                        signOut();
+                    });
+                    
+                    // Закрываем dropdown при клике вне его
+                    document.addEventListener('click', function() {
+                        const dropdown = document.getElementById('user-dropdown');
+                        if (dropdown) dropdown.classList.remove('show');
+                    });
+                    
+                } else {
+                    // Пользователь не вошел в систему
+                    authSection.innerHTML = `
+                        <button class="google-login-btn" id="googleLoginBtn">
+                            <i class="fab fa-google"></i> Войти через Google
+                        </button>
+                    `;
+                    
+                    // Загружаем историю чата для анонимных пользователей
+                    loadChatHistory();
+                    
+                    // Добавляем обработчик для кнопки входа
+                    document.getElementById('googleLoginBtn').addEventListener('click', signInWithGoogle);
+                }
+            }
+            
+            function signInWithGoogle() {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                provider.setCustomParameters({
+                    prompt: 'select_account' // Принудительно показываем выбор аккаунта
+                });
+                
+                auth.signInWithPopup(provider)
+                    .then((result) => {
+                        // Вход успешен
+                        showNotification(`Добро пожаловать, ${result.user.displayName}!`);
+                    })
+                    .catch((error) => {
+                        console.error('Ошибка входа:', error);
+                        showNotification('Ошибка входа. Попробуйте еще раз.');
+                    });
+            }
+            
+            function signOut() {
+                auth.signOut()
+                    .then(() => {
+                        showNotification('Вы вышли из системы');
+                    })
+                    .catch((error) => {
+                        console.error('Ошибка выхода:', error);
+                        showNotification('Ошибка выхода из системы');
+                    });
+            }
+            
+            // Функции для работы с чатом
+            function loadChatHistory() {
+                // Отписываемся от предыдущих обновлений
+                if (chatUnsubscribe) {
+                    chatUnsubscribe();
+                }
+                
+                console.log('Загрузка истории чата...');
+                
+                // Подписываемся на обновления чата
+                chatUnsubscribe = db.collection('chat')
+                    .orderBy('timestamp', 'desc')
+                    .limit(50)
+                    .onSnapshot((snapshot) => {
+                        console.log('Получены данные чата:', snapshot.size, 'сообщений');
+                        
+                        chatMessages.innerHTML = '';
+                        
+                        if (snapshot.empty) {
+                            chatMessages.innerHTML = '<div class="message">Чат пуст. Будьте первым!</div>';
+                            return;
+                        }
+                        
+                        const messages = [];
+                        
+                        snapshot.forEach((doc) => {
+                            const messageData = doc.data();
+                            messages.push({
+                                id: doc.id,
+                                ...messageData
+                            });
+                        });
+                        
+                        // Сортируем сообщения по времени (старые -> новые)
+                        messages.sort((a, b) => {
+                            const timeA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
+                            const timeB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(b.timestamp);
+                            return timeA - timeB;
+                        });
+                        
+                        messages.forEach((message) => {
+                            addMessageToChat(message);
+                        });
+                        
+                        scrollChatToBottom();
+                        
+                    }, (error) => {
+                        console.error('Ошибка загрузки чата:', error);
+                        chatMessages.innerHTML = '<div class="message">Ошибка загрузки чата</div>';
+                    });
+            }
+
+            function addMessageToChat(message) {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message';
+                messageElement.id = 'msg-' + (message.id || Date.now());
+                
+                let timeString = 'только что';
+                try {
+                    if (message.timestamp) {
+                        const time = message.timestamp.toDate ? message.timestamp.toDate() : new Date(message.timestamp);
+                        timeString = time.toLocaleTimeString('ru-RU', { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                        });
+                    }
+                } catch (e) {
+                    console.warn('Ошибка форматирования времени:', e);
+                }
+                
+                messageElement.innerHTML = `
+                    <span class="message-user">${message.userName || 'Аноним'}:</span>
+                    ${message.text || ''}
+                    <span class="message-time">${timeString}</span>
+                `;
+                
+                chatMessages.appendChild(messageElement);
+            }
+
+            function sendMessage() {
+                const user = auth.currentUser;
+                const messageText = chatInput.value.trim();
+                if (messageText === '') return;
+                
+                // Ограничение длины сообщения
+                if (messageText.length > 200) {
+                    showNotification('Сообщение слишком длинное (макс. 200 символов)');
+                    return;
+                }
+                
+                const message = {
+                    text: messageText,
+                    userName: user ? (user.displayName || 'Пользователь') : 'Аноним',
+                    userId: user ? user.uid : 'anonymous',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                console.log('Отправка сообщения:', message);
+                
+                // Блокируем кнопку отправки
+                chatSendBtn.disabled = true;
+                chatSendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                
+                db.collection('chat').add(message)
+                    .then((docRef) => {
+                        console.log('Сообщение отправлено с ID:', docRef.id);
+                        chatInput.value = '';
+                        showNotification('Сообщение отправлено!');
+                    })
+                    .catch((error) => {
+                        console.error('Ошибка отправки сообщения:', error);
+                        showNotification('Ошибка отправки: ' + error.message);
+                    })
+                    .finally(() => {
+                        chatSendBtn.disabled = false;
+                        chatSendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                    });
+            }
+            
+            function scrollChatToBottom() {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Функции для шаринга
+            function openShareModal() {
+                shareModal.style.display = 'block';
+            }
+            
+            function closeShareModal() {
+                shareModal.style.display = 'none';
+            }
+            
+            function copyLinkToClipboard() {
+                const link = 'https://deyniik.github.io/DeynikRadio/';
+                navigator.clipboard.writeText(link).then(() => {
+                    showNotification('Ссылка скопирована в буфер обмена!');
+                    closeShareModal();
+                }).catch(err => {
+                    console.error('Ошибка копирования: ', err);
+                    showNotification('Ошибка копирования ссылки');
+                });
+            }
+            
+            // Слушатель состояния аутентификации
+            auth.onAuthStateChanged((user) => {
+                updateAuthUI(user);
+            });
+            
+            // Обработчики чата
+            chatInput.addEventListener('input', function() {
+                chatSendBtn.disabled = this.value.trim() === '';
+            });
+            
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !chatSendBtn.disabled) {
+                    sendMessage();
+                }
+            });
+            
+            chatSendBtn.addEventListener('click', sendMessage);
+            
+            // Обработчики шаринга
+            shareBtn.addEventListener('click', openShareModal);
+            closeShareModal.addEventListener('click', closeShareModal);
+            copyLinkBtn.addEventListener('click', copyLinkToClipboard);
+            
+            // Закрытие модального окна при клике вне его
+            window.addEventListener('click', function(event) {
+                if (event.target === shareModal) {
+                    closeShareModal();
+                }
+            });
+            
+            // Обновление процента громкости
+            function updateVolumePercentage() {
+                const value = volumeSlider.value;
+                volumePercentage.textContent = `${value}%`;
+            }
+            
+            // Переключение темы
+            themeSwitcher.addEventListener('click', function() {
+                if (currentTheme === 'retro') {
+                    document.body.className = 'cyber-theme';
+                    currentTheme = 'cyber';
+                    themeSwitcher.innerHTML = '<i class="fas fa-palette"></i> Кибер';
+                } else if (currentTheme === 'cyber') {
+                    document.body.className = 'matrix-theme';
+                    currentTheme = 'matrix';
+                    themeSwitcher.innerHTML = '<i class="fas fa-palette"></i> Матрица';
+                } else {
+                    document.body.className = 'retro-theme';
+                    currentTheme = 'retro';
+                    themeSwitcher.innerHTML = '<i class="fas fa-palette"></i> Ретро';
+                }
+            });
+            
+            // Обработчик кнопки воспроизведения
+            playButton.addEventListener('click', function() {
+                isPlaying = !isPlaying;
+                
+                if (isPlaying) {
+                    playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                    document.getElementById('player-icon').classList.add('playing');
+                    // Запускаем радиостанцию
+                    if (!audio) {
+                        audio = new Audio(radioStations[currentStation].url);
+                        audio.volume = volumeSlider.value / 100;
+                    }
+                    audio.play();
+                    playbackIndicator.style.opacity = '1';
+                    startVisualization();
+                } else {
+                    playButton.innerHTML = '<i class="fas fa-play"></i>';
+                    document.getElementById('player-icon').classList.remove('playing');
+                    if (audio) {
+                        audio.pause();
+                    }
+                    playbackIndicator.style.opacity = '0';
+                    stopVisualization();
+                }
+            });
+            
+            // Обработчик громкости
+            volumeSlider.addEventListener('input', function() {
+                updateVolumePercentage();
+                if (audio) {
+                    audio.volume = volumeSlider.value / 100;
+                }
+            });
+            
+            // Обработчик кнопки "Случайное радио"
+            randomStationBtn.addEventListener('click', function() {
+                const randomIndex = Math.floor(Math.random() * stationIds.length);
+                currentStationIndex = randomIndex;
+                
+                // Автоматически снимаем паузу при переключении радиостанций
+                isPlaying = true;
+                playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                document.getElementById('player-icon').classList.add('playing');
+                
+                changeStation();
+            });
+            
+            // Обработчик кнопки "Предыдущая станция"
+            prevButton.addEventListener('click', function() {
+                currentStationIndex = (currentStationIndex - 1 + stationIds.length) % stationIds.length;
+                
+                // Автоматически снимаем паузу при переключении радиостанций
+                isPlaying = true;
+                playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                document.getElementById('player-icon').classList.add('playing');
+                
+                changeStation();
+            });
+            
+            // Обработчик кнопки "Следующая станция"
+            nextButton.addEventListener('click', function() {
+                currentStationIndex = (currentStationIndex + 1) % stationIds.length;
+                
+                // Автоматически снимаем паузу при переключении радиостанций
+                isPlaying = true;
+                playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                document.getElementById('player-icon').classList.add('playing');
+                
+                changeStation();
+            });
+            
+            // Обработчик кнопки "Обновить"
+            refreshButton.addEventListener('click', function() {
+                if (audio) {
+                    // Вращаем иконку для визуальной обратной связи
+                    refreshButton.style.transform = 'rotate(360deg)';
+                    refreshButton.style.transition = 'transform 0.5s ease';
+                    
+                    setTimeout(() => {
+                        refreshButton.style.transform = 'rotate(0deg)';
+                    }, 500);
+                    
+                    // Перезагружаем поток
+                    const wasPlaying = !audio.paused;
+                    
+                    audio.pause();
+                    audio = new Audio(radioStations[currentStation].url + '?nocache=' + new Date().getTime());
+                    audio.volume = volumeSlider.value / 100;
+                    
+                    if (wasPlaying) {
+                        audio.play();
+                    }
+                    
+                    // Меняем гифку при обновлении
+                    changeGif();
+                }
+            });
+            
+            // Обработчик выбора станции из списка
+            stationItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const stationId = this.getAttribute('data-station');
+                    currentStationIndex = stationIds.indexOf(stationId);
+                    
+                    // Автоматически снимаем паузу при переключении радиостанций
+                    isPlaying = true;
+                    playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                    document.getElementById('player-icon').classList.add('playing');
+                    
+                    changeStation();
+                });
+            });
+            
+            // Поиск станций
+            searchBox.addEventListener('input', function() {
+                const searchText = this.value.toLowerCase();
+                
+                stationItems.forEach(item => {
+                    const stationName = item.textContent.toLowerCase();
+                    if (stationName.includes(searchText)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Функция смены станции
+            function changeStation() {
+                currentStation = stationIds[currentStationIndex];
+                
+                // Обновляем информацию о станции
+                updateStationInfo();
+                
+                // Обновляем активный элемент в списке
+                stationItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('data-station') === currentStation) {
+                        item.classList.add('active');
+                    }
+                });
+                
+                // Перезапускаем воспроизведение, если оно было запущено
+                if (isPlaying) {
+                    if (audio) {
+                        audio.pause();
+                    }
+                    audio = new Audio(radioStations[currentStation].url);
+                    audio.volume = volumeSlider.value / 100;
+                    audio.play();
+                    playbackIndicator.style.opacity = '1';
+                    startVisualization();
+                }
+                
+                // Меняем гифку
+                changeGif();
+            }
+            
+            // Функция обновления информации о станции
+            function updateStationInfo() {
+                const station = radioStations[currentStation];
+                
+                document.getElementById('current-station').textContent = station.name;
+                document.getElementById('current-track-info').textContent = station.currentTrack;
+                document.getElementById('current-artist-info').textContent = station.currentArtist;
+                document.getElementById('quality').textContent = station.quality;
+                
+                document.getElementById('player-station').textContent = station.name;
+                document.getElementById('player-description').textContent = station.description;
+                document.getElementById('player-icon').innerHTML = `<i class="${station.icon}"></i>`;
+                
+                document.getElementById('current-track').textContent = station.currentTrack;
+                document.getElementById('current-artist').textContent = station.currentArtist;
+            }
+            
+            // Функция смены гифки
+            function changeGif() {
+                const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
+                mainGif.style.backgroundImage = `url('${randomGif}')`;
+            }
+            
+            // Функция визуализации
+            function startVisualization() {
+                if (visualizationInterval) {
+                    clearInterval(visualizationInterval);
+                }
+                
+                visualizationInterval = setInterval(() => {
+                    bars.forEach(bar => {
+                        const height = Math.floor(Math.random() * 30) + 1;
+                        bar.style.height = `${height}px`;
+                    });
+                }, 100);
+            }
+            
+            function stopVisualization() {
+                if (visualizationInterval) {
+                    clearInterval(visualizationInterval);
+                }
+                
+                bars.forEach(bar => {
+                    bar.style.height = '2px';
+                });
+            }
+            
+            // Функция показа уведомлений
+            function showNotification(message) {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -21,7 +21,6 @@
     <meta name="twitter:card" content="summary_large_image">
     
     <style>
-        /* ВСЕ СТИЛИ ОСТАЮТСЯ ПРЕЖНИМИ */
         * {
             margin: 0;
             padding: 0;
@@ -471,10 +470,14 @@
             flex-shrink: 0;
             margin-top: auto;
             display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .player-top {
+            display: flex;
             align-items: center;
             justify-content: space-between;
-            min-height: 90px;
-            transition: all 0.3s ease;
         }
         
         .player-left {
@@ -529,7 +532,7 @@
             gap: 10px;
         }
         
-        .player-right {
+        .player-buttons {
             display: flex;
             align-items: center;
             justify-content: flex-end;
@@ -570,34 +573,36 @@
             box-shadow: 0 0 20px rgba(29, 185, 84, 0.8);
         }
         
-        /* Новая красивая регулировка громкости */
-        .volume-container {
+        /* ОТДЕЛЬНЫЙ ПОЛЗУНОК ГРОМКОСТИ - НИЧЕГО НЕ МЕШАЕТ */
+        .player-bottom {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .volume-control {
             display: flex;
             align-items: center;
             gap: 12px;
-            width: 160px;
-            background: rgba(40, 40, 40, 0.8);
-            padding: 10px 15px;
-            border-radius: 25px;
-            position: relative;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 300px;
+            max-width: 100%;
         }
         
-        .volume-container:hover {
-            background: rgba(50, 50, 50, 0.9);
-            box-shadow: 0 0 15px rgba(29, 185, 84, 0.2);
+        .volume-icon {
+            font-size: 1.2rem;
+            color: #1DB954;
+            width: 24px;
+            text-align: center;
         }
         
         .volume-slider {
-            flex: 1;
-            height: 8px;
             -webkit-appearance: none;
-            appearance: none;
+            width: 100%;
+            height: 6px;
             background: rgba(80, 80, 80, 0.5);
+            border-radius: 5px;
             outline: none;
-            border-radius: 10px;
-            transition: all 0.2s ease;
             cursor: pointer;
         }
         
@@ -608,48 +613,28 @@
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: #1DB954;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(29, 185, 84, 0.7);
-            transition: all 0.2s ease;
-            border: 3px solid #ffffff;
+            border: 2px solid white;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
         }
         
         .volume-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-            box-shadow: 0 0 15px rgba(29, 185, 84, 0.9);
+            transform: scale(1.1);
+            box-shadow: 0 0 8px rgba(29, 185, 84, 0.8);
         }
         
-        .volume-percentage {
-            position: absolute;
-            top: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(29, 185, 84, 0.9);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-            min-width: 40px;
-            text-align: center;
-        }
-        
-        .volume-container:hover .volume-percentage {
-            opacity: 1;
-        }
-        
-        .volume-icon {
-            font-size: 1.1rem;
-            color: #1DB954;
-            width: 24px;
-            text-align: center;
+        .volume-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #1DB954;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
         }
         
         /* Ретро-линии */
@@ -662,18 +647,6 @@
                 rgba(29, 185, 84, 0.3) 80%, 
                 transparent 100%);
             margin: 8px 0;
-            width: 100%;
-        }
-        
-        .retro-line-thick {
-            height: 3px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                rgba(29, 185, 84, 0.4) 20%, 
-                rgba(29, 185, 84, 0.7) 50%, 
-                rgba(29, 185, 84, 0.4) 80%, 
-                transparent 100%);
-            margin: 10px 0;
             width: 100%;
         }
         
@@ -728,8 +701,6 @@
             font-size: 0.8rem;
             line-height: 1.2;
             word-wrap: break-word;
-            word-break: break-word;
-            overflow-wrap: break-word;
         }
         
         .message-user {
@@ -760,7 +731,6 @@
             font-size: 0.8rem;
             outline: none;
             height: 36px;
-            box-sizing: border-box;
         }
         
         .chat-input:focus {
@@ -791,108 +761,13 @@
             cursor: not-allowed;
         }
         
-        .chat-login-prompt {
-            text-align: center;
-            padding: 20px;
-            color: #888;
+        .category-title {
             font-size: 0.9rem;
-        }
-        
-        @media (max-width: 900px) {
-            .content {
-                flex-direction: column;
-            }
-            
-            .side-panel {
-                width: 100%;
-                height: 200px;
-                margin-bottom: 12px;
-            }
-            
-            .gif-container {
-                width: 100%;
-                height: 250px;
-                order: -1;
-            }
-            
-            .player-container {
-                flex-direction: column;
-                gap: 15px;
-                padding: 15px;
-            }
-            
-            .player-left, .player-center, .player-right {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .volume-container {
-                width: 100%;
-                max-width: 200px;
-            }
-            
-            .station-list li {
-                display: inline-block;
-                margin: 4px;
-                width: calc(50% - 8px);
-            }
-            
-            .theme-switcher {
-                position: relative;
-                margin-bottom: 10px;
-                align-self: flex-end;
-            }
-            
-            header {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .user-name {
-                max-width: 80px;
-            }
-            
-            .chat-messages {
-                max-height: 150px;
-            }
-        }
-        
-        @media (max-width: 600px) {
-            .station-list li {
-                width: 100%;
-            }
-            
-            h1 {
-                font-size: 1.5rem;
-            }
-            
-            .player-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 1.1rem;
-            }
-            
-            .station-text h2 {
-                font-size: 1.2rem;
-            }
-            
-            .loading-text {
-                font-size: 2.5rem;
-            }
-            
-            .user-name {
-                display: none;
-            }
-            
-            .chat-messages {
-                max-height: 120px;
-            }
-        }
-        
-        /* Ретро-стили */
-        .retro-border {
-            border: 2px solid #1DB954;
-            box-shadow: 0 0 15px rgba(29, 185, 84, 0.5);
+            color: #1DB954;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            padding-bottom: 3px;
+            border-bottom: 1px solid rgba(29, 185, 84, 0.3);
         }
         
         .crt-effect {
@@ -924,25 +799,6 @@
             pointer-events: none;
             z-index: 9999;
             opacity: 0.1;
-        }
-        
-        .category-title {
-            font-size: 0.9rem;
-            color: #1DB954;
-            margin-top: 10px;
-            margin-bottom: 5px;
-            padding-bottom: 3px;
-            border-bottom: 1px solid rgba(29, 185, 84, 0.3);
-        }
-        
-        .pulse {
-            animation: pulse 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
         }
         
         /* Модальные окна */
@@ -983,33 +839,6 @@
             color: #1DB954;
         }
         
-        /* Кнопки комнат */
-        .room-btn {
-            background: rgba(29, 185, 84, 0.2);
-            border: 1px solid #1DB954;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-        
-        .room-btn:hover {
-            background: rgba(29, 185, 84, 0.4);
-        }
-        
-        .room-btn.danger {
-            background: rgba(255, 0, 0, 0.2);
-            border: 1px solid #ff0000;
-        }
-        
-        .room-btn.danger:hover {
-            background: rgba(255, 0, 0, 0.4);
-        }
-        
-        /* Шаринг */
         .share-preview {
             display: flex;
             align-items: center;
@@ -1043,10 +872,9 @@
         .share-info p {
             color: #B3B3B3;
             font-size: 0.9rem;
-            margin-bottom: 3px;
         }
         
-        .share-buttons {
+        .share-buttons-simple {
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -1089,176 +917,6 @@
             opacity: 1;
         }
         
-        /* Темы */
-        body.retro-theme {
-            background-color: #121212;
-            color: #FFFFFF;
-        }
-        
-        body.retro-theme .vintage-overlay {
-            display: block;
-        }
-        
-        body.retro-theme .side-panel,
-        body.retro-theme .player-container,
-        body.retro-theme .gif-container {
-            background: #191414;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-        
-        body.retro-theme .crt-effect::after {
-            display: block;
-        }
-        
-        body.cyber-theme {
-            background-color: #0a0a16;
-            color: #00ffea;
-        }
-        
-        body.cyber-theme .vintage-overlay {
-            display: none;
-        }
-        
-        body.cyber-theme .side-panel,
-        body.cyber-theme .player-container,
-        body.cyber-theme .gif-container {
-            background: #0d0d1a;
-            border: 1px solid rgba(0, 255, 234, 0.3);
-            box-shadow: 0 0 20px rgba(0, 255, 234, 0.2);
-        }
-        
-        body.cyber-theme h1,
-        body.cyber-theme .station-list li.active,
-        body.cyber-theme .now-playing h3,
-        body.cyber-theme .station-text h2,
-        body.cyber-theme .category-title {
-            color: #00ffea;
-            text-shadow: 0 0 10px rgba(0, 255, 234, 0.7);
-        }
-        
-        body.cyber-theme .station-list li {
-            border-left: 3px solid #00ffea;
-            background: rgba(20, 20, 40, 0.8);
-        }
-        
-        body.cyber-theme .btn-play {
-            background: linear-gradient(135deg, #00ffea 0%, #0d0d1a 100%);
-            box-shadow: 0 0 15px rgba(0, 255, 234, 0.6);
-        }
-        
-        body.cyber-theme .volume-slider::-webkit-slider-thumb {
-            background: #00ffea;
-            box-shadow: 0 0 8px rgba(0, 255, 234, 0.7);
-        }
-        
-       .volume-container {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 160px;
-    background: rgba(40, 40, 40, 0.8);
-    padding: 10px 15px;
-    border-radius: 25px;
-    position: relative;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    pointer-events: none; /* ДОБАВЬ ЭТУ СТРОКУ */
-}
-
-.volume-slider {
-    flex: 1;
-    height: 8px;
-    -webkit-appearance: none;
-    appearance: none;
-    background: rgba(80, 80, 80, 0.5);
-    outline: none;
-    border-radius: 10px;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    pointer-events: auto; /* ДОБАВЬ ЭТУ СТРОКУ */
-}
-        body.matrix-theme .side-panel,
-        body.matrix-theme .player-container,
-        body.matrix-theme .gif-container {
-            background: #00150d;
-            border: 1px solid rgba(0, 255, 65, 0.3);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
-        }
-        
-        body.matrix-theme h1,
-        body.matrix-theme .station-list li.active,
-        body.matrix-theme .now-playing h3,
-        body.matrix-theme .station-text h2,
-        body.matrix-theme .category-title {
-            color: #00ff41;
-            text-shadow: 0 0 10px rgba(0, 255, 65, 0.7);
-        }
-        
-        body.matrix-theme .station-list li {
-            border-left: 3px solid #00ff41;
-            background: rgba(0, 30, 15, 0.8);
-        }
-        
-        body.matrix-theme .btn-play {
-            background: linear-gradient(135deg, #00ff41 0%, #00150d 100%);
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.6);
-        }
-        
-        body.matrix-theme .volume-slider::-webkit-slider-thumb {
-            background: #00ff41;
-            box-shadow: 0 0 8px rgba(0, 255, 65, 0.7);
-        }
-        
-        body.matrix-theme .volume-percentage {
-            background: rgba(0, 255, 65, 0.9);
-        }
-        
-        body.matrix-theme .volume-icon {
-            color: #00ff41;
-        }
-        
-        body.matrix-theme .crt-effect::after {
-            display: none;
-        }
-
-        /* ДОБАВЛЕННЫЕ СТИЛИ */
-        .player-container {
-            margin-top: 10px; /* Поднял плеер чуть выше */
-        }
-
-        .volume-slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 8px;
-            background: rgba(80, 80, 80, 0.5);
-            border-radius: 5px;
-            outline: none;
-            cursor: pointer;
-        }
-
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #1DB954;
-            cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 0 5px rgba(0,0,0,0.5);
-        }
-
-        .volume-slider::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #1DB954;
-            cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 0 5px rgba(0,0,0,0.5);
-        }
-
         .minecraft-loading {
             position: absolute;
             top: 50%;
@@ -1284,10 +942,48 @@
             100% { transform: rotate(360deg); }
         }
 
-        .share-buttons-simple {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        @media (max-width: 900px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .side-panel {
+                width: 100%;
+                height: 200px;
+                margin-bottom: 12px;
+            }
+            
+            .gif-container {
+                width: 100%;
+                height: 250px;
+                order: -1;
+            }
+            
+            .player-container {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .player-top {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .volume-control {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+
+        /* Темы */
+        body.retro-theme {
+            background-color: #121212;
+            color: #FFFFFF;
+        }
+        
+        body.retro-theme .vintage-overlay {
+            display: block;
         }
     </style>
 </head>
@@ -1441,37 +1137,42 @@
         </div>
         
         <div class="player-container crt-effect">
-            <div class="player-left">
-                <div class="player-icon" id="player-icon">
-                    <i class="fas fa-heart"></i>
+            <!-- ВЕРХНЯЯ ЧАСТЬ - ОСНОВНЫЕ ЭЛЕМЕНТЫ -->
+            <div class="player-top">
+                <div class="player-left">
+                    <div class="player-icon" id="player-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="station-text">
+                        <h2 id="player-station">KISS FM</h2>
+                        <p id="player-description">Лучшие мировые хиты в отличном качестве</p>
+                    </div>
                 </div>
-                <div class="station-text">
-                    <h2 id="player-station">KISS FM</h2>
-                    <p id="player-description">Лучшие мировые хиты в отличном качестве</p>
-                </div>
-            </div>
-            
-            <div class="player-center">
-                <button class="btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
-                <button class="btn btn-play" id="play-btn"><i class="fas fa-play"></i></button>
-                <button class="btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
-            </div>
-            
-            <div class="player-right">
-                <button class="btn" id="refresh-btn" title="Обновить поток">
-                    <i class="fas fa-sync-alt"></i>
-                </button>
-                <button class="btn" id="room-btn" title="Совместное прослушивание">
-                    <i class="fas fa-users"></i>
-                </button>
-                <button class="btn" id="share-btn" title="Поделиться">
-                    <i class="fas fa-share-alt"></i>
-                </button>
                 
-                <div class="volume-container">
+                <div class="player-center">
+                    <button class="btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
+                    <button class="btn btn-play" id="play-btn"><i class="fas fa-play"></i></button>
+                    <button class="btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
+                </div>
+                
+                <div class="player-buttons">
+                    <button class="btn" id="refresh-btn" title="Обновить поток">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="btn" id="room-btn" title="Совместное прослушивание">
+                        <i class="fas fa-users"></i>
+                    </button>
+                    <button class="btn" id="share-btn" title="Поделиться">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- НИЖНЯЯ ЧАСТЬ - ПОЛЗУНОК ОТДЕЛЬНО -->
+            <div class="player-bottom">
+                <div class="volume-control">
                     <span class="volume-icon"><i class="fas fa-volume-down"></i></span>
                     <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
-                    <span class="volume-percentage" id="volume-percentage">70%</span>
                     <span class="volume-icon"><i class="fas fa-volume-up"></i></span>
                 </div>
             </div>
@@ -1660,7 +1361,6 @@
             const refreshButton = document.getElementById('refresh-btn');
             const randomStationBtn = document.getElementById('random-station-btn');
             const volumeSlider = document.getElementById('volume-slider');
-            const volumePercentage = document.getElementById('volume-percentage');
             const stationItems = document.querySelectorAll('.station-list li');
             const searchBox = document.querySelector('.search-box');
             const visualization = document.getElementById('visualization');
@@ -1690,35 +1390,27 @@
             // Инициализация
             updateStationInfo();
             changeGif();
-            updateVolumePercentage();
-            
-            // ФИКС: Исправляем ползунок громкости
-            function fixVolumeSlider() {
-                // Убедимся, что ползунок работает правильно
-                volumeSlider.addEventListener('input', function() {
-                    const value = this.value;
-                    volumePercentage.textContent = `${value}%`;
-                    if (audio) audio.volume = value / 100;
-                    
-                    // Обновляем иконку громкости
-                    const volumeIcons = document.querySelectorAll('.volume-icon i');
-                    volumeIcons.forEach(icon => {
-                        if (value == 0) {
-                            icon.className = 'fas fa-volume-mute';
-                        } else if (value < 50) {
-                            icon.className = 'fas fa-volume-down';
-                        } else {
-                            icon.className = 'fas fa-volume-up';
-                        }
-                    });
-                });
+
+            // ПРОСТОЙ И РАБОЧИЙ ОБРАБОТЧИК ГРОМКОСТИ
+            volumeSlider.addEventListener('input', function() {
+                console.log('Volume changed to:', this.value);
+                if (audio) {
+                    audio.volume = this.value / 100;
+                    console.log('Audio volume set to:', audio.volume);
+                }
                 
-                // Добавляем поддержку для Firefox
-                volumeSlider.addEventListener('change', function() {
-                    const value = this.value;
-                    if (audio) audio.volume = value / 100;
+                // Обновляем иконку
+                const volumeIcons = document.querySelectorAll('.volume-icon i');
+                volumeIcons.forEach(icon => {
+                    if (this.value == 0) {
+                        icon.className = 'fas fa-volume-mute';
+                    } else if (this.value < 50) {
+                        icon.className = 'fas fa-volume-down';
+                    } else {
+                        icon.className = 'fas fa-volume-up';
+                    }
                 });
-            }
+            });
             
             // Функция показа уведомления
             function showNotification(message, type = 'info') {
@@ -1862,7 +1554,7 @@
                     });
             }
             
-            // Функции для шаринга - УПРОЩЕННЫЙ ВАРИАНТ
+            // Функции для шаринга
             shareBtn.addEventListener('click', function() {
                 shareModal.style.display = 'block';
             });
@@ -1901,12 +1593,6 @@
             });
             
             chatSendBtn.addEventListener('click', sendMessage);
-            
-            // Обновление процента громкости
-            function updateVolumePercentage() {
-                const value = volumeSlider.value;
-                volumePercentage.textContent = `${value}%`;
-            }
             
             // Переключение темы
             themeSwitcher.addEventListener('click', function() {
@@ -1953,12 +1639,6 @@
                 }
             });
             
-            // Обработчик громкости - ИСПРАВЛЕННЫЙ
-            volumeSlider.addEventListener('input', function() {
-                updateVolumePercentage();
-                if (audio) audio.volume = volumeSlider.value / 100;
-            });
-            
             // Обработчик кнопки "Случайное радио"
             randomStationBtn.addEventListener('click', function() {
                 currentStationIndex = Math.floor(Math.random() * stationIds.length);
@@ -1988,7 +1668,6 @@
             
             // Обработчик кнопки "Обновить" с анимацией
             refreshButton.addEventListener('click', function() {
-                // Добавляем анимацию вращения
                 this.classList.add('reload-animation');
                 setTimeout(() => {
                     this.classList.remove('reload-animation');
@@ -2054,11 +1733,9 @@
                     audio = new Audio(radioStations[currentStation].url);
                     audio.volume = volumeSlider.value / 100;
                     audio.play().then(() => {
-                        // Скрываем плашку после успешной загрузки
                         minecraftLoading.style.display = 'none';
                     }).catch(error => {
                         console.error('Ошибка воспроизведения:', error);
-                        // Оставляем плашку видимой при ошибке для Minecraft
                         if (currentStation === 'minecraft') {
                             minecraftLoading.style.display = 'block';
                         }
@@ -2110,12 +1787,6 @@
                 const dropdown = document.getElementById('user-dropdown');
                 if (dropdown) dropdown.classList.remove('show');
             });
-            
-            // ФИКС: Исправляем ползунок громкости
-            fixVolumeSlider();
-            
-            // ФИКС: Поднимаем плеер немного выше
-            document.querySelector('.player-container').style.marginTop = '10px';
         }
     </script>
 </body>

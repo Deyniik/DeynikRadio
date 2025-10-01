@@ -21,6 +21,7 @@
     <meta name="twitter:card" content="summary_large_image">
     
     <style>
+        /* ВСЕ СТИЛИ ОСТАЮТСЯ ПРЕЖНИМИ */
         * {
             margin: 0;
             padding: 0;
@@ -1151,27 +1152,32 @@
             box-shadow: 0 0 8px rgba(0, 255, 234, 0.7);
         }
         
-        body.cyber-theme .volume-percentage {
-            background: rgba(0, 255, 234, 0.9);
-        }
-        
-        body.cyber-theme .volume-icon {
-            color: #00ffea;
-        }
-        
-        body.cyber-theme .crt-effect::after {
-            display: none;
-        }
-        
-        body.matrix-theme {
-            background-color: #000f0a;
-            color: #00ff41;
-        }
-        
-        body.matrix-theme .vintage-overlay {
-            display: none;
-        }
-        
+       .volume-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 160px;
+    background: rgba(40, 40, 40, 0.8);
+    padding: 10px 15px;
+    border-radius: 25px;
+    position: relative;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    pointer-events: none; /* ДОБАВЬ ЭТУ СТРОКУ */
+}
+
+.volume-slider {
+    flex: 1;
+    height: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(80, 80, 80, 0.5);
+    outline: none;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    pointer-events: auto; /* ДОБАВЬ ЭТУ СТРОКУ */
+}
         body.matrix-theme .side-panel,
         body.matrix-theme .player-container,
         body.matrix-theme .gif-container {
@@ -1215,6 +1221,74 @@
         body.matrix-theme .crt-effect::after {
             display: none;
         }
+
+        /* ДОБАВЛЕННЫЕ СТИЛИ */
+        .player-container {
+            margin-top: 10px; /* Поднял плеер чуть выше */
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: rgba(80, 80, 80, 0.5);
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #1DB954;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #1DB954;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+
+        .minecraft-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: #1DB954;
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 10;
+            border: 2px solid #1DB954;
+            box-shadow: 0 0 20px rgba(29, 185, 84, 0.5);
+            display: none;
+        }
+
+        .reload-animation {
+            animation: spin 0.5s linear;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .share-buttons-simple {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
     </style>
 </head>
 <body class="retro-theme">
@@ -1241,18 +1315,18 @@
                     <p style="font-size: 0.8rem; color: #888;">https://deyniik.github.io/DeynikRadio/</p>
                 </div>
             </div>
-            <div class="share-buttons">
+            <div class="share-buttons-simple">
                 <button class="share-option" id="copyLinkBtn">
                     <i class="fas fa-copy"></i> Скопировать ссылку
                 </button>
-                <button class="share-option" onclick="window.open('https://twitter.com/intent/tweet?text=Слушайте%20лучшие%20радиостанции%20на%20Deynik%20Radio!&url=https://deyniik.github.io/DeynikRadio/', '_blank')">
-                    <i class="fab fa-twitter"></i> Поделиться в Twitter
-                </button>
-                <button class="share-option" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https://deyniik.github.io/DeynikRadio/', '_blank')">
-                    <i class="fab fa-facebook"></i> Поделиться в Facebook
-                </button>
             </div>
         </div>
+    </div>
+    
+    <!-- Плашка загрузки для Minecraft -->
+    <div class="minecraft-loading" id="minecraftLoading">
+        <h3>Minecraft Lo-Fi</h3>
+        <p>Эта станция загружается дольше обычного. Пожалуйста, подождите немного...</p>
     </div>
     
     <div class="container" id="mainContainer">
@@ -1602,6 +1676,8 @@
             const shareModal = document.getElementById('shareModal');
             const closeShareModal = document.getElementById('closeShareModal');
             const copyLinkBtn = document.getElementById('copyLinkBtn');
+            const minecraftLoading = document.getElementById('minecraftLoading');
+            const notification = document.getElementById('notification');
             
             let isPlaying = false;
             let audio = null;
@@ -1615,6 +1691,54 @@
             updateStationInfo();
             changeGif();
             updateVolumePercentage();
+            
+            // ФИКС: Исправляем ползунок громкости
+            function fixVolumeSlider() {
+                // Убедимся, что ползунок работает правильно
+                volumeSlider.addEventListener('input', function() {
+                    const value = this.value;
+                    volumePercentage.textContent = `${value}%`;
+                    if (audio) audio.volume = value / 100;
+                    
+                    // Обновляем иконку громкости
+                    const volumeIcons = document.querySelectorAll('.volume-icon i');
+                    volumeIcons.forEach(icon => {
+                        if (value == 0) {
+                            icon.className = 'fas fa-volume-mute';
+                        } else if (value < 50) {
+                            icon.className = 'fas fa-volume-down';
+                        } else {
+                            icon.className = 'fas fa-volume-up';
+                        }
+                    });
+                });
+                
+                // Добавляем поддержку для Firefox
+                volumeSlider.addEventListener('change', function() {
+                    const value = this.value;
+                    if (audio) audio.volume = value / 100;
+                });
+            }
+            
+            // Функция показа уведомления
+            function showNotification(message, type = 'info') {
+                notification.textContent = message;
+                notification.className = 'notification';
+                
+                if (type === 'success') {
+                    notification.style.background = '#1DB954';
+                } else if (type === 'error') {
+                    notification.style.background = '#FF5722';
+                } else {
+                    notification.style.background = '#2196F3';
+                }
+                
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
             
             // Функции для работы с аутентификацией
             function updateAuthUI(user) {
@@ -1738,7 +1862,7 @@
                     });
             }
             
-            // Функции для шаринга
+            // Функции для шаринга - УПРОЩЕННЫЙ ВАРИАНТ
             shareBtn.addEventListener('click', function() {
                 shareModal.style.display = 'block';
             });
@@ -1748,8 +1872,14 @@
             });
             
             copyLinkBtn.addEventListener('click', function() {
-                navigator.clipboard.writeText('https://deyniik.github.io/DeynikRadio/');
-                shareModal.style.display = 'none';
+                navigator.clipboard.writeText('https://deyniik.github.io/DeynikRadio/')
+                    .then(() => {
+                        showNotification('Ссылка скопирована в буфер обмена!', 'success');
+                        shareModal.style.display = 'none';
+                    })
+                    .catch(() => {
+                        showNotification('Не удалось скопировать ссылку', 'error');
+                    });
             });
             
             window.addEventListener('click', function(event) {
@@ -1806,7 +1936,12 @@
                         audio = new Audio(radioStations[currentStation].url);
                         audio.volume = volumeSlider.value / 100;
                     }
-                    audio.play();
+                    audio.play().catch(error => {
+                        console.error('Ошибка воспроизведения:', error);
+                        isPlaying = false;
+                        playButton.innerHTML = '<i class="fas fa-play"></i>';
+                        document.getElementById('player-icon').classList.remove('playing');
+                    });
                     playbackIndicator.style.opacity = '1';
                     startVisualization();
                 } else {
@@ -1818,7 +1953,7 @@
                 }
             });
             
-            // Обработчик громкости
+            // Обработчик громкости - ИСПРАВЛЕННЫЙ
             volumeSlider.addEventListener('input', function() {
                 updateVolumePercentage();
                 if (audio) audio.volume = volumeSlider.value / 100;
@@ -1851,15 +1986,26 @@
                 changeStation();
             });
             
-            // Обработчик кнопки "Обновить"
+            // Обработчик кнопки "Обновить" с анимацией
             refreshButton.addEventListener('click', function() {
+                // Добавляем анимацию вращения
+                this.classList.add('reload-animation');
+                setTimeout(() => {
+                    this.classList.remove('reload-animation');
+                }, 500);
+                
                 if (audio) {
                     const wasPlaying = !audio.paused;
                     audio.pause();
                     audio = new Audio(radioStations[currentStation].url + '?nocache=' + new Date().getTime());
                     audio.volume = volumeSlider.value / 100;
-                    if (wasPlaying) audio.play();
+                    if (wasPlaying) {
+                        audio.play().catch(error => {
+                            console.error('Ошибка воспроизведения:', error);
+                        });
+                    }
                     changeGif();
+                    showNotification('Станция перезагружена', 'success');
                 }
             });
             
@@ -1896,11 +2042,27 @@
                     }
                 });
                 
+                // Показываем плашку загрузки для Minecraft
+                if (currentStation === 'minecraft') {
+                    minecraftLoading.style.display = 'block';
+                } else {
+                    minecraftLoading.style.display = 'none';
+                }
+                
                 if (isPlaying) {
                     if (audio) audio.pause();
                     audio = new Audio(radioStations[currentStation].url);
                     audio.volume = volumeSlider.value / 100;
-                    audio.play();
+                    audio.play().then(() => {
+                        // Скрываем плашку после успешной загрузки
+                        minecraftLoading.style.display = 'none';
+                    }).catch(error => {
+                        console.error('Ошибка воспроизведения:', error);
+                        // Оставляем плашку видимой при ошибке для Minecraft
+                        if (currentStation === 'minecraft') {
+                            minecraftLoading.style.display = 'block';
+                        }
+                    });
                     playbackIndicator.style.opacity = '1';
                     startVisualization();
                 }
@@ -1948,6 +2110,12 @@
                 const dropdown = document.getElementById('user-dropdown');
                 if (dropdown) dropdown.classList.remove('show');
             });
+            
+            // ФИКС: Исправляем ползунок громкости
+            fixVolumeSlider();
+            
+            // ФИКС: Поднимаем плеер немного выше
+            document.querySelector('.player-container').style.marginTop = '10px';
         }
     </script>
 </body>

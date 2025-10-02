@@ -115,6 +115,22 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            flex: 1;
+            justify-content: flex-start;
+        }
+        
+        .header-center {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            justify-content: flex-end;
         }
         
         .google-login-btn {
@@ -174,6 +190,27 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+        
+        .edit-nickname-btn {
+            background: transparent;
+            border: none;
+            color: #B3B3B3;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: all 0.3s ease;
+            padding: 2px;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .edit-nickname-btn:hover {
+            color: #1DB954;
+            background: rgba(29, 185, 84, 0.1);
         }
         
         /* Выпадающее меню пользователя */
@@ -312,7 +349,7 @@
             flex-direction: column;
             overflow-y: auto;
             scrollbar-width: thin;
-            scrollbar-color: #1DB954 #191414;
+            scrollbar-color: rgba(29, 185, 84, 0.3) #191414;
             padding-right: 5px;
             margin-bottom: 10px;
         }
@@ -326,7 +363,7 @@
         }
         
         .station-list::-webkit-scrollbar-thumb {
-            background-color: #1DB954;
+            background-color: rgba(29, 185, 84, 0.3);
             border-radius: 5px;
         }
         
@@ -341,6 +378,7 @@
             font-size: 0.9rem;
             display: flex;
             align-items: center;
+            justify-content: space-between;
         }
         
         .station-list li:hover {
@@ -352,6 +390,19 @@
             background: rgba(29, 185, 84, 0.3);
             border-left: 3px solid #1DB954;
             box-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
+        }
+        
+        .station-likes {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            color: #B3B3B3;
+        }
+        
+        .station-likes .likes-count {
+            min-width: 20px;
+            text-align: center;
         }
         
         .station-icon {
@@ -480,6 +531,35 @@
             color: #B3B3B3;
         }
         
+        /* Эффект лайка */
+        .heart-effect {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8rem;
+            color: white;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            animation: heartPop 0.8s ease-out;
+        }
+        
+        @keyframes heartPop {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -60%) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -70%) scale(1.5);
+            }
+        }
+        
         /* ОБНОВЛЕННЫЙ ПЛЕЕР - БОЛЬШИЕ КНОПКИ НО ПРЕЖНЯЯ ВЫСОТА */
         .player-container {
             background: #191414;
@@ -558,7 +638,7 @@
             align-items: center;
             justify-content: flex-end;
             flex: 1;
-            gap: 12px;
+            gap: 15px;
         }
         
         .btn {
@@ -592,6 +672,46 @@
         
         .btn-play:hover {
             box-shadow: 0 0 16px rgba(29, 185, 84, 0.8);
+        }
+        
+        .btn-like {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            background: rgba(50, 50, 50, 0.8);
+            border: none;
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-like i {
+            font-size: 1.3rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-like.active i {
+            color: white;
+        }
+        
+        .btn-like:hover {
+            background: rgba(29, 185, 84, 0.4);
+            transform: scale(1.05);
+        }
+        
+        .likes-count-bottom {
+            font-size: 0.7rem;
+            color: #B3B3B3;
+            font-weight: bold;
         }
         
         /* ОБНОВЛЕННЫЙ ПОЛЗУНОК ГРОМКОСТИ */
@@ -696,7 +816,7 @@
             max-height: none;
             margin-bottom: 10px;
             scrollbar-width: thin;
-            scrollbar-color: #1DB954 #191414;
+            scrollbar-color: rgba(29, 185, 84, 0.3) #191414;
             display: flex;
             flex-direction: column;
         }
@@ -710,7 +830,7 @@
         }
         
         .chat-messages::-webkit-scrollbar-thumb {
-            background-color: #1DB954;
+            background-color: rgba(29, 185, 84, 0.3);
             border-radius: 2px;
         }
         
@@ -722,6 +842,12 @@
             font-size: 0.8rem;
             line-height: 1.2;
             word-wrap: break-word;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .message:hover {
+            background: rgba(40, 40, 40, 0.8);
         }
         
         .message-user {
@@ -734,6 +860,160 @@
             font-size: 0.7rem;
             color: #888;
             margin-left: 5px;
+        }
+        
+        .message-reactions {
+            display: flex;
+            gap: 5px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .reaction {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        
+        .reaction:hover {
+            background: rgba(29, 185, 84, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .reaction-count {
+            font-size: 0.65rem;
+            color: #B3B3B3;
+        }
+        
+        .reaction-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: #B3B3B3;
+        }
+        
+        .message:hover .reaction-btn {
+            opacity: 1;
+        }
+        
+        .reaction-btn:hover {
+            background: rgba(29, 185, 84, 0.2);
+            color: #1DB954;
+        }
+        
+        .reaction-picker {
+            position: absolute;
+            top: -45px;
+            left: 0;
+            background: rgba(40, 40, 40, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 5px;
+            display: none;
+            gap: 5px;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .reaction-picker.show {
+            display: flex;
+        }
+        
+        .reaction-emoji {
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 3px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .reaction-emoji:hover {
+            background: rgba(29, 185, 84, 0.2);
+            transform: scale(1.2);
+        }
+        
+        .more-reactions-btn {
+            font-size: 0.8rem;
+            cursor: pointer;
+            padding: 3px 6px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .more-reactions-btn:hover {
+            background: rgba(29, 185, 84, 0.2);
+        }
+        
+        /* Большое окно реакций */
+        .reactions-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+        
+        .reactions-modal-content {
+            background-color: #191414;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 420px;
+            border: 2px solid #1DB954;
+            position: relative;
+        }
+        
+        .reactions-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            margin-top: 15px;
+            justify-items: center;
+        }
+        
+        .reaction-emoji-large {
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            text-align: center;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .reaction-emoji-large:hover {
+            background: rgba(29, 185, 84, 0.2);
+            transform: scale(1.1);
         }
         
         /* ОБНОВЛЕННЫЙ ЧАТ С КНОПКОЙ ЭМОДЗИ СЛЕВА */
@@ -851,6 +1131,7 @@
             display: grid;
             grid-template-columns: repeat(6, 1fr);
             gap: 5px;
+            justify-items: center;
         }
         
         .emoji {
@@ -860,6 +1141,11 @@
             border-radius: 5px;
             text-align: center;
             transition: all 0.2s ease;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .emoji:hover {
@@ -1005,6 +1291,64 @@
             background: rgba(255, 255, 255, 0.2);
         }
         
+        /* Модальное окно для смены ника */
+        .nickname-modal-content {
+            background-color: #191414;
+            margin: 20% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 350px;
+            border: 2px solid #1DB954;
+            position: relative;
+        }
+        
+        .nickname-input {
+            width: 100%;
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            margin: 15px 0;
+        }
+        
+        .nickname-input:focus {
+            border-color: #1DB954;
+        }
+        
+        .nickname-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .nickname-btn {
+            background: rgba(29, 185, 84, 0.3);
+            border: 1px solid #1DB954;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nickname-btn:hover {
+            background: rgba(29, 185, 84, 0.5);
+        }
+        
+        .nickname-btn.cancel {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .nickname-btn.cancel:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
         /* Уведомления */
         .notification {
             position: fixed;
@@ -1090,6 +1434,18 @@
                 width: 200px;
                 left: -50px;
             }
+            
+            .header-center {
+                flex: 1;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .reactions-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
         }
 
         /* Темы */
@@ -1135,6 +1491,30 @@
         </div>
     </div>
     
+    <!-- Модальное окно для реакций -->
+    <div class="reactions-modal" id="reactionsModal">
+        <div class="reactions-modal-content">
+            <span class="close" id="closeReactionsModal">&times;</span>
+            <h3>Выберите реакцию</h3>
+            <div class="reactions-grid" id="reactionsGrid">
+                <!-- Реакции будут добавлены через JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для смены ника -->
+    <div class="modal" id="nicknameModal">
+        <div class="nickname-modal-content">
+            <span class="close" id="closeNicknameModal">&times;</span>
+            <h3>Сменить никнейм</h3>
+            <input type="text" class="nickname-input" id="nickname-input" placeholder="Введите новый никнейм" maxlength="20">
+            <div class="nickname-buttons">
+                <button class="nickname-btn cancel" id="cancelNicknameBtn">Отмена</button>
+                <button class="nickname-btn" id="saveNicknameBtn">Сохранить</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- Плашка загрузки для Minecraft -->
     <div class="minecraft-loading" id="minecraftLoading">
         <h3>Minecraft Lo-Fi</h3>
@@ -1150,10 +1530,14 @@
                     </button>
                 </div>
             </div>
-            <h1>Deynik Radio</h1>
-            <button class="theme-switcher" id="themeSwitcher">
-                <i class="fas fa-palette"></i> Ретро
-            </button>
+            <div class="header-center">
+                <h1>Deynik Radio</h1>
+            </div>
+            <div class="header-right">
+                <button class="theme-switcher" id="themeSwitcher">
+                    <i class="fas fa-palette"></i> Ретро
+                </button>
+            </div>
         </header>
         
         <div class="content">
@@ -1175,21 +1559,100 @@
                 
                 <ul class="station-list">
                     <div class="category-title">Международные</div>
-                    <li class="active" data-station="kissint"><span class="station-icon"><i class="fas fa-heart"></i></span> KISS FM</li>
-                    <li data-station="gaga"><span class="station-icon"><i class="fas fa-paw"></i></span> Lady Gaga Radio</li>
-                    <li data-station="rp"><span class="station-icon"><i class="fas fa-music"></i></span> Radio Paradise</li>
-                    <li data-station="lofi"><span class="station-icon"><i class="fas fa-moon"></i></span> LoFi Girl</li>
-                    <li data-station="z100"><span class="station-icon"><i class="fas fa-broadcast-tower"></i></span> Z100 New York</li>
-                    <li data-station="jazz"><span class="station-icon"><i class="fas fa-music"></i></span> Jazz24</li>
+                    <li class="active" data-station="kissint">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-heart"></i></span> KISS FM
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    <li data-station="gaga">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-paw"></i></span> Lady Gaga Radio
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    <li data-station="rp">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-music"></i></span> Radio Paradise
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    <li data-station="lofi">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-moon"></i></span> LoFi Girl
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    <li data-station="z100">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-broadcast-tower"></i></span> Z100 New York
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    <li data-station="jazz">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-music"></i></span> Jazz24
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
                     
                     <div class="category-title">Lo-Fi</div>
-                    <li data-station="chillhop"><span class="station-icon"><i class="fas fa-moon"></i></span> Chillhop Radio</li>
-                    <li data-station="lofihiphop"><span class="station-icon"><i class="fas fa-headphones"></i></span> LoFi Hip Hop</li>
-                    <li data-station="lofigirl"><span class="station-icon"><i class="fas fa-moon"></i></span> LoFi Girl</li>
-                    <li data-station="minecraft"><span class="station-icon"><i class="fas fa-cube"></i></span> MINECRAFT Lo Fi</li>
+                    <li data-station="chillhop">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-moon"></i></span> Chillhop Radio
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    <li data-station="lofihiphop">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-headphones"></i></span> LoFi Hip Hop
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    <li data-station="lofigirl">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-moon"></i></span> LoFi Girl
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
                     
                     <div class="category-title">Тематические</div>
-                    <li data-station="halloween"><span class="station-icon"><i class="fas fa-ghost"></i></span> Halloween Radio</li>
+                    <li data-station="halloween">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-ghost"></i></span> Halloween Radio
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    
+                    <div class="category-title">Без АП</div>
+                    <li data-station="minecraft">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-cube"></i></span> MINECRAFT Lo Fi
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
                 </ul>
                 
                 <div class="random-station-btn" id="random-station-btn">
@@ -1337,11 +1800,12 @@
                 </div>
                 
                 <div class="player-buttons">
+                    <button class="btn-like" id="like-btn" title="Лайкнуть станцию">
+                        <i class="far fa-heart"></i>
+                        <div class="likes-count-bottom" id="likes-count-bottom">0</div>
+                    </button>
                     <button class="btn" id="refresh-btn" title="Обновить поток">
                         <i class="fas fa-sync-alt"></i>
-                    </button>
-                    <button class="btn" id="room-btn" title="Совместное прослушивание">
-                        <i class="fas fa-users"></i>
                     </button>
                     <button class="btn" id="share-btn" title="Поделиться">
                         <i class="fas fa-share-alt"></i>
@@ -1499,7 +1963,7 @@
                 nextArtist: "Minecraft Lofi",
                 quality: "128kbps",
                 icon: "fas fa-cube",
-                category: "lofi"
+                category: "no-copyright"
             },
             halloween: {
                 name: "Halloween Radio",
@@ -1515,7 +1979,7 @@
             }
         };
 
-        // Массив с гифками
+        // Массив с гифками для обычных станций
         const gifs = [
             'https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif',
             'https://i.pinimg.com/originals/20/c8/3d/20c83d1cb257a6c4e5f68960ef0c3046.gif',
@@ -1529,7 +1993,21 @@
             'https://i.pinimg.com/originals/2f/10/ce/2f10ce69b96c0611989308b0abc68e70.gif',
             'https://i.pinimg.com/originals/6a/d2/ee/6ad2ee191d434a996766b500a1eb197e.gif',
             'https://markiled.github.io/Images/Art/Commissions/Commission-2020-Mar-Raul.gif',
-            'https://i.pinimg.com/originals/6e/fb/de/6efbde2becc91166553e90ca975aaf07.gif'
+            'https://i.pinimg.com/originals/6e/fb/de/6efbde2becc91166553e90ca975aaf07.gif',
+            'https://i.pinimg.com/originals/dc/9c/38/dc9c38d59ade3c7e307f64d52b3eba32.gif',
+            'https://i.pinimg.com/originals/0e/85/86/0e8586ecd90850bf236dd7efdf5fa594.gif'
+        ];
+
+        // Массив с гифками для Minecraft станции
+        const minecraftGifs = [
+            'https://i.pinimg.com/originals/44/f2/f6/44f2f6325aa9bf8c93ed6c3d6e8f8d57.gif',
+            'https://i.pinimg.com/originals/05/cf/1b/05cf1b97379bb751d2bf03b55ee16c5e.gif',
+            'https://i.pinimg.com/originals/da/85/43/da8543494a3baaec4fc61c2b952f8de0.gif',
+            'https://i.pinimg.com/originals/d9/04/03/d9040300483e5e5465e56ddb713eeb1b.gif',
+            'https://i.pinimg.com/originals/ac/25/3e/ac253eae753d0442a50f061051956cef.gif',
+            'https://i.pinimg.com/originals/2a/af/bf/2aafbff9c75012c41c2c9abd92d5de35.gif',
+            'https://i.pinimg.com/originals/a3/b4/55/a3b4558c0f0963b7a6135cc4a63b0d15.gif',
+            'https://i.pinimg.com/originals/8a/34/3e/8a343ea387b21d843715d0a3a86059ed.gif'
         ];
 
         // Массив ID станций для навигации
@@ -1551,6 +2029,7 @@
             const prevButton = document.getElementById('prev-btn');
             const nextButton = document.getElementById('next-btn');
             const refreshButton = document.getElementById('refresh-btn');
+            const likeButton = document.getElementById('like-btn');
             const randomStationBtn = document.getElementById('random-station-btn');
             const volumeSlider = document.getElementById('volume-slider');
             const stationItems = document.querySelectorAll('.station-list li');
@@ -1559,7 +2038,6 @@
             const mainGif = document.getElementById('mainGif');
             const playbackIndicator = document.getElementById('playback-indicator');
             const themeSwitcher = document.getElementById('themeSwitcher');
-            const roomBtn = document.getElementById('room-btn');
             const shareBtn = document.getElementById('share-btn');
             const chatInput = document.getElementById('chat-input');
             const chatSendBtn = document.getElementById('chat-send-btn');
@@ -1573,6 +2051,14 @@
             const emojiPicker = document.getElementById('emoji-picker');
             const categoryBtns = document.querySelectorAll('.category-btn');
             const emojis = document.querySelectorAll('.emoji');
+            const reactionsModal = document.getElementById('reactionsModal');
+            const closeReactionsModal = document.getElementById('closeReactionsModal');
+            const reactionsGrid = document.getElementById('reactionsGrid');
+            const nicknameModal = document.getElementById('nicknameModal');
+            const closeNicknameModal = document.getElementById('closeNicknameModal');
+            const cancelNicknameBtn = document.getElementById('cancelNicknameBtn');
+            const saveNicknameBtn = document.getElementById('saveNicknameBtn');
+            const nicknameInput = document.getElementById('nickname-input');
             
             let isPlaying = false;
             let audio = null;
@@ -1581,10 +2067,47 @@
             let visualizationInterval = null;
             let currentTheme = 'retro';
             let chatUnsubscribe = null;
+            let stationLikes = {};
+            let userLikedStations = new Set();
+            let currentMessageForReaction = null;
+            let userNickname = localStorage.getItem('userNickname') || '';
             
             // Инициализация
+            loadLikes();
             updateStationInfo();
             changeGif();
+            initReactionsModal();
+
+            // Инициализация модального окна реакций
+            function initReactionsModal() {
+                const reactions = ['👍', '❤️', '😂', '😮', '😢', '😡', '🎉', '🤔', '👏', '🙏', '🔥', '💯', '✨', '🎵', '🎶', '🥁', '🎸', '🎧', '📻', '⭐', '💎', '🏆', '🚀', '💡', '🎨', '📚', '🎮', '🍕', '☕', '🎂', '🐱', '🐶', '🦊', '🐼', '🐨', '🦁', '🐯', '🐸', '🐵', '🦄'];
+                
+                reactionsGrid.innerHTML = '';
+                reactions.forEach(reaction => {
+                    const emojiElement = document.createElement('div');
+                    emojiElement.className = 'reaction-emoji-large';
+                    emojiElement.textContent = reaction;
+                    emojiElement.addEventListener('click', function() {
+                        if (currentMessageForReaction) {
+                            addReactionToMessage(currentMessageForReaction, reaction);
+                            reactionsModal.style.display = 'none';
+                        }
+                    });
+                    reactionsGrid.appendChild(emojiElement);
+                });
+            }
+
+            // Функция для показа эффекта сердечка
+            function showHeartEffect() {
+                const heart = document.createElement('div');
+                heart.className = 'heart-effect';
+                heart.innerHTML = '<i class="fas fa-heart"></i>';
+                document.body.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 800);
+            }
 
             // Обновление иконки громкости
             function updateVolumeIcon() {
@@ -1634,19 +2157,92 @@
                 }, 3000);
             }
             
-            // Функции для работы с аутентификацией
+            // Функции для работы с лайками станций
+            function loadLikes() {
+                const savedLikes = localStorage.getItem('stationLikes');
+                const savedUserLikes = localStorage.getItem('userLikedStations');
+                
+                if (savedLikes) {
+                    stationLikes = JSON.parse(savedLikes);
+                } else {
+                    // Инициализируем лайки для всех станций
+                    stationIds.forEach(stationId => {
+                        stationLikes[stationId] = 0;
+                    });
+                }
+                
+                if (savedUserLikes) {
+                    userLikedStations = new Set(JSON.parse(savedUserLikes));
+                }
+                
+                updateLikesUI();
+            }
+            
+            function saveLikes() {
+                localStorage.setItem('stationLikes', JSON.stringify(stationLikes));
+                localStorage.setItem('userLikedStations', JSON.stringify([...userLikedStations]));
+            }
+            
+            function updateLikesUI() {
+                // Обновляем лайки в списке станций
+                stationItems.forEach(item => {
+                    const stationId = item.getAttribute('data-station');
+                    const likesCount = item.querySelector('.likes-count');
+                    if (likesCount) {
+                        likesCount.textContent = stationLikes[stationId] || 0;
+                    }
+                });
+                
+                // Обновляем кнопку лайка в плеере
+                const isLiked = userLikedStations.has(currentStation);
+                likeButton.classList.toggle('active', isLiked);
+                likeButton.querySelector('i').className = isLiked ? 'fas fa-heart' : 'far fa-heart';
+                document.getElementById('likes-count-bottom').textContent = stationLikes[currentStation] || 0;
+            }
+            
+            function toggleLike() {
+                if (userLikedStations.has(currentStation)) {
+                    // Убираем лайк
+                    userLikedStations.delete(currentStation);
+                    stationLikes[currentStation] = Math.max(0, (stationLikes[currentStation] || 0) - 1);
+                    showNotification('Лайк убран', 'info');
+                } else {
+                    // Ставим лайк
+                    userLikedStations.add(currentStation);
+                    stationLikes[currentStation] = (stationLikes[currentStation] || 0) + 1;
+                    showNotification('Станция лайкнута! ❤️', 'success');
+                    showHeartEffect();
+                }
+                
+                saveLikes();
+                updateLikesUI();
+                
+                // Анимация кнопки
+                likeButton.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    likeButton.style.transform = 'scale(1)';
+                }, 200);
+            }
+            
+            // Функции для работы с аутентификацией и никами
             function updateAuthUI(user) {
                 const authSection = document.getElementById('auth-section');
                 
                 if (user) {
-                    const displayName = user.displayName || 'Пользователь';
+                    const displayName = userNickname || user.displayName || 'Пользователь';
                     const firstLetter = displayName.charAt(0).toUpperCase();
                     
                     authSection.innerHTML = `
                         <div class="user-profile" id="user-profile">
                             <div class="user-avatar">${firstLetter}</div>
                             <div class="user-name">${displayName}</div>
+                            <button class="edit-nickname-btn" title="Сменить ник">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
                             <div class="user-dropdown" id="user-dropdown">
+                                <div class="dropdown-item" id="edit-nickname-dropdown">
+                                    <i class="fas fa-user-edit"></i> Сменить ник
+                                </div>
                                 <div class="dropdown-item" id="sign-out-btn">
                                     <i class="fas fa-sign-out-alt"></i> Выйти
                                 </div>
@@ -1661,20 +2257,53 @@
                         document.getElementById('user-dropdown').classList.toggle('show');
                     });
                     
+                    document.getElementById('edit-nickname-dropdown').addEventListener('click', function() {
+                        nicknameInput.value = userNickname || user.displayName || '';
+                        nicknameModal.style.display = 'block';
+                    });
+                    
+                    document.querySelector('.edit-nickname-btn').addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        nicknameInput.value = userNickname || user.displayName || '';
+                        nicknameModal.style.display = 'block';
+                    });
+                    
                     document.getElementById('sign-out-btn').addEventListener('click', function() {
                         auth.signOut();
                     });
                     
                 } else {
                     authSection.innerHTML = `
-                        <button class="google-login-btn" id="googleLoginBtn">
-                            <i class="fab fa-google"></i> Войти через Google
-                        </button>
+                        <div class="user-profile" id="user-profile">
+                            <div class="user-avatar">А</div>
+                            <div class="user-name">Аноним</div>
+                            <button class="edit-nickname-btn" title="Сменить ник">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                        </div>
                     `;
                     
                     loadChatHistory();
-                    document.getElementById('googleLoginBtn').addEventListener('click', signInWithGoogle);
+                    
+                    document.querySelector('.edit-nickname-btn').addEventListener('click', function() {
+                        nicknameInput.value = userNickname || 'Аноним';
+                        nicknameModal.style.display = 'block';
+                    });
                 }
+            }
+            
+            function saveNickname() {
+                const newNickname = nicknameInput.value.trim();
+                if (newNickname === '') {
+                    showNotification('Введите никнейм', 'error');
+                    return;
+                }
+                
+                userNickname = newNickname;
+                localStorage.setItem('userNickname', userNickname);
+                nicknameModal.style.display = 'none';
+                updateAuthUI(auth.currentUser);
+                showNotification('Никнейм сохранен!', 'success');
             }
             
             function signInWithGoogle() {
@@ -1683,7 +2312,7 @@
                 auth.signInWithPopup(provider);
             }
             
-            // Функции для работы с чатом
+            // Функции для работы с чатом и реакциями
             function loadChatHistory() {
                 if (chatUnsubscribe) chatUnsubscribe();
                 
@@ -1710,25 +2339,153 @@
                         });
                         
                         messages.forEach((message) => {
-                            const messageElement = document.createElement('div');
-                            messageElement.className = 'message';
-                            
-                            let timeString = 'только что';
-                            if (message.timestamp) {
-                                const time = message.timestamp.toDate ? message.timestamp.toDate() : new Date(message.timestamp);
-                                timeString = time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-                            }
-                            
-                            messageElement.innerHTML = `
-                                <span class="message-user">${message.userName || 'Аноним'}:</span>
-                                ${message.text || ''}
-                                <span class="message-time">${timeString}</span>
-                            `;
-                            chatMessages.appendChild(messageElement);
+                            addMessageToChat(message);
                         });
                         
                         chatMessages.scrollTop = chatMessages.scrollHeight;
                     });
+            }
+
+            function addMessageToChat(message) {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message';
+                messageElement.setAttribute('data-message-id', message.id);
+                
+                let timeString = 'только что';
+                if (message.timestamp) {
+                    const time = message.timestamp.toDate ? message.timestamp.toDate() : new Date(message.timestamp);
+                    timeString = time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                }
+                
+                // Создаем реакции если они есть
+                let reactionsHTML = '';
+                if (message.reactions && Object.keys(message.reactions).length > 0) {
+                    reactionsHTML = '<div class="message-reactions">';
+                    Object.entries(message.reactions).forEach(([emoji, users]) => {
+                        const userCount = Object.keys(users).length;
+                        if (userCount > 0) {
+                            reactionsHTML += `
+                                <div class="reaction" data-emoji="${emoji}" data-message-id="${message.id}">
+                                    <span>${emoji}</span>
+                                    <span class="reaction-count">${userCount}</span>
+                                </div>
+                            `;
+                        }
+                    });
+                    reactionsHTML += '</div>';
+                }
+                
+                messageElement.innerHTML = `
+                    <span class="message-user">${message.userName || 'Аноним'}:</span>
+                    ${message.text || ''}
+                    <span class="message-time">${timeString}</span>
+                    ${reactionsHTML}
+                    <button class="reaction-btn" data-message-id="${message.id}">
+                        <i class="far fa-smile"></i>
+                    </button>
+                    <div class="reaction-picker" id="reaction-picker-${message.id}">
+                        <span class="reaction-emoji" data-emoji="👍">👍</span>
+                        <span class="reaction-emoji" data-emoji="❤️">❤️</span>
+                        <span class="reaction-emoji" data-emoji="😂">😂</span>
+                        <span class="reaction-emoji" data-emoji="😮">😮</span>
+                        <span class="reaction-emoji" data-emoji="😢">😢</span>
+                        <span class="reaction-emoji" data-emoji="🎵">🎵</span>
+                        <span class="more-reactions-btn" data-message-id="${message.id}">⋯</span>
+                    </div>
+                `;
+                
+                chatMessages.appendChild(messageElement);
+                
+                // Добавляем обработчики для реакций
+                const reactionElements = messageElement.querySelectorAll('.reaction');
+                reactionElements.forEach(reaction => {
+                    reaction.addEventListener('click', handleReactionClick);
+                });
+                
+                // Добавляем обработчик для кнопки реакции
+                const reactionBtn = messageElement.querySelector('.reaction-btn');
+                reactionBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const picker = this.parentElement.querySelector('.reaction-picker');
+                    if (picker) {
+                        // Скрываем все другие пикеры
+                        document.querySelectorAll('.reaction-picker').forEach(p => {
+                            if (p !== picker) p.classList.remove('show');
+                        });
+                        picker.classList.toggle('show');
+                    }
+                });
+                
+                // Добавляем обработчики для эмодзи в пикере
+                const emojiElements = messageElement.querySelectorAll('.reaction-emoji');
+                emojiElements.forEach(emoji => {
+                    emoji.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        addReactionToMessage(message.id, this.getAttribute('data-emoji'));
+                        this.parentElement.classList.remove('show');
+                    });
+                });
+                
+                // Добавляем обработчик для кнопки "больше реакций"
+                const moreReactionsBtn = messageElement.querySelector('.more-reactions-btn');
+                moreReactionsBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    currentMessageForReaction = message.id;
+                    reactionsModal.style.display = 'block';
+                    this.parentElement.classList.remove('show');
+                });
+                
+                // Добавляем обработчик для правого клика
+                messageElement.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    const picker = this.querySelector('.reaction-picker');
+                    if (picker) {
+                        // Скрываем все другие пикеры
+                        document.querySelectorAll('.reaction-picker').forEach(p => {
+                            if (p !== picker) p.classList.remove('show');
+                        });
+                        picker.classList.toggle('show');
+                    }
+                });
+            }
+            
+            function handleReactionClick(e) {
+                e.stopPropagation();
+                const messageId = this.getAttribute('data-message-id');
+                const emoji = this.getAttribute('data-emoji');
+                addReactionToMessage(messageId, emoji);
+            }
+            
+            function addReactionToMessage(messageId, emoji) {
+                const user = auth.currentUser;
+                const userId = user ? user.uid : 'anonymous';
+                
+                db.collection('chat').doc(messageId).get().then(doc => {
+                    if (doc.exists) {
+                        const message = doc.data();
+                        const reactions = message.reactions || {};
+                        const userReactions = reactions[emoji] || {};
+                        
+                        if (userReactions[userId]) {
+                            // Убираем реакцию
+                            delete userReactions[userId];
+                            if (Object.keys(userReactions).length === 0) {
+                                delete reactions[emoji];
+                            } else {
+                                reactions[emoji] = userReactions;
+                            }
+                        } else {
+                            // Добавляем реакцию
+                            userReactions[userId] = true;
+                            reactions[emoji] = userReactions;
+                        }
+                        
+                        // Обновляем в Firestore
+                        db.collection('chat').doc(messageId).update({
+                            reactions: reactions
+                        });
+                    }
+                });
             }
 
             function sendMessage() {
@@ -1736,11 +2493,14 @@
                 const messageText = chatInput.value.trim();
                 if (messageText === '') return;
                 
+                const displayName = userNickname || (user ? (user.displayName || 'Пользователь') : 'Аноним');
+                
                 const message = {
                     text: messageText,
-                    userName: user ? (user.displayName || 'Пользователь') : 'Аноним',
+                    userName: displayName,
                     userId: user ? user.uid : 'anonymous',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    reactions: {}
                 };
                 
                 chatSendBtn.disabled = true;
@@ -1776,9 +2536,35 @@
                     });
             });
             
+            // Закрытие модального окна реакций
+            closeReactionsModal.addEventListener('click', function() {
+                reactionsModal.style.display = 'none';
+            });
+            
+            // Обработчики для модального окна ника
+            closeNicknameModal.addEventListener('click', function() {
+                nicknameModal.style.display = 'none';
+            });
+            
+            cancelNicknameBtn.addEventListener('click', function() {
+                nicknameModal.style.display = 'none';
+            });
+            
+            saveNicknameBtn.addEventListener('click', saveNickname);
+            
+            nicknameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') saveNickname();
+            });
+            
             window.addEventListener('click', function(event) {
                 if (event.target === shareModal) {
                     shareModal.style.display = 'none';
+                }
+                if (event.target === reactionsModal) {
+                    reactionsModal.style.display = 'none';
+                }
+                if (event.target === nicknameModal) {
+                    nicknameModal.style.display = 'none';
                 }
             });
             
@@ -1798,9 +2584,13 @@
                 });
             });
             
-            // Закрытие окна эмодзи при клике вне его
+            // Закрытие окон при клике вне их
             document.addEventListener('click', function() {
                 emojiPicker.classList.remove('show');
+                // Скрываем все пикеры реакций
+                document.querySelectorAll('.reaction-picker').forEach(picker => {
+                    picker.classList.remove('show');
+                });
             });
             
             // КАТЕГОРИИ - ФИЛЬТРАЦИЯ СТАНЦИЙ
@@ -1884,6 +2674,9 @@
                     themeSwitcher.innerHTML = '<i class="fas fa-palette"></i> Ретро';
                 }
             });
+            
+            // Обработчик кнопки лайка
+            likeButton.addEventListener('click', toggleLike);
             
             // Обработчик кнопки воспроизведения
             playButton.addEventListener('click', function() {
@@ -2010,6 +2803,7 @@
                 }
                 
                 changeGif();
+                updateLikesUI();
             }
             
             // Функция обновления информации о станции
@@ -2028,7 +2822,14 @@
             
             // Функция смены гифки
             function changeGif() {
-                const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
+                let randomGif;
+                if (currentStation === 'minecraft') {
+                    // Только Minecraft гифки для Minecraft станции
+                    randomGif = minecraftGifs[Math.floor(Math.random() * minecraftGifs.length)];
+                } else {
+                    // Обычные гифки для всех остальных станций
+                    randomGif = gifs[Math.floor(Math.random() * gifs.length)];
+                }
                 mainGif.style.backgroundImage = `url('${randomGif}')`;
             }
             

@@ -63,7 +63,7 @@
         .loading-text {
             margin-top: 20px;
             font-family: 'Dancing Script', cursive;
-            font-size: 3.5rem;
+            fontSize: 3.5rem;
             font-weight: 700;
             color: #1DB954;
             text-shadow: 0 0 10px rgba(29, 185, 84, 0.7);
@@ -2067,6 +2067,7 @@
             let visualizationInterval = null;
             let currentTheme = 'retro';
             let chatUnsubscribe = null;
+            let likesUnsubscribe = null;
             let stationLikes = {};
             let userLikedStations = new Set();
             let currentMessageForReaction = null;
@@ -2157,30 +2158,104 @@
                 }, 3000);
             }
             
-            // Функции для работы с лайками станций
+            // Функции для работы с лайками станций через Firebase
             function loadLikes() {
-                const savedLikes = localStorage.getItem('stationLikes');
-                const savedUserLikes = localStorage.getItem('userLikedStations');
+                if (likesUnsubscribe) likesUnsubscribe();
                 
-                if (savedLikes) {
-                    stationLikes = JSON.parse(savedLikes);
-                } else {
-                    // Инициализируем лайки для всех станций
-                    stationIds.forEach(stationId => {
-                        stationLikes[stationId] = 0;
+                likesUnsubscribe = db.collection('stationLikes')
+                    .onSnapshot((snapshot) => {
+                        stationLikes = {};
+                        userLikedStations = new Set();
+                        
+                        snapshot.forEach((doc) => {
+                            const data = doc.data();
+                            stationLikes[doc.id] = data;
+                        });
+                        
+                        // Проверяем какие станции лайкнул текущий пользователь
+                        const user = auth.currentUser;
+                        const userId = user ? user.uid : 'anonymous';
+                        
+                        Object.keys(stationLikes).forEach(stationId => {
+                            if (stationLikes[stationId].users && stationLikes[stationId].users[userId]) {
+                                userLikedStations.add(stationId);
+                            }
+                        });
+                        
+                        updateLikesUI();
                     });
-                }
-                
-                if (savedUserLikes) {
-                    userLikedStations = new Set(JSON.parse(savedUserLikes));
-                }
-                
-                updateLikesUI();
             }
             
-            function saveLikes() {
-                localStorage.setItem('stationLikes', JSON.stringify(stationLikes));
-                localStorage.setItem('userLikedStations', JSON.stringify([...userLikedStations]));
+            function toggleLike() {
+                const user = auth.currentUser;
+                const userId = user ? user.uid : 'anonymous';
+                const stationId = currentStation;
+                
+                if (userLikedStations.has(stationId)) {
+                    // Убираем лайк
+                    removeLike(stationId, userId);
+                    showNotification('Лайк убран', 'info');
+                } else {
+                    // Ставим лайк
+                    addLike(stationId, userId);
+                    showNotification('Станция лайкнута! ❤️', 'success');
+                    showHeartEffect();
+                }
+                
+                // Анимация кнопки
+                likeButton.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    likeButton.style.transform = 'scale(1)';
+                }, 200);
+            }
+            
+            function addLike(stationId, userId) {
+                const stationRef = db.collection('stationLikes').doc(stationId);
+                
+                stationRef.get().then((doc) => {
+                    if (doc.exists) {
+                        // Обновляем существующий документ
+                        const data = doc.data();
+                        const newCount = (data.count || 0) + 1;
+                        const users = data.users || {};
+                        users[userId] = true;
+                        
+                        stationRef.update({
+                            count: newCount,
+                            users: users
+                        });
+                    } else {
+                        // Создаем новый документ
+                        stationRef.set({
+                            count: 1,
+                            users: {
+                                [userId]: true
+                            }
+                        });
+                    }
+                });
+            }
+            
+            function removeLike(stationId, userId) {
+                const stationRef = db.collection('stationLikes').doc(stationId);
+                
+                stationRef.get().then((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        const newCount = Math.max(0, (data.count || 0) - 1);
+                        const users = data.users || {};
+                        delete users[userId];
+                        
+                        if (newCount === 0) {
+                            stationRef.delete();
+                        } else {
+                            stationRef.update({
+                                count: newCount,
+                                users: users
+                            });
+                        }
+                    }
+                });
             }
             
             function updateLikesUI() {
@@ -2189,7 +2264,8 @@
                     const stationId = item.getAttribute('data-station');
                     const likesCount = item.querySelector('.likes-count');
                     if (likesCount) {
-                        likesCount.textContent = stationLikes[stationId] || 0;
+                        const count = stationLikes[stationId] ? stationLikes[stationId].count || 0 : 0;
+                        likesCount.textContent = count;
                     }
                 });
                 
@@ -2197,31 +2273,9 @@
                 const isLiked = userLikedStations.has(currentStation);
                 likeButton.classList.toggle('active', isLiked);
                 likeButton.querySelector('i').className = isLiked ? 'fas fa-heart' : 'far fa-heart';
-                document.getElementById('likes-count-bottom').textContent = stationLikes[currentStation] || 0;
-            }
-            
-            function toggleLike() {
-                if (userLikedStations.has(currentStation)) {
-                    // Убираем лайк
-                    userLikedStations.delete(currentStation);
-                    stationLikes[currentStation] = Math.max(0, (stationLikes[currentStation] || 0) - 1);
-                    showNotification('Лайк убран', 'info');
-                } else {
-                    // Ставим лайк
-                    userLikedStations.add(currentStation);
-                    stationLikes[currentStation] = (stationLikes[currentStation] || 0) + 1;
-                    showNotification('Станция лайкнута! ❤️', 'success');
-                    showHeartEffect();
-                }
                 
-                saveLikes();
-                updateLikesUI();
-                
-                // Анимация кнопки
-                likeButton.style.transform = 'scale(1.2)';
-                setTimeout(() => {
-                    likeButton.style.transform = 'scale(1)';
-                }, 200);
+                const currentCount = stationLikes[currentStation] ? stationLikes[currentStation].count || 0 : 0;
+                document.getElementById('likes-count-bottom').textContent = currentCount;
             }
             
             // Функции для работы с аутентификацией и никами

@@ -542,7 +542,7 @@
             z-index: 1000;
             pointer-events: none;
             opacity: 0;
-            animation: heartPop 0.8s ease-out;
+            animation: heartPop 1.5s ease-out;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -551,12 +551,12 @@
         
         .heart-text {
             margin-top: 20px;
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: #1DB954;
-            text-shadow: 0 0 10px rgba(29, 185, 84, 0.7);
+            text-shadow: 0 0 15px rgba(29, 185, 84, 0.9);
             font-weight: bold;
             opacity: 0;
-            animation: textFade 0.8s ease-out 0.3s forwards;
+            animation: textFade 1.5s ease-out 0.3s forwards;
         }
         
         @keyframes heartPop {
@@ -564,13 +564,25 @@
                 opacity: 0;
                 transform: translate(-50%, -50%) scale(0.3);
             }
-            50% {
+            20% {
                 opacity: 1;
                 transform: translate(-50%, -60%) scale(1.2);
             }
+            40% {
+                opacity: 1;
+                transform: translate(-50%, -65%) scale(1.3);
+            }
+            60% {
+                opacity: 1;
+                transform: translate(-50%, -70%) scale(1.4);
+            }
+            80% {
+                opacity: 1;
+                transform: translate(-50%, -75%) scale(1.3);
+            }
             100% {
                 opacity: 0;
-                transform: translate(-50%, -70%) scale(1.5);
+                transform: translate(-50%, -80%) scale(1.5);
             }
         }
         
@@ -579,13 +591,17 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
-            50% {
+            30% {
                 opacity: 1;
                 transform: translateY(0);
             }
+            70% {
+                opacity: 1;
+                transform: translateY(-5px);
+            }
             100% {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(-15px);
             }
         }
         
@@ -814,19 +830,6 @@
             cursor: pointer;
             border: 2px solid white;
             box-shadow: 0 0 4px rgba(0,0,0,0.5);
-        }
-        
-        /* Ретро-линии */
-        .retro-line {
-            height: 1px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                rgba(29, 185, 84, 0.3) 20%, 
-                rgba(29, 185, 84, 0.5) 50%, 
-                rgba(29, 185, 84, 0.3) 80%, 
-                transparent 100%);
-            margin: 8px 0;
-            width: 100%;
         }
         
         /* Стили для чата */
@@ -1202,7 +1205,7 @@
         
         .emoji-grid {
             display: grid;
-            grid-template-columns: repeat(8, 1fr);
+            grid-template-columns: repeat(6, 1fr);
             gap: 5px;
             max-height: 200px;
             overflow-y: auto;
@@ -1627,6 +1630,10 @@
             .reactions-grid {
                 grid-template-columns: repeat(6, 1fr);
             }
+            
+            .emoji-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
         }
 
         /* Темы */
@@ -1736,7 +1743,7 @@
                     <button class="category-btn" data-category="no-copyright">Без АП</button>
                 </div>
                 
-                <div class="retro-line"></div>
+                <!-- УБРАНА ЗЕЛЕНАЯ ЛИНИЯ ПОСЛЕ КАТЕГОРИЙ -->
                 
                 <ul class="station-list">
                     <div class="category-title">Международные</div>
@@ -1973,7 +1980,7 @@
                 </div>
             </div>
             
-            <!-- НИЖНЯЯ ЧАСТЬ - ПОЛЗУНОК ОТДЕЛЬНО -->
+            <!-- НИЖНЯЯ ЧАСТЬ - ПОЛЗУНОК ОТЕДЛЬНО -->
             <div class="player-bottom">
                 <div class="volume-control">
                     <span class="volume-icon"><i class="fas fa-volume-down"></i></span>
@@ -2242,6 +2249,7 @@
             const nicknameInput = document.getElementById('nickname-input');
             const heartEffect = document.getElementById('heartEffect');
             const likesCountBottom = document.getElementById('likes-count-bottom');
+            const googleLoginBtn = document.getElementById('googleLoginBtn');
             
             let isPlaying = false;
             let audio = null;
@@ -2255,6 +2263,7 @@
             let userLikedStations = new Set();
             let currentMessageForReaction = null;
             let userNickname = localStorage.getItem('userNickname') || '';
+            let currentGifUrl = 'https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif';
             
             // Инициализация
             loadLikes();
@@ -2385,60 +2394,39 @@
                 });
             }
 
-            // Поиск GIF
-            function searchGifs(term = null) {
+            // Поиск GIF через Tenor API
+            async function searchGifs(term = null) {
                 const searchTerm = term || gifSearch.value;
                 if (!searchTerm) {
                     loadTrendingGifs();
                     return;
                 }
                 
-                // В реальном приложении здесь будет запрос к API GIF
-                // Для демонстрации используем статические GIF по категориям
-                let gifUrls = [];
+                const apiKey = 'LIVDSRZULELA'; // Бесплатный публичный ключ Tenor
+                const limit = 20;
                 
-                if (searchTerm === 'funny') {
-                    gifUrls = [
-                        'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif',
-                        'https://media.giphy.com/media/3o7aD2d7hy9ktXNDP2/giphy.gif',
-                        'https://media.giphy.com/media/3o72FfM5HJydzafgUE/giphy.gif'
-                    ];
-                } else if (searchTerm === 'music') {
-                    gifUrls = [
-                        'https://media.giphy.com/media/l0MYEqEzwMWFCg8rm/giphy.gif',
-                        'https://media.giphy.com/media/3o7abGQa0aRsohveX6/giphy.gif'
-                    ];
-                } else if (searchTerm === 'dance') {
-                    gifUrls = [
-                        'https://media.giphy.com/media/3o7TKM1Fa6k5g2qsxq/giphy.gif',
-                        'https://media.giphy.com/media/3o7aD2d7hy9ktXNDP2/giphy.gif'
-                    ];
-                } else if (searchTerm === 'love') {
-                    gifUrls = [
-                        'https://media.giphy.com/media/3o72FfM5HJydzafgUE/giphy.gif',
-                        'https://media.giphy.com/media/l0MYEqEzwMWFCg8rm/giphy.gif'
-                    ];
-                } else {
-                    // По умолчанию возвращаем трендовые
-                    gifUrls = [
-                        'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif',
-                        'https://media.giphy.com/media/3o7aD2d7hy9ktXNDP2/giphy.gif',
-                        'https://media.giphy.com/media/3o72FfM5HJydzafgUE/giphy.gif',
-                        'https://media.giphy.com/media/l0MYEqEzwMWFCg8rm/giphy.gif'
-                    ];
-                }
-                
-                gifResults.innerHTML = '';
-                gifUrls.forEach(gifUrl => {
-                    const gifElement = document.createElement('img');
-                    gifElement.className = 'gif-item';
-                    gifElement.src = gifUrl;
-                    gifElement.addEventListener('click', function() {
-                        sendGifMessage(gifUrl);
-                        gifPicker.classList.remove('show');
+                try {
+                    const response = await fetch(`https://g.tenor.com/v1/search?q=${encodeURIComponent(searchTerm)}&key=${apiKey}&limit=${limit}`);
+                    const data = await response.json();
+                    
+                    gifResults.innerHTML = '';
+                    
+                    data.results.forEach(result => {
+                        const gifUrl = result.media[0].gif.url;
+                        const gifElement = document.createElement('img');
+                        gifElement.className = 'gif-item';
+                        gifElement.src = gifUrl;
+                        gifElement.addEventListener('click', function() {
+                            sendGifMessage(gifUrl);
+                            gifPicker.classList.remove('show');
+                        });
+                        gifResults.appendChild(gifElement);
                     });
-                    gifResults.appendChild(gifElement);
-                });
+                } catch (error) {
+                    console.error('Ошибка поиска GIF:', error);
+                    // Fallback на статические GIF
+                    loadTrendingGifs();
+                }
             }
 
             // Отправка GIF сообщения
@@ -2481,8 +2469,8 @@
                     heartEffect.style.opacity = '0';
                     setTimeout(() => {
                         heartEffect.style.display = 'none';
-                    }, 1000);
-                }, 800);
+                    }, 1500);
+                }, 1500);
             }
 
             // Обновление иконки громкости
@@ -2679,14 +2667,20 @@
                     
                     loadChatHistory();
                     
-                    document.getElementById('user-profile').addEventListener('click', function(e) {
+                    const userProfile = document.getElementById('user-profile');
+                    const userDropdown = document.getElementById('user-dropdown');
+                    const editNicknameDropdown = document.getElementById('edit-nickname-dropdown');
+                    const signOutBtn = document.getElementById('sign-out-btn');
+                    
+                    userProfile.addEventListener('click', function(e) {
                         e.stopPropagation();
-                        document.getElementById('user-dropdown').classList.toggle('show');
+                        userDropdown.classList.toggle('show');
                     });
                     
-                    document.getElementById('edit-nickname-dropdown').addEventListener('click', function() {
+                    editNicknameDropdown.addEventListener('click', function() {
                         nicknameInput.value = userNickname || user.displayName || '';
                         nicknameModal.style.display = 'block';
+                        userDropdown.classList.remove('show');
                     });
                     
                     document.querySelector('.edit-nickname-btn').addEventListener('click', function(e) {
@@ -2695,27 +2689,20 @@
                         nicknameModal.style.display = 'block';
                     });
                     
-                    document.getElementById('sign-out-btn').addEventListener('click', function() {
+                    signOutBtn.addEventListener('click', function() {
                         auth.signOut();
                     });
                     
                 } else {
                     authSection.innerHTML = `
-                        <div class="user-profile" id="user-profile">
-                            <div class="user-avatar">А</div>
-                            <div class="user-name">Аноним</div>
-                            <button class="edit-nickname-btn" title="Сменить ник">
-                                <i class="fas fa-pencil-alt"></i>
-                            </button>
-                        </div>
+                        <button class="google-login-btn" id="googleLoginBtn">
+                            <i class="fab fa-google"></i> Войти через Google
+                        </button>
                     `;
                     
                     loadChatHistory();
                     
-                    document.querySelector('.edit-nickname-btn').addEventListener('click', function() {
-                        nicknameInput.value = userNickname || 'Аноним';
-                        nicknameModal.style.display = 'block';
-                    });
+                    document.getElementById('googleLoginBtn').addEventListener('click', signInWithGoogle);
                 }
             }
             
@@ -3023,11 +3010,15 @@
             });
             
             // Поиск эмодзи
-            emojiSearch.addEventListener('input', filterEmojis);
+            emojiSearch.addEventListener('input', function(e) {
+                e.stopPropagation();
+                filterEmojis();
+            });
             
             // Категории эмодзи
             emojiCategoryBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
                     emojiCategoryBtns.forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
                     filterEmojisByCategory(this.dataset.category);
@@ -3035,13 +3026,15 @@
             });
             
             // Поиск GIF
-            gifSearch.addEventListener('input', function() {
+            gifSearch.addEventListener('input', function(e) {
+                e.stopPropagation();
                 searchGifs();
             });
             
             // Трендовые GIF
             gifTrendingBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
                     searchGifs(this.dataset.term);
                 });
             });
@@ -3054,6 +3047,15 @@
                 document.querySelectorAll('.reaction-picker').forEach(picker => {
                     picker.classList.remove('show');
                 });
+            });
+            
+            // Предотвращение закрытия окон при клике внутри них
+            emojiPicker.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            gifPicker.addEventListener('click', function(e) {
+                e.stopPropagation();
             });
             
             // КАТЕГОРИИ - ФИЛЬТРАЦИЯ СТАНЦИЙ
@@ -3283,7 +3285,7 @@
                 document.getElementById('current-artist').textContent = station.currentArtist;
             }
             
-            // Функция смены гифки
+            // Функция смены гифки с анимацией
             function changeGif() {
                 let randomGif;
                 if (currentStation === 'minecraft') {
@@ -3293,7 +3295,13 @@
                     // Обычные гифки для всех остальных станций
                     randomGif = gifs[Math.floor(Math.random() * gifs.length)];
                 }
-                mainGif.style.backgroundImage = `url('${randomGif}')`;
+                
+                // Анимация перехода гифок
+                mainGif.style.opacity = '0';
+                setTimeout(() => {
+                    mainGif.style.backgroundImage = `url('${randomGif}')`;
+                    mainGif.style.opacity = '1';
+                }, 300);
             }
             
             // Функция визуализации

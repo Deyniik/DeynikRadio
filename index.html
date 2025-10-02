@@ -274,15 +274,35 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .search-box {
+        /* КАТЕГОРИИ ВМЕСТО ПОИСКА */
+        .categories-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .category-btn {
             background: rgba(40, 40, 40, 0.8);
-            border: none;
-            color: white;
-            padding: 6px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #B3B3B3;
+            padding: 6px 12px;
             border-radius: 15px;
+            cursor: pointer;
             font-size: 0.8rem;
-            width: 100%;
-            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .category-btn:hover {
+            background: rgba(29, 185, 84, 0.2);
+            color: white;
+        }
+        
+        .category-btn.active {
+            background: rgba(29, 185, 84, 0.3);
+            color: #1DB954;
+            border-color: #1DB954;
         }
         
         .station-list {
@@ -460,10 +480,11 @@
             color: #B3B3B3;
         }
         
+        /* ОБНОВЛЕННЫЙ ПЛЕЕР - БОЛЬШИЕ КНОПКИ НО ПРЕЖНЯЯ ВЫСОТА */
         .player-container {
             background: #191414;
             border-radius: 12px;
-            padding: 20px;
+            padding: 15px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             height: auto;
@@ -471,7 +492,7 @@
             margin-top: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
         
         .player-top {
@@ -487,8 +508,8 @@
         }
         
         .player-icon {
-            width: 50px;
-            height: 50px;
+            width: 48px;
+            height: 48px;
             background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
             border-radius: 50%;
             margin-right: 15px;
@@ -496,7 +517,7 @@
             justify-content: center;
             align-items: center;
             font-size: 1.3rem;
-            box-shadow: 0 0 12px rgba(29, 185, 84, 0.5);
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.5);
             transition: transform 0.3s ease;
         }
         
@@ -514,8 +535,8 @@
         }
         
         .station-text h2 {
-            font-size: 1.4rem;
-            margin-bottom: 3px;
+            font-size: 1.3rem;
+            margin-bottom: 4px;
             color: #1DB954;
         }
         
@@ -537,23 +558,23 @@
             align-items: center;
             justify-content: flex-end;
             flex: 1;
-            gap: 15px;
+            gap: 12px;
         }
         
         .btn {
             background: rgba(50, 50, 50, 0.8);
             border: none;
             color: white;
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
         }
         
         .btn:hover {
@@ -566,14 +587,14 @@
             width: 50px;
             height: 50px;
             font-size: 1.3rem;
-            box-shadow: 0 0 15px rgba(29, 185, 84, 0.6);
+            box-shadow: 0 0 12px rgba(29, 185, 84, 0.6);
         }
         
         .btn-play:hover {
-            box-shadow: 0 0 20px rgba(29, 185, 84, 0.8);
+            box-shadow: 0 0 16px rgba(29, 185, 84, 0.8);
         }
         
-        /* ОТДЕЛЬНЫЙ ПОЛЗУНОК ГРОМКОСТИ - НИЧЕГО НЕ МЕШАЕТ */
+        /* ОБНОВЛЕННЫЙ ПОЛЗУНОК ГРОМКОСТИ */
         .player-bottom {
             display: flex;
             justify-content: center;
@@ -584,57 +605,57 @@
         .volume-control {
             display: flex;
             align-items: center;
-            gap: 12px;
-            width: 300px;
+            gap: 10px;
+            width: 250px;
             max-width: 100%;
         }
         
         .volume-icon {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #1DB954;
-            width: 24px;
+            width: 20px;
             text-align: center;
         }
         
         .volume-slider {
             -webkit-appearance: none;
             width: 100%;
-            height: 6px;
-            background: rgba(80, 80, 80, 0.5);
+            height: 4px;
+            background: rgba(80, 80, 80, 0.7);
             border-radius: 5px;
             outline: none;
             cursor: pointer;
         }
         
         .volume-slider:hover {
-            background: rgba(100, 100, 100, 0.7);
+            background: rgba(100, 100, 100, 0.8);
         }
         
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 18px;
-            height: 18px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background: #1DB954;
             cursor: pointer;
             border: 2px solid white;
-            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+            box-shadow: 0 0 4px rgba(0,0,0,0.5);
         }
         
         .volume-slider::-webkit-slider-thumb:hover {
             transform: scale(1.1);
-            box-shadow: 0 0 8px rgba(29, 185, 84, 0.8);
+            box-shadow: 0 0 6px rgba(29, 185, 84, 0.8);
         }
         
         .volume-slider::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background: #1DB954;
             cursor: pointer;
             border: 2px solid white;
-            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+            box-shadow: 0 0 4px rgba(0,0,0,0.5);
         }
         
         /* Ретро-линии */
@@ -715,10 +736,12 @@
             margin-left: 5px;
         }
         
+        /* ОБНОВЛЕННЫЙ ЧАТ С КНОПКОЙ ЭМОДЗИ СЛЕВА */
         .chat-input-container {
             display: flex;
             gap: 8px;
             margin-top: auto;
+            position: relative;
         }
         
         .chat-input {
@@ -726,7 +749,7 @@
             background: rgba(40, 40, 40, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 8px 10px;
+            padding: 8px 10px 8px 40px;
             border-radius: 15px;
             font-size: 0.8rem;
             outline: none;
@@ -735,6 +758,31 @@
         
         .chat-input:focus {
             border-color: #1DB954;
+        }
+        
+        .emoji-btn {
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #B3B3B3;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            z-index: 2;
+        }
+        
+        .emoji-btn:hover {
+            color: #1DB954;
+            background: rgba(29, 185, 84, 0.1);
         }
         
         .chat-send-btn {
@@ -759,6 +807,64 @@
         .chat-send-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+        }
+        
+        /* ОКНО ЭМОДЗИ С ОБЫЧНЫМИ СМАЙЛАМИ */
+        .emoji-picker {
+            position: absolute;
+            bottom: 45px;
+            left: 0;
+            background: rgba(40, 40, 40, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+            width: 250px;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+        
+        .emoji-picker.show {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .emoji-category {
+            margin-bottom: 10px;
+        }
+        
+        .emoji-category-title {
+            font-size: 0.7rem;
+            color: #B3B3B3;
+            margin-bottom: 5px;
+            padding-bottom: 3px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+        }
+        
+        .emoji {
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        
+        .emoji:hover {
+            background: rgba(29, 185, 84, 0.2);
+            transform: scale(1.1);
         }
         
         .category-title {
@@ -961,18 +1067,28 @@
             
             .player-container {
                 flex-direction: column;
-                gap: 15px;
-                padding: 15px;
+                gap: 12px;
+                padding: 12px;
             }
             
             .player-top {
                 flex-direction: column;
-                gap: 15px;
+                gap: 12px;
             }
             
             .volume-control {
                 width: 100%;
-                max-width: 250px;
+                max-width: 200px;
+            }
+            
+            .categories-container {
+                overflow-x: auto;
+                padding-bottom: 5px;
+            }
+            
+            .emoji-picker {
+                width: 200px;
+                left: -50px;
             }
         }
 
@@ -1046,7 +1162,14 @@
                     <h2>Радиостанции</h2>
                     <span class="station-count">11</span>
                 </div>
-                <input type="text" class="search-box" placeholder="Поиск станций...">
+                
+                <!-- КАТЕГОРИИ ВМЕСТО ПОИСКА -->
+                <div class="categories-container">
+                    <button class="category-btn active" data-category="all">Все</button>
+                    <button class="category-btn" data-category="lofi">Lo-Fi</button>
+                    <button class="category-btn" data-category="thematic">Тематические</button>
+                    <button class="category-btn" data-category="no-copyright">Без АП</button>
+                </div>
                 
                 <div class="retro-line"></div>
                 
@@ -1113,7 +1236,7 @@
                     <p id="quality">128 kbps</p>
                 </div>
                 
-                <!-- Чат -->
+                <!-- Чат С КНОПКОЙ ЭМОДЗИ И ОБЫЧНЫМИ СМАЙЛАМИ -->
                 <div class="chat-container">
                     <div class="chat-header">
                         <i class="fas fa-comments"></i>
@@ -1127,17 +1250,75 @@
                         </div>
                     </div>
                     <div class="chat-input-container" id="chat-input-container">
+                        <button class="emoji-btn" id="emoji-btn">
+                            <i class="far fa-smile"></i>
+                        </button>
                         <input type="text" class="chat-input" id="chat-input" placeholder="Введите сообщение..." maxlength="200">
                         <button class="chat-send-btn" id="chat-send-btn" disabled>
                             <i class="fas fa-paper-plane"></i>
                         </button>
+                        
+                        <!-- ОКНО ОБЫЧНЫХ ЭМОДЗИ -->
+                        <div class="emoji-picker" id="emoji-picker">
+                            <div class="emoji-category">
+                                <div class="emoji-category-title">Смайлы и эмоции</div>
+                                <div class="emoji-grid">
+                                    <span class="emoji">😀</span>
+                                    <span class="emoji">😂</span>
+                                    <span class="emoji">🥰</span>
+                                    <span class="emoji">😎</span>
+                                    <span class="emoji">🤔</span>
+                                    <span class="emoji">😴</span>
+                                    <span class="emoji">😍</span>
+                                    <span class="emoji">😊</span>
+                                    <span class="emoji">🙂</span>
+                                    <span class="emoji">🤩</span>
+                                    <span class="emoji">😇</span>
+                                    <span class="emoji">🥳</span>
+                                </div>
+                            </div>
+                            <div class="emoji-category">
+                                <div class="emoji-category-title">Музыка</div>
+                                <div class="emoji-grid">
+                                    <span class="emoji">🎵</span>
+                                    <span class="emoji">🎶</span>
+                                    <span class="emoji">🎼</span>
+                                    <span class="emoji">🎹</span>
+                                    <span class="emoji">🎸</span>
+                                    <span class="emoji">🎧</span>
+                                    <span class="emoji">🎷</span>
+                                    <span class="emoji">🎺</span>
+                                    <span class="emoji">🥁</span>
+                                    <span class="emoji">📻</span>
+                                    <span class="emoji">🎤</span>
+                                    <span class="emoji">🎚️</span>
+                                </div>
+                            </div>
+                            <div class="emoji-category">
+                                <div class="emoji-category-title">Разное</div>
+                                <div class="emoji-grid">
+                                    <span class="emoji">❤️</span>
+                                    <span class="emoji">⭐</span>
+                                    <span class="emoji">🔥</span>
+                                    <span class="emoji">👍</span>
+                                    <span class="emoji">👎</span>
+                                    <span class="emoji">🎉</span>
+                                    <span class="emoji">💯</span>
+                                    <span class="emoji">✨</span>
+                                    <span class="emoji">🎈</span>
+                                    <span class="emoji">💎</span>
+                                    <span class="emoji">🕹️</span>
+                                    <span class="emoji">🎮</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="player-container crt-effect">
-            <!-- ВЕРХНЯЯ ЧАСТЬ - ОСНОВНЫЕ ЭЛЕМЕНТЫ -->
+            <!-- ВЕРХНЯЯ ЧАСТЬ - БОЛЬШИЕ КНОПКИ НО ПРЕЖНЯЯ ВЫСОТА -->
             <div class="player-top">
                 <div class="player-left">
                     <div class="player-icon" id="player-icon">
@@ -1209,7 +1390,8 @@
                 nextTrack: "Следующий хит",
                 nextArtist: "KISS FM",
                 quality: "128kbps",
-                icon: "fas fa-heart"
+                icon: "fas fa-heart",
+                category: "international"
             },
             gaga: {
                 name: "Lady Gaga Radio",
@@ -1220,7 +1402,8 @@
                 nextTrack: "Next Gaga Track",
                 nextArtist: "Lady Gaga",
                 quality: "128kbps",
-                icon: "fas fa-paw"
+                icon: "fas fa-paw",
+                category: "international"
             },
             rp: {
                 name: "Radio Paradise",
@@ -1231,7 +1414,8 @@
                 nextTrack: "Next Track",
                 nextArtist: "Radio Paradise",
                 quality: "FLAC 900+kbps",
-                icon: "fas fa-music"
+                icon: "fas fa-music",
+                category: "no-copyright"
             },
             lofi: {
                 name: "LoFi Girl",
@@ -1242,7 +1426,8 @@
                 nextTrack: "Relaxing Vibes",
                 nextArtist: "LoFi Producer",
                 quality: "192kbps",
-                icon: "fas fa-moon"
+                icon: "fas fa-moon",
+                category: "lofi"
             },
             z100: {
                 name: "Z100 New York",
@@ -1253,7 +1438,8 @@
                 nextTrack: "Next Pop Hit",
                 nextArtist: "Chart Topper",
                 quality: "128kbps",
-                icon: "fas fa-broadcast-tower"
+                icon: "fas fa-broadcast-tower",
+                category: "international"
             },
             jazz: {
                 name: "Jazz24",
@@ -1264,7 +1450,8 @@
                 nextTrack: "Cool Jazz",
                 nextArtist: "Jazz Legend",
                 quality: "192kbps",
-                icon: "fas fa-music"
+                icon: "fas fa-music",
+                category: "international"
             },
             chillhop: {
                 name: "Chillhop Radio",
@@ -1275,7 +1462,8 @@
                 nextTrack: "Relaxing Vibes",
                 nextArtist: "Chillhop Producer",
                 quality: "128kbps",
-                icon: "fas fa-moon"
+                icon: "fas fa-moon",
+                category: "lofi"
             },
             lofihiphop: {
                 name: "LoFi Hip Hop",
@@ -1286,7 +1474,8 @@
                 nextTrack: "Next Hip Hop",
                 nextArtist: "LoFi Producer",
                 quality: "128kbps",
-                icon: "fas fa-headphones"
+                icon: "fas fa-headphones",
+                category: "lofi"
             },
             lofigirl: {
                 name: "LoFi Girl",
@@ -1297,7 +1486,8 @@
                 nextTrack: "Chill Vibes",
                 nextArtist: "LoFi Girl",
                 quality: "192kbps",
-                icon: "fas fa-moon"
+                icon: "fas fa-moon",
+                category: "lofi"
             },
             minecraft: {
                 name: "MINECRAFT Lo Fi",
@@ -1308,7 +1498,8 @@
                 nextTrack: "Sweden Chill",
                 nextArtist: "Minecraft Lofi",
                 quality: "128kbps",
-                icon: "fas fa-cube"
+                icon: "fas fa-cube",
+                category: "lofi"
             },
             halloween: {
                 name: "Halloween Radio",
@@ -1319,7 +1510,8 @@
                 nextTrack: "Scary Tunes",
                 nextArtist: "Halloween FM",
                 quality: "128kbps",
-                icon: "fas fa-ghost"
+                icon: "fas fa-ghost",
+                category: "thematic"
             }
         };
 
@@ -1362,7 +1554,6 @@
             const randomStationBtn = document.getElementById('random-station-btn');
             const volumeSlider = document.getElementById('volume-slider');
             const stationItems = document.querySelectorAll('.station-list li');
-            const searchBox = document.querySelector('.search-box');
             const visualization = document.getElementById('visualization');
             const bars = visualization.querySelectorAll('.bar');
             const mainGif = document.getElementById('mainGif');
@@ -1378,6 +1569,10 @@
             const copyLinkBtn = document.getElementById('copyLinkBtn');
             const minecraftLoading = document.getElementById('minecraftLoading');
             const notification = document.getElementById('notification');
+            const emojiBtn = document.getElementById('emoji-btn');
+            const emojiPicker = document.getElementById('emoji-picker');
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            const emojis = document.querySelectorAll('.emoji');
             
             let isPlaying = false;
             let audio = null;
@@ -1391,6 +1586,21 @@
             updateStationInfo();
             changeGif();
 
+            // Обновление иконки громкости
+            function updateVolumeIcon() {
+                const volume = volumeSlider.value;
+                const volumeIcons = document.querySelectorAll('.volume-icon i');
+                volumeIcons.forEach(icon => {
+                    if (volume == 0) {
+                        icon.className = 'fas fa-volume-mute';
+                    } else if (volume < 50) {
+                        icon.className = 'fas fa-volume-down';
+                    } else {
+                        icon.className = 'fas fa-volume-up';
+                    }
+                });
+            }
+            
             // ПРОСТОЙ И РАБОЧИЙ ОБРАБОТЧИК ГРОМКОСТИ
             volumeSlider.addEventListener('input', function() {
                 console.log('Volume changed to:', this.value);
@@ -1398,19 +1608,11 @@
                     audio.volume = this.value / 100;
                     console.log('Audio volume set to:', audio.volume);
                 }
-                
-                // Обновляем иконку
-                const volumeIcons = document.querySelectorAll('.volume-icon i');
-                volumeIcons.forEach(icon => {
-                    if (this.value == 0) {
-                        icon.className = 'fas fa-volume-mute';
-                    } else if (this.value < 50) {
-                        icon.className = 'fas fa-volume-down';
-                    } else {
-                        icon.className = 'fas fa-volume-up';
-                    }
-                });
+                updateVolumeIcon();
             });
+            
+            // Инициализация иконки громкости
+            updateVolumeIcon();
             
             // Функция показа уведомления
             function showNotification(message, type = 'info') {
@@ -1580,6 +1782,78 @@
                 }
             });
             
+            // КНОПКА ЭМОДЗИ - ОТКРЫТИЕ/ЗАКРЫТИЕ ОКОШКА
+            emojiBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                emojiPicker.classList.toggle('show');
+            });
+            
+            // Добавление ОБЫЧНЫХ эмодзи в чат
+            emojis.forEach(emoji => {
+                emoji.addEventListener('click', function() {
+                    const emojiText = this.textContent;
+                    chatInput.value += emojiText;
+                    chatInput.focus();
+                    emojiPicker.classList.remove('show');
+                });
+            });
+            
+            // Закрытие окна эмодзи при клике вне его
+            document.addEventListener('click', function() {
+                emojiPicker.classList.remove('show');
+            });
+            
+            // КАТЕГОРИИ - ФИЛЬТРАЦИЯ СТАНЦИЙ
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Убираем активный класс у всех кнопок
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    // Добавляем активный класс к нажатой кнопке
+                    btn.classList.add('active');
+                    
+                    const category = btn.dataset.category;
+                    filterStationsByCategory(category);
+                });
+            });
+            
+            function filterStationsByCategory(category) {
+                stationItems.forEach(item => {
+                    const stationId = item.getAttribute('data-station');
+                    const station = radioStations[stationId];
+                    
+                    if (category === 'all' || station.category === category) {
+                        item.style.display = 'flex';
+                        // Показываем родительские категории если есть станции
+                        if (item.previousElementSibling && item.previousElementSibling.classList.contains('category-title')) {
+                            item.previousElementSibling.style.display = 'block';
+                        }
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                // Скрываем пустые категории
+                document.querySelectorAll('.category-title').forEach(title => {
+                    const nextSibling = title.nextElementSibling;
+                    if (!nextSibling || nextSibling.style.display === 'none') {
+                        let hasVisible = false;
+                        let sibling = title.nextElementSibling;
+                        while (sibling && !sibling.classList.contains('category-title')) {
+                            if (sibling.style.display !== 'none') {
+                                hasVisible = true;
+                                break;
+                            }
+                            sibling = sibling.nextElementSibling;
+                        }
+                        if (!hasVisible) {
+                            title.style.display = 'none';
+                        } else {
+                            title.style.display = 'block';
+                        }
+                    }
+                });
+            }
+            
             // Слушатель состояния аутентификации
             auth.onAuthStateChanged(updateAuthUI);
             
@@ -1697,15 +1971,6 @@
                     playButton.innerHTML = '<i class="fas fa-pause"></i>';
                     document.getElementById('player-icon').classList.add('playing');
                     changeStation();
-                });
-            });
-            
-            // Поиск станций
-            searchBox.addEventListener('input', function() {
-                const searchText = this.value.toLowerCase();
-                stationItems.forEach(item => {
-                    const stationName = item.textContent.toLowerCase();
-                    item.style.display = stationName.includes(searchText) ? 'flex' : 'none';
                 });
             });
             

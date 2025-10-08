@@ -273,6 +273,26 @@
             background: rgba(29, 185, 84, 0.3);
             transform: scale(1.05);
         }
+
+        /* НОВАЯ КНОПКА ОТЗЫВОВ */
+        .feedback-btn {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .feedback-btn:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.05);
+        }
         
         .content {
             display: flex;
@@ -674,6 +694,7 @@
             justify-content: center;
             flex: 1;
             gap: 10px;
+            position: relative;
         }
         
         .player-buttons {
@@ -715,6 +736,18 @@
         
         .btn-play:hover {
             box-shadow: 0 0 16px rgba(29, 185, 84, 0.8);
+        }
+
+        /* НОВАЯ ГИФКА ПРИ ПЕРЕКЛЮЧЕНИИ - ИСПРАВЛЕННАЯ */
+        .next-gif {
+            position: absolute;
+            left: calc(100% + 10px);
+            width: 60px;
+            height: 60px;
+            z-index: 10;
+            display: none;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.5);
         }
         
         /* ИЗМЕНЕННАЯ КНОПКА ЛАЙКА - ЦИФРА СНАРУЖИ */
@@ -1678,6 +1711,168 @@
             animation: gifTransition 0.6s ease-in-out;
         }
 
+        /* МОДАЛЬНОЕ ОКНО ДЛЯ ОТЗЫВОВ */
+        .feedback-modal-content {
+            background-color: #191414;
+            margin: 5% auto;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            border: 2px solid #1DB954;
+            position: relative;
+            box-shadow: 0 0 30px rgba(29, 185, 84, 0.3);
+        }
+
+        .feedback-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feedback-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .feedback-tab.active {
+            border-bottom: 2px solid #1DB954;
+            color: #1DB954;
+        }
+
+        .feedback-tab:hover {
+            color: #1DB954;
+        }
+
+        .feedback-tab-content {
+            display: none;
+        }
+
+        .feedback-tab-content.active {
+            display: block;
+        }
+
+        .rating-stars {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 25px 0;
+        }
+
+        .star {
+            width: 35px;
+            height: 35px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="gray" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>');
+            background-size: contain;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            image-rendering: pixelated;
+        }
+
+        .star.active {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%231DB954" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>');
+            transform: scale(1.1);
+        }
+
+        .star:hover {
+            transform: scale(1.2);
+        }
+
+        .feedback-textarea {
+            width: 100%;
+            height: 120px;
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            color: white;
+            font-size: 0.9rem;
+            resize: none;
+            margin-bottom: 20px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-textarea:focus {
+            border-color: #1DB954;
+            box-shadow: 0 0 5px rgba(29, 185, 84, 0.3);
+        }
+
+        .submit-feedback {
+            background: rgba(29, 185, 84, 0.8);
+            border: none;
+            border-radius: 20px;
+            padding: 12px 30px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: block;
+            margin: 0 auto;
+            font-weight: bold;
+        }
+
+        .submit-feedback:hover {
+            background: rgba(29, 185, 84, 1);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.5);
+        }
+
+        .reviews-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .review-item {
+            background: rgba(40, 40, 40, 0.6);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 3px solid #1DB954;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .review-user {
+            font-weight: bold;
+            color: #1DB954;
+        }
+
+        .review-rating {
+            display: flex;
+            gap: 3px;
+        }
+
+        .review-star {
+            width: 16px;
+            height: 16px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%231DB954" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>');
+            background-size: contain;
+            image-rendering: pixelated;
+        }
+
+        .review-text {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: #e0e0e0;
+        }
+
+        .no-reviews {
+            text-align: center;
+            color: #888;
+            font-style: italic;
+            margin: 40px 0;
+            font-size: 1rem;
+        }
+
         @media (max-width: 900px) {
             .content {
                 flex-direction: column;
@@ -1735,6 +1930,18 @@
             
             .emoji-grid {
                 grid-template-columns: repeat(4, 1fr);
+            }
+
+            .next-gif {
+                position: absolute;
+                left: calc(100% + 5px);
+                width: 50px;
+                height: 50px;
+            }
+
+            .feedback-modal-content {
+                margin: 10% auto;
+                padding: 20px;
             }
         }
 
@@ -1807,6 +2014,37 @@
             </div>
         </div>
     </div>
+
+    <!-- Модальное окно для отзывов -->
+    <div class="modal" id="feedbackModal">
+        <div class="feedback-modal-content">
+            <span class="close" id="closeFeedbackModal">&times;</span>
+            <h3 style="text-align: center; margin-bottom: 20px;">Отзывы о Deynik Radio</h3>
+            
+            <div class="feedback-tabs">
+                <div class="feedback-tab active" data-tab="write-feedback">Оставить отзыв</div>
+                <div class="feedback-tab" data-tab="view-feedback">Посмотреть отзывы</div>
+            </div>
+            
+            <div class="feedback-tab-content active" id="write-feedback">
+                <div class="rating-stars" id="ratingStars">
+                    <div class="star" data-rating="1"></div>
+                    <div class="star" data-rating="2"></div>
+                    <div class="star" data-rating="3"></div>
+                    <div class="star" data-rating="4"></div>
+                    <div class="star" data-rating="5"></div>
+                </div>
+                <textarea class="feedback-textarea" id="feedbackText" placeholder="Расскажите о вашем опыте использования радио..." maxlength="500"></textarea>
+                <button class="submit-feedback" id="submitFeedbackBtn">Отправить отзыв</button>
+            </div>
+            
+            <div class="feedback-tab-content" id="view-feedback">
+                <div class="reviews-list" id="reviewsList">
+                    <div class="no-reviews">Пока нет отзывов. Будьте первым!</div>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <!-- Плашка загрузки для Minecraft -->
     <div class="minecraft-loading" id="minecraftLoading">
@@ -1827,6 +2065,10 @@
                 <h1>Deynik Radio</h1>
             </div>
             <div class="header-right">
+                <!-- НОВАЯ КНОПКА ОТЗЫВОВ -->
+                <button class="feedback-btn" id="feedbackBtn">
+                    <i class="fas fa-star"></i> Отзыв
+                </button>
                 <button class="theme-switcher" id="themeSwitcher">
                     <i class="fas fa-palette"></i> Ретро
                 </button>
@@ -2067,6 +2309,8 @@
                     <button class="btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
                     <button class="btn btn-play" id="play-btn"><i class="fas fa-play"></i></button>
                     <button class="btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
+                    <!-- НОВАЯ ГИФКА ПРИ ПЕРЕКЛЮЧЕНИИ -->
+                    <img src="https://pa1.aminoapps.com/6938/f8628ed41beb303e5390d4d776d2c84d2b2bafa7r1-320-92_00.gif" class="next-gif" id="nextGif">
                 </div>
                 
                 <div class="player-buttons">
@@ -2258,7 +2502,7 @@
             }
         };
 
-        // Массив с гифками для обычных станций
+        // Массив с гифками для обычных станций - ДОБАВЛЕНЫ НОВЫЕ ГИФКИ
         const gifs = [
             'https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif',
             'https://i.pinimg.com/originals/20/c8/3d/20c83d1cb257a6c4e5f68960ef0c3046.gif',
@@ -2274,7 +2518,14 @@
             'https://markiled.github.io/Images/Art/Commissions/Commission-2020-Mar-Raul.gif',
             'https://i.pinimg.com/originals/6e/fb/de/6efbde2becc91166553e90ca975aaf07.gif',
             'https://i.pinimg.com/originals/dc/9c/38/dc9c38d59ade3c7e307f64d52b3eba32.gif',
-            'https://i.pinimg.com/originals/0e/85/86/0e8586ecd90850bf236dd7efdf5fa594.gif'
+            'https://i.pinimg.com/originals/0e/85/86/0e8586ecd90850bf236dd7efdf5fa594.gif',
+            // ДОБАВЛЕНЫ НОВЫЕ ГИФКИ
+            'https://steamuserimages-a.akamaihd.net/ugc/9667873298027977/D91C419D674235E03A5ED1DD814E2C7B2A3AFEB5/?imw=512&amp;imh=288&amp;ima=fit&amp;impolicy=Letterbox&amp;imcolor=%23000000&amp;letterbox=true',
+            'https://i.pinimg.com/originals/36/e2/3a/36e23aa11a22646e9c5f611d3b7c56f7.gif',
+            'https://i.pinimg.com/originals/e4/c3/9a/e4c39a73c1d9f9d32ca69f9ea0783c66.gif',
+            'https://i.pinimg.com/originals/0b/49/e3/0b49e3c7cdf6f64da625dd7b2ed94312.gif',
+            'https://i.pinimg.com/originals/5d/1b/b3/5d1bb3546868cf3791880fa5720da7a2.gif',
+            'https://i.pinimg.com/originals/c4/67/13/c4671376fad5ff9cc8a83c3f2174fd73.gif'
         ];
 
         // Массив с гифками для Minecraft станции
@@ -2357,6 +2608,18 @@
             const heartEffect = document.getElementById('heartEffect');
             const likesCountBottom = document.getElementById('likes-count-bottom');
             const googleLoginBtn = document.getElementById('googleLoginBtn');
+            const nextGif = document.getElementById('nextGif');
+            
+            // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ ОТЗЫВОВ
+            const feedbackBtn = document.getElementById('feedbackBtn');
+            const feedbackModal = document.getElementById('feedbackModal');
+            const closeFeedbackModal = document.getElementById('closeFeedbackModal');
+            const ratingStars = document.getElementById('ratingStars');
+            const feedbackText = document.getElementById('feedbackText');
+            const submitFeedbackBtn = document.getElementById('submitFeedbackBtn');
+            const feedbackTabs = document.querySelectorAll('.feedback-tab');
+            const feedbackTabContents = document.querySelectorAll('.feedback-tab-content');
+            const reviewsList = document.getElementById('reviewsList');
             
             let isPlaying = false;
             let audio = null;
@@ -2373,6 +2636,10 @@
             let currentGifUrl = 'https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif';
             let replyingToMessage = null;
             
+            // НОВЫЕ ПЕРЕМЕННЫЕ ДЛЯ ОТЗЫВОВ
+            let currentRating = 0;
+            let reviews = JSON.parse(localStorage.getItem('deynikRadioReviews')) || [];
+            
             // Инициализация
             loadLikes();
             updateStationInfo();
@@ -2380,6 +2647,133 @@
             initReactionsModal();
             loadEmojis();
             loadTrendingGifs();
+            initFeedbackSystem();
+
+            // Инициализация системы отзывов
+            function initFeedbackSystem() {
+                displayReviews();
+                
+                // Обработчики для звезд рейтинга
+                const stars = ratingStars.querySelectorAll('.star');
+                stars.forEach(star => {
+                    star.addEventListener('click', function() {
+                        const rating = parseInt(this.getAttribute('data-rating'));
+                        setRating(rating);
+                    });
+                    
+                    star.addEventListener('mouseover', function() {
+                        const rating = parseInt(this.getAttribute('data-rating'));
+                        highlightStars(rating);
+                    });
+                });
+                
+                ratingStars.addEventListener('mouseleave', function() {
+                    highlightStars(currentRating);
+                });
+                
+                // Обработчик отправки отзыва
+                submitFeedbackBtn.addEventListener('click', submitReview);
+                
+                // Обработчики переключения вкладок
+                feedbackTabs.forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        const tabId = this.getAttribute('data-tab');
+                        
+                        // Убрать активный класс у всех вкладок
+                        feedbackTabs.forEach(t => t.classList.remove('active'));
+                        feedbackTabContents.forEach(c => c.classList.remove('active'));
+                        
+                        // Добавить активный класс к текущей вкладке
+                        this.classList.add('active');
+                        document.getElementById(tabId).classList.add('active');
+                    });
+                });
+            }
+            
+            function setRating(rating) {
+                currentRating = rating;
+                highlightStars(rating);
+            }
+            
+            function highlightStars(rating) {
+                const stars = ratingStars.querySelectorAll('.star');
+                stars.forEach((star, index) => {
+                    if (index < rating) {
+                        star.classList.add('active');
+                    } else {
+                        star.classList.remove('active');
+                    }
+                });
+            }
+            
+            function submitReview() {
+                if (currentRating === 0) {
+                    showNotification('Пожалуйста, выберите оценку', 'error');
+                    return;
+                }
+                
+                const reviewText = feedbackText.value.trim();
+                if (reviewText === '') {
+                    showNotification('Пожалуйста, напишите отзыв', 'error');
+                    return;
+                }
+                
+                const userName = userNickname || (currentUser ? (currentUser.displayName || 'Аноним') : 'Аноним');
+                
+                const review = {
+                    id: Date.now(),
+                    user: userName,
+                    rating: currentRating,
+                    text: reviewText,
+                    timestamp: new Date().toISOString()
+                };
+                
+                reviews.unshift(review);
+                localStorage.setItem('deynikRadioReviews', JSON.stringify(reviews));
+                
+                // Очистить форму
+                feedbackText.value = '';
+                setRating(0);
+                
+                // Обновить список отзывов
+                displayReviews();
+                
+                // Переключиться на вкладку с отзывами
+                feedbackTabs.forEach(t => t.classList.remove('active'));
+                feedbackTabContents.forEach(c => c.classList.remove('active'));
+                document.querySelector('[data-tab="view-feedback"]').classList.add('active');
+                document.getElementById('view-feedback').classList.add('active');
+                
+                showNotification('Спасибо за ваш отзыв!', 'success');
+            }
+            
+            function displayReviews() {
+                reviewsList.innerHTML = '';
+                
+                if (reviews.length === 0) {
+                    reviewsList.innerHTML = '<div class="no-reviews">Пока нет отзывов. Будьте первым!</div>';
+                    return;
+                }
+                
+                reviews.forEach(review => {
+                    const reviewItem = document.createElement('div');
+                    reviewItem.className = 'review-item';
+                    
+                    const starsHtml = Array(review.rating).fill('<div class="review-star"></div>').join('');
+                    const date = new Date(review.timestamp).toLocaleDateString('ru-RU');
+                    
+                    reviewItem.innerHTML = `
+                        <div class="review-header">
+                            <div class="review-user">${review.user}</div>
+                            <div class="review-rating">${starsHtml}</div>
+                        </div>
+                        <div class="review-text">${review.text}</div>
+                        <div style="font-size: 0.7rem; color: #888; margin-top: 8px;">${date}</div>
+                    `;
+                    
+                    reviewsList.appendChild(reviewItem);
+                });
+            }
 
             // Инициализация модального окна реакций
             function initReactionsModal() {
@@ -3279,6 +3673,19 @@
                 });
             }
             
+            // НОВАЯ ФУНКЦИЯ ДЛЯ ПОКАЗА ГИФКИ ПРИ ПЕРЕКЛЮЧЕНИИ
+            function showNextButtonGif() {
+                // Шанс 40% показать гифку
+                if (Math.random() < 0.4) {
+                    nextGif.style.display = 'block';
+                    
+                    // Скрыть гифку через 2 секунды
+                    setTimeout(() => {
+                        nextGif.style.display = 'none';
+                    }, 2000);
+                }
+            }
+            
             // Обработчики чата
             chatInput.addEventListener('input', function() {
                 chatSendBtn.disabled = this.value.trim() === '';
@@ -3332,6 +3739,15 @@
                 if (e.key === 'Enter') saveNickname();
             });
             
+            // Обработчики для модального окна отзывов
+            feedbackBtn.addEventListener('click', function() {
+                feedbackModal.style.display = 'block';
+            });
+            
+            closeFeedbackModal.addEventListener('click', function() {
+                feedbackModal.style.display = 'none';
+            });
+            
             window.addEventListener('click', function(event) {
                 if (event.target === shareModal) {
                     shareModal.style.display = 'none';
@@ -3341,6 +3757,9 @@
                 }
                 if (event.target === nicknameModal) {
                     nicknameModal.style.display = 'none';
+                }
+                if (event.target === feedbackModal) {
+                    feedbackModal.style.display = 'none';
                 }
             });
             
@@ -3532,13 +3951,15 @@
                 changeStation();
             });
             
-            // Обработчик кнопки "Следующая станция"
+            // Обработчик кнопки "Следующая станция" - ДОБАВЛЕН ПОКАЗ ГИФКИ
             nextButton.addEventListener('click', function() {
                 currentStationIndex = (currentStationIndex + 1) % stationIds.length;
                 isPlaying = true;
                 playButton.innerHTML = '<i class="fas fa-pause"></i>';
                 document.getElementById('player-icon').classList.add('playing');
                 changeStation();
+                // ПОКАЗЫВАЕМ ГИФКУ С ШАНСОМ 40%
+                showNextButtonGif();
             });
             
             // Обработчик кнопки "Обновить" с анимацией

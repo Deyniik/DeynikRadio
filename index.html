@@ -1576,6 +1576,90 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* НОВЫЕ СТИЛИ ДЛЯ ФУНКЦИОНАЛА ОТВЕТОВ И ССЫЛОК */
+        .reply-btn {
+            position: absolute;
+            right: 35px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: #B3B3B3;
+        }
+
+        .message:hover .reply-btn {
+            opacity: 1;
+        }
+
+        .reply-btn:hover {
+            background: rgba(29, 185, 84, 0.2);
+            color: #1DB954;
+        }
+
+        .reply-indicator {
+            background: rgba(29, 185, 84, 0.1);
+            border-left: 2px solid #1DB954;
+            padding: 5px 8px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            color: #B3B3B3;
+        }
+
+        .reply-indicator strong {
+            color: #1DB954;
+        }
+
+        .cancel-reply {
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            margin-left: 5px;
+            font-size: 0.7rem;
+        }
+
+        .cancel-reply:hover {
+            color: #1DB954;
+        }
+
+        .message a {
+            color: #1DB954;
+            text-decoration: underline;
+            word-break: break-all;
+        }
+
+        .message a:hover {
+            color: #1ed760;
+        }
+
+        .share-radio-message {
+            background: rgba(29, 185, 84, 0.1);
+            border-left: 3px solid #1DB954;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .share-radio-message:hover {
+            background: rgba(29, 185, 84, 0.2);
+            transform: translateX(3px);
+        }
+
+        .share-radio-icon {
+            color: #1DB954;
+            margin-right: 5px;
+        }
+
         @media (max-width: 900px) {
             .content {
                 flex-direction: column;
@@ -1674,6 +1758,9 @@
             <div class="share-buttons-simple">
                 <button class="share-option" id="copyLinkBtn">
                     <i class="fas fa-copy"></i> Скопировать ссылку
+                </button>
+                <button class="share-option" id="shareInChatBtn">
+                    <i class="fas fa-comment"></i> Поделиться в чате
                 </button>
             </div>
         </div>
@@ -2226,6 +2313,7 @@
             const shareModal = document.getElementById('shareModal');
             const closeShareModal = document.getElementById('closeShareModal');
             const copyLinkBtn = document.getElementById('copyLinkBtn');
+            const shareInChatBtn = document.getElementById('shareInChatBtn');
             const minecraftLoading = document.getElementById('minecraftLoading');
             const notification = document.getElementById('notification');
             const emojiBtn = document.getElementById('emoji-btn');
@@ -2264,6 +2352,7 @@
             let currentMessageForReaction = null;
             let userNickname = localStorage.getItem('userNickname') || '';
             let currentGifUrl = 'https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif';
+            let replyingToMessage = null;
             
             // Инициализация
             loadLikes();
@@ -2765,6 +2854,11 @@
                 messageElement.className = 'message';
                 messageElement.setAttribute('data-message-id', message.id);
                 
+                // Добавляем специальный класс для сообщений о радио
+                if (message.isRadioShare) {
+                    messageElement.classList.add('share-radio-message');
+                }
+                
                 let timeString = 'только что';
                 if (message.timestamp) {
                     const time = message.timestamp.toDate ? message.timestamp.toDate() : new Date(message.timestamp);
@@ -2772,16 +2866,37 @@
                 }
                 
                 let messageContent = '';
+                
+                // Обрабатываем ответы на сообщения
+                if (message.replyTo) {
+                    messageContent += `
+                        <div class="reply-indicator">
+                            Ответ на: <strong>${message.replyTo.userName || message.replyTo.user}</strong>: ${message.replyTo.text ? message.replyTo.text.substring(0, 30) + (message.replyTo.text.length > 30 ? '...' : '') : ''}
+                        </div>
+                    `;
+                }
+                
                 if (message.gif) {
-                    messageContent = `
+                    messageContent += `
                         <span class="message-user">${message.userName || 'Аноним'}:</span>
                         <img src="${message.gif}" style="max-width: 200px; border-radius: 8px; margin-top: 5px;" alt="GIF">
                         <span class="message-time">${timeString}</span>
                     `;
+                } else if (message.isRadioShare && message.radioStation) {
+                    // Сообщение о пересылке радио
+                    messageContent += `
+                        <span class="share-radio-icon"><i class="fas fa-radio"></i></span>
+                        <span class="message-user">${message.userName || 'Аноним'}</span>
+                        поделился радиостанцией:
+                        <strong>${message.radioStation.name}</strong>
+                        <span class="message-time">${timeString}</span>
+                    `;
                 } else {
-                    messageContent = `
+                    // Обычное текстовое сообщение с обработкой ссылок
+                    const processedText = formatMessageText(message.text || '');
+                    messageContent += `
                         <span class="message-user">${message.userName || 'Аноним'}:</span>
-                        ${message.text || ''}
+                        ${processedText}
                         <span class="message-time">${timeString}</span>
                     `;
                 }
@@ -2807,6 +2922,9 @@
                 messageElement.innerHTML = `
                     ${messageContent}
                     ${reactionsHTML}
+                    <button class="reply-btn" data-message-id="${message.id}">
+                        <i class="fas fa-reply"></i>
+                    </button>
                     <button class="reaction-btn" data-message-id="${message.id}">
                         <i class="far fa-smile"></i>
                     </button>
@@ -2822,6 +2940,13 @@
                 `;
                 
                 chatMessages.appendChild(messageElement);
+                
+                // Добавляем обработчики для кнопки ответа
+                const replyBtn = messageElement.querySelector('.reply-btn');
+                replyBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    startReply(message);
+                });
                 
                 // Добавляем обработчики для реакций
                 const reactionElements = messageElement.querySelectorAll('.reaction');
@@ -2862,6 +2987,13 @@
                     this.parentElement.classList.remove('show');
                 });
                 
+                // Добавляем обработчик для сообщений о радио
+                if (message.isRadioShare && message.radioStation) {
+                    messageElement.addEventListener('click', function() {
+                        playSharedRadio(message.radioStation);
+                    });
+                }
+                
                 // Добавляем обработчик для правого клика
                 messageElement.addEventListener('contextmenu', function(e) {
                     e.preventDefault();
@@ -2874,6 +3006,57 @@
                         picker.classList.toggle('show');
                     }
                 });
+            }
+            
+            // Функция для обработки ссылок в тексте сообщений
+            function formatMessageText(text) {
+                if (!text) return '';
+                
+                // Регулярное выражение для поиска URL
+                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                
+                // Заменяем URL на ссылки
+                return text.replace(urlRegex, function(url) {
+                    return '<a href="' + url + '" target="_blank">' + url + '</a>';
+                });
+            }
+            
+            // Функция для ответа на сообщение
+            function startReply(message) {
+                replyingToMessage = message;
+                
+                // Показываем индикатор ответа
+                const replyIndicator = document.createElement('div');
+                replyIndicator.className = 'reply-indicator';
+                replyIndicator.innerHTML = `
+                    Ответ на: <strong>${message.userName || message.user}</strong>: ${message.text ? message.text.substring(0, 30) + (message.text.length > 30 ? '...' : '') : ''}
+                    <button class="cancel-reply">✕</button>
+                `;
+                
+                // Удаляем предыдущий индикатор, если есть
+                const existingIndicator = document.querySelector('.reply-indicator:not(.message .reply-indicator)');
+                if (existingIndicator) {
+                    existingIndicator.remove();
+                }
+                
+                // Вставляем индикатор перед полем ввода
+                const chatInputContainer = document.getElementById('chat-input-container');
+                chatInputContainer.parentNode.insertBefore(replyIndicator, chatInputContainer);
+                
+                // Добавляем обработчик для кнопки отмены
+                const cancelBtn = replyIndicator.querySelector('.cancel-reply');
+                cancelBtn.addEventListener('click', cancelReply);
+                
+                // Фокусируемся на поле ввода
+                chatInput.focus();
+            }
+            
+            function cancelReply() {
+                replyingToMessage = null;
+                const replyIndicator = document.querySelector('.reply-indicator:not(.message .reply-indicator)');
+                if (replyIndicator) {
+                    replyIndicator.remove();
+                }
             }
             
             function handleReactionClick(e) {
@@ -2930,12 +3113,22 @@
                     reactions: {}
                 };
                 
+                // Добавляем информацию о ответе, если есть
+                if (replyingToMessage) {
+                    message.replyTo = {
+                        userName: replyingToMessage.userName || replyingToMessage.user,
+                        text: replyingToMessage.text,
+                        messageId: replyingToMessage.id
+                    };
+                }
+                
                 chatSendBtn.disabled = true;
                 chatSendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                 
                 db.collection('chat').add(message)
                     .then(() => {
                         chatInput.value = '';
+                        cancelReply();
                     })
                     .finally(() => {
                         chatSendBtn.disabled = false;
@@ -2943,7 +3136,80 @@
                     });
             }
             
-            // Функции для шаринга
+            // Функция для воспроизведения радио из сообщения
+            function playSharedRadio(radioStation) {
+                // Находим станцию в нашем списке
+                const stationKey = Object.keys(radioStations).find(key => 
+                    radioStations[key].name === radioStation.name
+                );
+                
+                if (stationKey) {
+                    // Переключаемся на эту станцию
+                    const stationIndex = stationIds.indexOf(stationKey);
+                    if (stationIndex !== -1) {
+                        currentStationIndex = stationIndex;
+                        currentStation = stationKey;
+                        isPlaying = true;
+                        playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                        document.getElementById('player-icon').classList.add('playing');
+                        changeStation();
+                        showNotification(`Включена станция: ${radioStation.name}`, 'success');
+                    }
+                } else {
+                    showNotification('Станция не найдена в списке', 'error');
+                }
+            }
+            
+            // Функция для отправки радио в чат
+            function shareRadioInChat() {
+                const user = auth.currentUser;
+                if (!user) {
+                    showNotification('Войдите в систему, чтобы делиться радио в чате', 'error');
+                    shareModal.style.display = 'none';
+                    return;
+                }
+                
+                if (!currentStation) {
+                    showNotification('Сначала выберите радиостанцию', 'error');
+                    shareModal.style.display = 'none';
+                    return;
+                }
+                
+                const displayName = userNickname || (user.displayName || 'Пользователь');
+                const station = radioStations[currentStation];
+                
+                const message = {
+                    userName: displayName,
+                    userId: user.uid,
+                    isRadioShare: true,
+                    radioStation: station,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    reactions: {}
+                };
+                
+                db.collection('chat').add(message)
+                    .then(() => {
+                        shareModal.style.display = 'none';
+                        showNotification('Радиостанция отправлена в чат!', 'success');
+                    })
+                    .catch(error => {
+                        console.error('Ошибка отправки радио в чат:', error);
+                        showNotification('Ошибка отправки', 'error');
+                    });
+            }
+            
+            // Обработчики чата
+            chatInput.addEventListener('input', function() {
+                chatSendBtn.disabled = this.value.trim() === '';
+            });
+            
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !chatSendBtn.disabled) sendMessage();
+            });
+            
+            chatSendBtn.addEventListener('click', sendMessage);
+            
+            // Обработчики для шаринга
             shareBtn.addEventListener('click', function() {
                 shareModal.style.display = 'block';
             });
@@ -2962,6 +3228,8 @@
                         showNotification('Не удалось скопировать ссылку', 'error');
                     });
             });
+            
+            shareInChatBtn.addEventListener('click', shareRadioInChat);
             
             // Закрытие модального окна реакций
             closeReactionsModal.addEventListener('click', function() {
@@ -3111,17 +3379,6 @@
             
             // Слушатель состояния аутентификации
             auth.onAuthStateChanged(updateAuthUI);
-            
-            // Обработчики чата
-            chatInput.addEventListener('input', function() {
-                chatSendBtn.disabled = this.value.trim() === '';
-            });
-            
-            chatInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && !chatSendBtn.disabled) sendMessage();
-            });
-            
-            chatSendBtn.addEventListener('click', sendMessage);
             
             // Переключение темы
             themeSwitcher.addEventListener('click', function() {

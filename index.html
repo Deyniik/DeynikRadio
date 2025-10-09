@@ -293,6 +293,26 @@
             background: rgba(29, 185, 84, 0.3);
             transform: scale(1.05);
         }
+
+        /* НОВАЯ КНОПКА ПОДДЕРЖКИ */
+        .support-btn {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .support-btn:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.05);
+        }
         
         .content {
             display: flex;
@@ -738,16 +758,41 @@
             box-shadow: 0 0 16px rgba(29, 185, 84, 0.8);
         }
 
-        /* НОВАЯ ГИФКА ПРИ ПЕРЕКЛЮЧЕНИИ - ИСПРАВЛЕННАЯ */
+        /* ОБНОВЛЕННАЯ ГИФКА ПРИ ПЕРЕКЛЮЧЕНИИ - НОРМАЛЬНОГО РАЗМЕРА */
         .next-gif {
             position: absolute;
             left: calc(100% + 10px);
-            width: 60px;
-            height: 60px;
+            width: 120px;
+            height: 80px;
             z-index: 10;
             display: none;
             border-radius: 8px;
-            box-shadow: 0 0 15px rgba(29, 185, 84, 0.5);
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            object-fit: cover;
+        }
+        
+        .next-gif.show {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+            animation: gifAppear 0.5s ease-out;
+        }
+        
+        @keyframes gifAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateX(-20px);
+            }
+            70% {
+                opacity: 1;
+                transform: scale(1.05) translateX(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateX(0);
+            }
         }
         
         /* ИЗМЕНЕННАЯ КНОПКА ЛАЙКА - ЦИФРА СНАРУЖИ */
@@ -1168,7 +1213,7 @@
             cursor: not-allowed;
         }
         
-        /* ОКНО ЭМОДЗИ С ОБЫЧНЫМИ СМАЙЛАМИ */
+        /* ОКНО ЭМОДЗИ С ПОИСКОМ */
         .emoji-picker {
             position: absolute;
             bottom: 45px;
@@ -1873,6 +1918,55 @@
             font-size: 1rem;
         }
 
+        /* Стили для выпадающего списка упоминаний */
+        .mentions-list {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(40, 40, 40, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .mentions-list.show {
+            display: block;
+        }
+        
+        .mention-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .mention-item:hover {
+            background: rgba(29, 185, 84, 0.2);
+        }
+        
+        .mention-item.active {
+            background: rgba(29, 185, 84, 0.3);
+        }
+        
+        .user-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #1DB954;
+        }
+        
+        .user-status.offline {
+            background: #B3B3B3;
+        }
+
         @media (max-width: 900px) {
             .content {
                 flex-direction: column;
@@ -1935,8 +2029,8 @@
             .next-gif {
                 position: absolute;
                 left: calc(100% + 5px);
-                width: 50px;
-                height: 50px;
+                width: 100px;
+                height: 70px;
             }
 
             .feedback-modal-content {
@@ -2045,6 +2139,42 @@
             </div>
         </div>
     </div>
+
+    <!-- НОВОЕ МОДАЛЬНОЕ ОКНО ДЛЯ ПОДДЕРЖКИ -->
+    <div class="modal" id="supportModal">
+        <div class="modal-content">
+            <span class="close" id="closeSupportModal">&times;</span>
+            <h3>Поддержать проект</h3>
+            <p style="margin-bottom: 15px; text-align: center;">Если вам нравится наше радио, вы можете поддержать его развитие:</p>
+            
+            <div style="margin-bottom: 20px; text-align: center;">
+                <h3 style="color: #1DB954; margin-bottom: 10px;">Donation Alerts</h3>
+                <a href="https://www.donationalerts.com/r/deynikk" target="_blank" style="color: #1DB954; text-decoration: none; font-weight: bold;">
+                    https://www.donationalerts.com/r/deynikk
+                </a>
+            </div>
+            
+            <div style="margin-bottom: 20px; text-align: center;">
+                <h3 style="color: #1DB954; margin-bottom: 10px;">Dalink</h3>
+                <a href="https://dalink.to/deynikk" target="_blank" style="color: #1DB954; text-decoration: none; font-weight: bold;">
+                    https://dalink.to/deynikk
+                </a>
+            </div>
+            
+            <div style="text-align: center;">
+                <h3 style="color: #1DB954; margin-bottom: 10px;">Банковская карта (Альфа Банк)</h3>
+                <p style="background: rgba(40, 40, 40, 0.8); padding: 10px; border-radius: 8px; font-family: monospace;">
+                    4081 7810 5059 7275 0268
+                </p>
+            </div>
+            
+            <div class="share-buttons-simple" style="margin-top: 20px;">
+                <button class="share-option" id="closeSupportBtn">
+                    <i class="fas fa-times"></i> Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
     
     <!-- Плашка загрузки для Minecraft -->
     <div class="minecraft-loading" id="minecraftLoading">
@@ -2069,6 +2199,12 @@
                 <button class="feedback-btn" id="feedbackBtn">
                     <i class="fas fa-star"></i> Отзыв
                 </button>
+                
+                <!-- НОВАЯ КНОПКА ПОДДЕРЖКИ -->
+                <button class="support-btn" id="supportBtn">
+                    <i class="fas fa-heart"></i> Поддержать
+                </button>
+                
                 <button class="theme-switcher" id="themeSwitcher">
                     <i class="fas fa-palette"></i> Ретро
                 </button>
@@ -2260,6 +2396,9 @@
                             <i class="fas fa-paper-plane"></i>
                         </button>
                         
+                        <!-- Список упоминаний -->
+                        <div class="mentions-list" id="mentionsList"></div>
+                        
                         <!-- ОКНО ЭМОДЗИ С ПОИСКОМ -->
                         <div class="emoji-picker" id="emoji-picker">
                             <input type="text" class="emoji-search" id="emoji-search" placeholder="Поиск эмодзи...">
@@ -2309,7 +2448,7 @@
                     <button class="btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
                     <button class="btn btn-play" id="play-btn"><i class="fas fa-play"></i></button>
                     <button class="btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
-                    <!-- НОВАЯ ГИФКА ПРИ ПЕРЕКЛЮЧЕНИИ -->
+                    <!-- ОБНОВЛЕННАЯ ГИФКА ПРИ ПЕРЕКЛЮЧЕНИИ -->
                     <img src="https://pa1.aminoapps.com/6938/f8628ed41beb303e5390d4d776d2c84d2b2bafa7r1-320-92_00.gif" class="next-gif" id="nextGif">
                 </div>
                 
@@ -2621,6 +2760,15 @@
             const feedbackTabContents = document.querySelectorAll('.feedback-tab-content');
             const reviewsList = document.getElementById('reviewsList');
             
+            // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ ПОДДЕРЖКИ
+            const supportBtn = document.getElementById('supportBtn');
+            const supportModal = document.getElementById('supportModal');
+            const closeSupportModal = document.getElementById('closeSupportModal');
+            const closeSupportBtn = document.getElementById('closeSupportBtn');
+            
+            // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ УПОМИНАНИЙ
+            const mentionsList = document.getElementById('mentionsList');
+            
             let isPlaying = false;
             let audio = null;
             let currentStationIndex = 0;
@@ -2635,6 +2783,8 @@
             let userNickname = localStorage.getItem('userNickname') || '';
             let currentGifUrl = 'https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif';
             let replyingToMessage = null;
+            let onlineUsers = {};
+            let currentMentionIndex = -1;
             
             // НОВЫЕ ПЕРЕМЕННЫЕ ДЛЯ ОТЗЫВОВ
             let currentRating = 0;
@@ -3677,25 +3827,192 @@
             function showNextButtonGif() {
                 // Шанс 40% показать гифку
                 if (Math.random() < 0.4) {
-                    nextGif.style.display = 'block';
+                    nextGif.classList.add('show');
                     
                     // Скрыть гифку через 2 секунды
                     setTimeout(() => {
-                        nextGif.style.display = 'none';
+                        nextGif.classList.remove('show');
                     }, 2000);
+                }
+            }
+            
+            // НОВЫЕ ФУНКЦИИ ДЛЯ УПОМИНАНИЙ
+            function handleMentions() {
+                const text = chatInput.value;
+                const cursorPosition = chatInput.selectionStart;
+                const textBeforeCursor = text.substring(0, cursorPosition);
+                const atSymbolIndex = textBeforeCursor.lastIndexOf('@');
+                
+                if (atSymbolIndex !== -1) {
+                    const textAfterAt = textBeforeCursor.substring(atSymbolIndex + 1);
+                    const spaceIndex = textAfterAt.indexOf(' ');
+                    
+                    if (spaceIndex === -1) {
+                        // Показываем список пользователей для упоминания
+                        showMentionsList(textAfterAt);
+                        return;
+                    }
+                }
+                
+                // Скрываем список упоминаний, если условия не выполняются
+                hideMentions();
+            }
+            
+            function showMentionsList(filter = '') {
+                mentionsList.innerHTML = '';
+                let hasResults = false;
+                
+                Object.entries(onlineUsers).forEach(([userId, userData]) => {
+                    if (userData.isOnline && 
+                        (filter === '' || userData.displayName.toLowerCase().includes(filter.toLowerCase()))) {
+                        const mentionItem = document.createElement('div');
+                        mentionItem.className = 'mention-item';
+                        mentionItem.innerHTML = `
+                            <div class="user-status"></div>
+                            <span>${userData.displayName}</span>
+                        `;
+                        
+                        mentionItem.addEventListener('click', () => {
+                            insertMention(userData.displayName);
+                        });
+                        
+                        mentionsList.appendChild(mentionItem);
+                        hasResults = true;
+                    }
+                });
+                
+                if (hasResults) {
+                    mentionsList.classList.add('show');
+                    currentMentionIndex = -1;
+                } else {
+                    hideMentions();
+                }
+            }
+            
+            function hideMentions() {
+                mentionsList.classList.remove('show');
+                currentMentionIndex = -1;
+            }
+            
+            function insertMention(username) {
+                const text = chatInput.value;
+                const cursorPosition = chatInput.selectionStart;
+                const textBeforeCursor = text.substring(0, cursorPosition);
+                const atSymbolIndex = textBeforeCursor.lastIndexOf('@');
+                
+                if (atSymbolIndex !== -1) {
+                    const newText = text.substring(0, atSymbolIndex) + '@' + username + ' ' + text.substring(cursorPosition);
+                    chatInput.value = newText;
+                    
+                    // Устанавливаем курсор после упоминания
+                    const newCursorPosition = atSymbolIndex + username.length + 2;
+                    chatInput.setSelectionRange(newCursorPosition, newCursorPosition);
+                }
+                
+                hideMentions();
+                chatInput.focus();
+            }
+            
+            function navigateMentions(direction) {
+                const items = mentionsList.querySelectorAll('.mention-item');
+                if (items.length === 0) return;
+                
+                let activeIndex = -1;
+                items.forEach((item, index) => {
+                    if (item.classList.contains('active')) {
+                        activeIndex = index;
+                        item.classList.remove('active');
+                    }
+                });
+                
+                let newIndex = activeIndex + direction;
+                if (newIndex < 0) newIndex = items.length - 1;
+                if (newIndex >= items.length) newIndex = 0;
+                
+                items[newIndex].classList.add('active');
+                currentMentionIndex = newIndex;
+            }
+            
+            function selectMention() {
+                const activeItem = mentionsList.querySelector('.mention-item.active');
+                if (activeItem) {
+                    const username = activeItem.querySelector('span').textContent;
+                    insertMention(username);
+                }
+            }
+            
+            function processMentions(messageText) {
+                const mentions = messageText.match(/@(\w+)/g);
+                
+                if (mentions) {
+                    mentions.forEach(mention => {
+                        const username = mention.substring(1); // Убираем @
+                        
+                        // Ищем пользователя в онлайн
+                        Object.entries(onlineUsers).forEach(([userId, userData]) => {
+                            if (userData.displayName === username && userData.isOnline) {
+                                // Воспроизводим звук уведомления
+                                playMentionSound();
+                            }
+                        });
+                    });
+                }
+            }
+            
+            function playMentionSound() {
+                // Создаем и воспроизводим звуковой сигнал
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+                    
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                } catch (error) {
+                    console.error('Ошибка воспроизведения звука:', error);
                 }
             }
             
             // Обработчики чата
             chatInput.addEventListener('input', function() {
                 chatSendBtn.disabled = this.value.trim() === '';
+                handleMentions();
             });
             
             chatInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && !chatSendBtn.disabled) sendMessage();
+                if (e.key === 'Enter' && !chatSendBtn.disabled) {
+                    // Обрабатываем упоминания перед отправкой
+                    processMentions(this.value);
+                    sendMessage();
+                }
             });
             
-            chatSendBtn.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    navigateMentions(e.key === 'ArrowDown' ? 1 : -1);
+                } else if (e.key === 'Enter' && mentionsList.classList.contains('show')) {
+                    e.preventDefault();
+                    selectMention();
+                } else if (e.key === 'Escape') {
+                    hideMentions();
+                }
+            });
+            
+            chatSendBtn.addEventListener('click', function() {
+                // Обрабатываем упоминания перед отправкой
+                processMentions(chatInput.value);
+                sendMessage();
+            });
             
             // Обработчики для шаринга
             shareBtn.addEventListener('click', function() {
@@ -3718,6 +4035,19 @@
             });
             
             shareInChatBtn.addEventListener('click', shareRadioInChat);
+            
+            // Обработчики для поддержки
+            supportBtn.addEventListener('click', function() {
+                supportModal.style.display = 'block';
+            });
+            
+            closeSupportModal.addEventListener('click', function() {
+                supportModal.style.display = 'none';
+            });
+            
+            closeSupportBtn.addEventListener('click', function() {
+                supportModal.style.display = 'none';
+            });
             
             // Закрытие модального окна реакций
             closeReactionsModal.addEventListener('click', function() {
@@ -3761,6 +4091,9 @@
                 if (event.target === feedbackModal) {
                     feedbackModal.style.display = 'none';
                 }
+                if (event.target === supportModal) {
+                    supportModal.style.display = 'none';
+                }
             });
             
             // КНОПКА ЭМОДЗИ - ОТКРЫТИЕ/ЗАКРЫТИЕ ОКОШКА
@@ -3768,6 +4101,7 @@
                 e.stopPropagation();
                 emojiPicker.classList.toggle('show');
                 gifPicker.classList.remove('show');
+                hideMentions();
             });
             
             // КНОПКА GIF - ОТКРЫТИЕ/ЗАКРЫТИЕ ОКОШКА
@@ -3775,6 +4109,7 @@
                 e.stopPropagation();
                 gifPicker.classList.toggle('show');
                 emojiPicker.classList.remove('show');
+                hideMentions();
             });
             
             // Поиск эмодзи
@@ -3880,6 +4215,36 @@
                         }
                     }
                 });
+            }
+            
+            // Следим за онлайн пользователями
+            db.collection('onlineUsers').onSnapshot(snapshot => {
+                onlineUsers = {};
+                snapshot.forEach(doc => {
+                    onlineUsers[doc.id] = doc.data();
+                });
+                
+                // Обновляем список упоминаний
+                updateMentionsList();
+            });
+            
+            function updateMentionsList() {
+                // Если список упоминаний открыт, обновляем его
+                if (mentionsList.classList.contains('show')) {
+                    const text = chatInput.value;
+                    const cursorPosition = chatInput.selectionStart;
+                    const textBeforeCursor = text.substring(0, cursorPosition);
+                    const atSymbolIndex = textBeforeCursor.lastIndexOf('@');
+                    
+                    if (atSymbolIndex !== -1) {
+                        const textAfterAt = textBeforeCursor.substring(atSymbolIndex + 1);
+                        const spaceIndex = textAfterAt.indexOf(' ');
+                        
+                        if (spaceIndex === -1) {
+                            showMentionsList(textAfterAt);
+                        }
+                    }
+                }
             }
             
             // Слушатель состояния аутентификации
@@ -4073,223 +4438,3 @@
     </script>
 </body>
 </html>
-<!-- Модальное окно для поддержки -->
-<div class="modal" id="supportModal">
-    <div class="modal-content">
-        <span class="close" id="closeSupportModal">&times;</span>
-        <h3 style="text-align: center; margin-bottom: 20px; color: #1DB954;">Поддержать проект</h3>
-        
-        <div class="support-options">
-            <!-- Donation Alerts -->
-            <div class="support-option">
-                <div class="support-icon" style="background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);">
-                    <i class="fas fa-heart"></i>
-                </div>
-                <div class="support-info">
-                    <h4>Donation Alerts</h4>
-                    <p>Популярная платформа для донатов</p>
-                    <div class="support-links">
-                        <a href="https://www.donationalerts.com/r/deynikk" target="_blank" class="support-link">
-                            <i class="fas fa-external-link-alt"></i>
-                            Основная ссылка
-                        </a>
-                        <a href="https://dalink.to/deynikk" target="_blank" class="support-link">
-                            <i class="fas fa-link"></i>
-                            Короткая ссылка
-                        </a>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Банковская карта -->
-            <div class="support-option">
-                <div class="support-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                    <i class="fas fa-credit-card"></i>
-                </div>
-                <div class="support-info">
-                    <h4>Банковская карта</h4>
-                    <p>Альфа-Банк</p>
-                    <div class="card-number">
-                        <span class="card-digits">4081 7810 5059 7275 0268</span>
-                        <button class="copy-btn" data-text="40817810505972750268">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="support-message">
-            <i class="fas fa-hands-helping" style="color: #1DB954; margin-right: 10px;"></i>
-            <span>Спасибо за вашу поддержку! ❤️</span>
-        </div>
-    </div>
-</div>
-
-<style>
-    .support-options {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        margin: 20px 0;
-    }
-    
-    .support-option {
-        display: flex;
-        align-items: center;
-        background: rgba(40, 40, 40, 0.6);
-        border-radius: 12px;
-        padding: 15px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.3s ease;
-    }
-    
-    .support-option:hover {
-        background: rgba(40, 40, 40, 0.8);
-        transform: translateY(-2px);
-        border-color: rgba(29, 185, 84, 0.3);
-    }
-    
-    .support-icon {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 15px;
-        font-size: 1.2rem;
-        color: white;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-    
-    .support-info {
-        flex: 1;
-    }
-    
-    .support-info h4 {
-        color: #1DB954;
-        margin-bottom: 5px;
-        font-size: 1rem;
-    }
-    
-    .support-info p {
-        color: #B3B3B3;
-        font-size: 0.8rem;
-        margin-bottom: 8px;
-    }
-    
-    .support-links {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-    
-    .support-link {
-        background: rgba(29, 185, 84, 0.2);
-        border: 1px solid rgba(29, 185, 84, 0.5);
-        color: #1DB954;
-        padding: 6px 12px;
-        border-radius: 20px;
-        text-decoration: none;
-        font-size: 0.8rem;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-    
-    .support-link:hover {
-        background: rgba(29, 185, 84, 0.3);
-        transform: scale(1.05);
-    }
-    
-    .card-number {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        background: rgba(255, 255, 255, 0.1);
-        padding: 8px 12px;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .card-digits {
-        font-family: 'Courier New', monospace;
-        font-weight: bold;
-        color: white;
-        letter-spacing: 1px;
-        flex: 1;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-size: 0.9rem;
-    }
-    
-    .copy-btn {
-        background: rgba(29, 185, 84, 0.3);
-        border: 1px solid rgba(29, 185, 84, 0.5);
-        color: white;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .copy-btn:hover {
-        background: rgba(29, 185, 84, 0.5);
-        transform: scale(1.1);
-    }
-    
-    .support-message {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(29, 185, 84, 0.1);
-        border: 1px solid rgba(29, 185, 84, 0.3);
-        border-radius: 10px;
-        padding: 12px;
-        margin-top: 15px;
-        font-size: 0.9rem;
-    }
-</style>
-
-<script>
-    // Просто добавляем обработчики для модального окна поддержки
-    document.addEventListener('DOMContentLoaded', function() {
-        // Закрытие модального окна поддержки
-        const closeSupportModal = document.getElementById('closeSupportModal');
-        if (closeSupportModal) {
-            closeSupportModal.addEventListener('click', function() {
-                document.getElementById('supportModal').style.display = 'none';
-            });
-        }
-        
-        // Закрытие при клике вне окна
-        window.addEventListener('click', function(event) {
-            if (event.target === document.getElementById('supportModal')) {
-                document.getElementById('supportModal').style.display = 'none';
-            }
-        });
-        
-        // Функция копирования номера карты
-        const copyButtons = document.querySelectorAll('.copy-btn');
-        copyButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const textToCopy = this.getAttribute('data-text');
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    const originalIcon = this.innerHTML;
-                    this.innerHTML = '<i class="fas fa-check"></i>';
-                    
-                    setTimeout(() => {
-                        this.innerHTML = originalIcon;
-                    }, 2000);
-                });
-            });
-        });
-    });
-</script>

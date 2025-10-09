@@ -4565,3 +4565,115 @@
     </script>
 </body>
 </html>
+            // НОВЫЕ ФУНКЦИИ ДЛЯ РАБОТЫ С РЕАЛЬНЫМИ ПОЛЬЗОВАТЕЛЯМИ
+            
+            // Загрузка реальных пользователей из Firebase
+            function loadRealUsersList() {
+                usersListElement.innerHTML = '';
+                
+                // Получаем всех пользователей из коллекции users
+                db.collection('users').get().then((snapshot) => {
+                    if (snapshot.empty) {
+                        usersListElement.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;">Нет пользователей онлайн</div>';
+                        return;
+                    }
+                    
+                    snapshot.forEach((doc) => {
+                        const userData = doc.data();
+                        const userId = doc.id;
+                        
+                        // Проверяем, онлайн ли пользователь (последняя активность менее 5 минут назад)
+                        const lastSeen = userData.lastSeen ? userData.lastSeen.toDate() : new Date();
+                        const isOnline = (new Date() - lastSeen) < 5 * 60 * 1000; // 5 минут
+                        
+                        const userItem = document.createElement('div');
+                        userItem.className = 'user-list-item';
+                        userItem.innerHTML = `
+                            <div class="user-list-avatar">
+                                ${userData.nickname ? userData.nickname.charAt(0).toUpperCase() : 'U'}
+                                <div class="${isOnline ? 'user-list-online' : 'user-list-offline'}"></div>
+                            </div>
+                            <div class="user-list-name">${userData.nickname || 'Пользователь'}</div>
+                        `;
+                        
+                        userItem.addEventListener('click', () => {
+                            // Добавляем упоминание в поле ввода
+                            chatInput.value += `@${userData.nickname || 'Пользователь'} `;
+                            chatInput.focus();
+                            usersModal.style.display = 'none';
+                        });
+                        
+                        usersListElement.appendChild(userItem);
+                    });
+                }).catch((error) => {
+                    console.error('Ошибка загрузки пользователей:', error);
+                    usersListElement.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;">Ошибка загрузки пользователей</div>';
+                });
+            }
+            
+            // Обновление статуса онлайн пользователя
+            function updateUserOnlineStatus() {
+                if (!auth.currentUser) return;
+                
+                const userRef = db.collection('users').doc(auth.currentUser.uid);
+                
+                // Обновляем статус каждые 30 секунд
+                setInterval(() => {
+                    userRef.set({
+                        lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                        nickname: userNickname || auth.currentUser.displayName || 'Пользователь'
+                    }, { merge: true });
+                }, 30000);
+                
+                // Также обновляем при загрузке страницы
+                userRef.set({
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                    nickname: userNickname || auth.currentUser.displayName || 'Пользователь'
+                }, { merge: true });
+            }
+            
+            // Слушатель изменений статуса пользователей в реальном времени
+            function setupUsersRealtimeListener() {
+                db.collection('users').onSnapshot((snapshot) => {
+                    // При изменении списка пользователей обновляем модальное окно, если оно открыто
+                    if (usersModal.style.display === 'block') {
+                        loadRealUsersList();
+                    }
+                });
+            }
+            
+            // Исправление позиции поля ввода чата
+            function fixChatInputPosition() {
+                const chatInput = document.getElementById('chat-input');
+                chatInput.style.paddingLeft = '110px'; // Увеличиваем отступ для трех кнопок
+            }
+            
+            // ЗАМЕНА СТАРОЙ ФУНКЦИИ ЗАГРУЗКИ ПОЛЬЗОВАТЕЛЕЙ
+            function loadUsersList() {
+                loadRealUsersList();
+            }
+            
+            // ОБНОВЛЕННЫЙ ОБРАБОТЧИК ДЛЯ КНОПКИ @
+            mentionChatBtn.addEventListener('click', function() {
+                loadRealUsersList(); // Загружаем актуальный список
+                usersModal.style.display = 'block';
+            });
+            
+            // Инициализация функций при загрузке
+            setTimeout(() => {
+                fixChatInputPosition();
+                if (auth.currentUser) {
+                    updateUserOnlineStatus();
+                    setupUsersRealtimeListener();
+                }
+            }, 1000);
+            
+            // Обновляем статус при изменении авторизации
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    setTimeout(() => {
+                        updateUserOnlineStatus();
+                        setupUsersRealtimeListener();
+                    }, 1000);
+                }
+            });

@@ -4677,3 +4677,246 @@
                     }, 1000);
                 }
             });
+<style>
+    /* Убираем анимацию появления для загрузочного экрана */
+    .loading-gif, .loading-text {
+        opacity: 1 !important;
+        animation: none !important;
+    }
+
+    /* Новые анимации для контента после загрузки - более динамичные */
+    @keyframes fastSlideIn {
+        0% {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    header {
+        animation: fastSlideIn 0.3s ease-out 0.1s forwards !important;
+    }
+
+    .content {
+        animation: fastSlideIn 0.3s ease-out 0.2s forwards !important;
+    }
+
+    .player-container {
+        animation: fastSlideIn 0.3s ease-out 0.3s forwards !important;
+    }
+
+    /* Исправляем позицию гифки при переключении */
+    .next-gif {
+        position: absolute;
+        left: 50% !important;
+        top: -90px !important;
+        transform: translateX(-50%) !important;
+        width: 140px !important;
+        height: 100px !important;
+        background-color: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        z-index: 100;
+    }
+
+    /* Стили для окна упоминаний - без зеленой обводки */
+    .mentions-list {
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(30, 30, 30, 0.98);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        max-height: 150px;
+        overflow-y: auto;
+        z-index: 100;
+        display: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+    }
+    
+    .mentions-list.show {
+        display: block;
+    }
+    
+    .mention-item {
+        padding: 8px 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .mention-item:last-child {
+        border-bottom: none;
+    }
+    
+    .mention-item:hover {
+        background: rgba(29, 185, 84, 0.2);
+    }
+    
+    .mention-item.active {
+        background: rgba(29, 185, 84, 0.3);
+    }
+
+    /* Исправляем отступы в поле ввода чата */
+    .chat-input {
+        padding-left: 80px !important;
+    }
+</style>
+
+<script>
+    // Функция для загрузки реальных пользователей из Firebase
+    function loadRealUsers() {
+        const usersListElement = document.getElementById('usersList');
+        const mentionsList = document.getElementById('mentionsList');
+        
+        if (!usersListElement || !mentionsList) return;
+        
+        // Очищаем списки
+        usersListElement.innerHTML = '';
+        mentionsList.innerHTML = '';
+        
+        // Загружаем реальных пользователей из Firebase
+        db.collection('users').limit(20).get().then((snapshot) => {
+            if (snapshot.empty) {
+                // Если нет пользователей в Firebase, показываем системное сообщение
+                const noUsersItem = document.createElement('div');
+                noUsersItem.className = 'mention-item';
+                noUsersItem.textContent = 'Нет активных пользователей';
+                usersListElement.appendChild(noUsersItem);
+                mentionsList.appendChild(noUsersItem.cloneNode(true));
+                return;
+            }
+            
+            snapshot.forEach((doc) => {
+                const userData = doc.data();
+                const userId = doc.id;
+                const userName = userData.displayName || userData.email || 'Пользователь';
+                const isOnline = userData.isOnline || false;
+                
+                // Добавляем в модальное окно
+                const userItem = document.createElement('div');
+                userItem.className = 'user-list-item';
+                userItem.innerHTML = `
+                    <div class="user-list-avatar">
+                        ${userName.charAt(0).toUpperCase()}
+                        <div class="${isOnline ? 'user-list-online' : 'user-list-offline'}"></div>
+                    </div>
+                    <div class="user-list-name">${userName}</div>
+                `;
+                
+                userItem.addEventListener('click', () => {
+                    chatInput.value += `@${userName} `;
+                    chatInput.focus();
+                    usersModal.style.display = 'none';
+                    mentionsList.classList.remove('show');
+                });
+                
+                usersListElement.appendChild(userItem);
+                
+                // Добавляем в выпадающий список упоминаний
+                const mentionItem = document.createElement('div');
+                mentionItem.className = 'mention-item';
+                mentionItem.innerHTML = `
+                    <div class="user-status ${isOnline ? '' : 'offline'}"></div>
+                    <span>${userName}</span>
+                `;
+                
+                mentionItem.addEventListener('click', () => {
+                    chatInput.value += `@${userName} `;
+                    chatInput.focus();
+                    mentionsList.classList.remove('show');
+                });
+                
+                mentionsList.appendChild(mentionItem);
+            });
+        }).catch((error) => {
+            console.error('Ошибка загрузки пользователей:', error);
+            
+            // Fallback - показываем системное сообщение
+            const noUsersItem = document.createElement('div');
+            noUsersItem.className = 'mention-item';
+            noUsersItem.textContent = 'Ошибка загрузки пользователей';
+            usersListElement.appendChild(noUsersItem);
+            mentionsList.appendChild(noUsersItem.cloneNode(true));
+        });
+    }
+
+    // Функция для поиска и отображения упоминаний
+    function showMentions(searchText = '') {
+        const mentionsList = document.getElementById('mentionsList');
+        if (!mentionsList) return;
+        
+        const mentionItems = mentionsList.querySelectorAll('.mention-item');
+        let hasMatches = false;
+        
+        mentionItems.forEach(item => {
+            const userName = item.textContent.trim();
+            if (userName.toLowerCase().includes(searchText.toLowerCase()) || searchText === '') {
+                item.style.display = 'flex';
+                hasMatches = true;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        if (hasMatches && searchText !== '') {
+            mentionsList.classList.add('show');
+        } else {
+            mentionsList.classList.remove('show');
+        }
+    }
+
+    // Обновляем функцию initApp
+    const originalInitApp = window.initApp;
+    window.initApp = function() {
+        if (originalInitApp) originalInitApp();
+        
+        // Загружаем реальных пользователей после инициализации
+        setTimeout(() => {
+            loadRealUsers();
+        }, 1000);
+        
+        // Добавляем обработчик для поля ввода чата для упоминаний
+        const chatInput = document.getElementById('chat-input');
+        if (chatInput) {
+            chatInput.addEventListener('input', function() {
+                const value = this.value;
+                const lastAtSymbol = value.lastIndexOf('@');
+                
+                if (lastAtSymbol !== -1) {
+                    const searchText = value.substring(lastAtSymbol + 1);
+                    showMentions(searchText);
+                } else {
+                    const mentionsList = document.getElementById('mentionsList');
+                    if (mentionsList) mentionsList.classList.remove('show');
+                }
+            });
+            
+            // Скрываем список упоминаний при потере фокуса
+            chatInput.addEventListener('blur', function() {
+                setTimeout(() => {
+                    const mentionsList = document.getElementById('mentionsList');
+                    if (mentionsList) mentionsList.classList.remove('show');
+                }, 200);
+            });
+        }
+    };
+
+    // Убираем анимацию появления для загрузочного экрана сразу при загрузке
+    document.addEventListener('DOMContentLoaded', function() {
+        const loadingGif = document.querySelector('.loading-gif');
+        const loadingText = document.querySelector('.loading-text');
+        
+        if (loadingGif) loadingGif.style.opacity = '1';
+        if (loadingText) loadingText.style.opacity = '1';
+    });
+</script>

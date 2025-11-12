@@ -1,0 +1,81 @@
+<div class="player-container">
+    <div class="player-top">
+        <div class="player-left">
+            <div id="player-icon" class="player-icon">
+                <i class="fas fa-compact-disc"></i>
+            </div>
+            <div class="station-text">
+                <h2 id="player-station">Euro Phard</h2>
+                <p id="player-description">Лучшие хиты 90-х и 00-х</p>
+            </div>
+        </div>
+
+        <div class="player-center">
+            <button id="btn-prev" class="btn" disabled><i class="fas fa-backward"></i></button>
+            <button id="btn-play" class="btn btn-play" onclick="window.DeynikRadioSync.togglePlay()">
+                <i class="fas fa-play"></i>
+            </button>
+            <button id="btn-next" class="btn" onclick="window.DeynikRadioSync.nextStation()"><i class="fas fa-forward"></i></button>
+            <button id="btn-refresh" class="btn"><i class="fas fa-redo"></i></button>
+            <img id="nextGif" class="next-gif" src="" alt="Next track preview" style="display: none;">
+        </div>
+
+        <div class="player-buttons">
+            <div class="btn-like-container">
+                <span id="likes-count-bottom" class="likes-count-bottom">0</span>
+                <button id="btn-like" class="btn btn-like">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="player-bottom">
+        <div class="volume-control">
+            <i class="fas fa-volume-down volume-icon"></i>
+            <input type="range" min="0" max="100" value="70" class="volume-slider" id="volumeSlider">
+            <i class="fas fa-volume-up volume-icon"></i>
+        </div>
+    </div>
+</div>
+
+<script>
+    const sync = window.DeynikRadioSync;
+    const playButton = document.getElementById('btn-play');
+    const playerIcon = document.getElementById('player-icon');
+    const volumeSlider = document.getElementById('volumeSlider');
+
+    function updatePlayerUI() {
+        const state = sync.state;
+        const station = sync.stations[state.stationId];
+
+        // 1. Обновление кнопки Play/Pause
+        if (state.isPlaying) {
+            playButton.innerHTML = '<i class="fas fa-pause"></i>';
+            playerIcon.classList.add('playing');
+        } else {
+            playButton.innerHTML = '<i class="fas fa-play"></i>';
+            playerIcon.classList.remove('playing');
+        }
+
+        // 2. Обновление информации о станции
+        document.getElementById('player-station').textContent = station.name;
+        document.getElementById('player-description').textContent = station.description;
+        document.getElementById('player-icon').innerHTML = `<i class="${station.icon}"></i>`;
+        
+        // 3. Обновление ползунка громкости
+        volumeSlider.value = state.volume;
+    }
+
+    // Обработчик ползунка громкости
+    volumeSlider.oninput = function() {
+        sync.setVolume(this.value);
+    };
+
+    // Слушаем изменения состояния
+    document.addEventListener('stateChanged', updatePlayerUI);
+    document.addEventListener('stationSelected', updatePlayerUI);
+
+    // Инициализация
+    updatePlayerUI();
+</script>

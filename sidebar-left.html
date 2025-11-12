@@ -1,0 +1,84 @@
+<div class="side-panel left-panel">
+    <div class="stations-header">
+        <h2>Категории</h2>
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <div id="categoriesContainer" class="categories-container">
+        </div>
+
+    <div class="stations-header">
+        <h2>Станции</h2>
+    </div>
+    
+    <ul id="stationList" class="station-list">
+        </ul>
+
+    <button id="randomStationBtn" class="random-station-btn">
+        <i class="fas fa-random"></i> Случайная станция
+    </button>
+</div>
+
+<script>
+    // Минимальный скрипт для обработки UI-логики и связи с sync.js
+    const sync = window.DeynikRadioSync;
+    const stations = sync.stations;
+    const stationList = document.getElementById('stationList');
+    const categoriesContainer = document.getElementById('categoriesContainer');
+
+    function renderStationList(selectedCategory = 'all') {
+        stationList.innerHTML = '';
+        const stationIds = Object.keys(stations);
+        const fragment = document.createDocumentFragment();
+
+        stationIds.forEach(id => {
+            const station = stations[id];
+            if (selectedCategory !== 'all' && station.category !== selectedCategory) return;
+            
+            const li = document.createElement('li');
+            li.setAttribute('data-station-id', id);
+            li.innerHTML = `
+                <span class="station-icon"><i class="${station.icon}"></i></span>
+                <span class="station-name">${station.name}</span>
+                <span class="station-likes"><i class="fas fa-heart"></i> <span class="likes-count">0</span></span>
+            `;
+            li.onclick = () => sync.selectStation(id);
+            fragment.appendChild(li);
+        });
+
+        stationList.appendChild(fragment);
+        updateActiveStation(sync.state.stationId);
+    }
+    
+    function renderCategories() {
+        const categories = [...new Set(Object.values(stations).map(s => s.category))];
+        categoriesContainer.innerHTML = '<button class="category-btn active" data-category="all">Все</button>' +
+                                        categories.map(cat => `<button class="category-btn" data-category="${cat}">${cat.charAt(0).toUpperCase() + cat.slice(1)}</button>`).join('');
+        
+        categoriesContainer.querySelectorAll('.category-btn').forEach(btn => {
+            btn.onclick = function() {
+                categoriesContainer.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                renderStationList(this.getAttribute('data-category'));
+            };
+        });
+    }
+
+    function updateActiveStation(stationId) {
+        stationList.querySelectorAll('li').forEach(li => {
+            li.classList.toggle('active', li.getAttribute('data-station-id') === stationId);
+        });
+    }
+
+    document.getElementById('randomStationBtn').onclick = function() {
+        const randomId = stationIds[Math.floor(Math.random() * stationIds.length)];
+        sync.selectStation(randomId);
+    };
+
+    // Слушаем изменения состояния
+    document.addEventListener('stationSelected', (e) => updateActiveStation(e.detail.station.id));
+    
+    // Инициализация
+    renderCategories();
+    renderStationList();
+</script>

@@ -1967,6 +1967,37 @@
             background: #B3B3B3;
         }
 
+        /* НОВЫЕ СТИЛИ ДЛЯ ОТОБРАЖЕНИЯ ГРОМКОСТИ НА ГИФ-ЭКРАНЕ */
+        .volume-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 10;
+            border: 2px solid #1DB954;
+            box-shadow: 0 0 20px rgba(29, 185, 84, 0.5);
+            display: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .volume-display.show {
+            display: block;
+            animation: fadeInOut 2s ease;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        }
+
         @media (max-width: 900px) {
             .content {
                 flex-direction: column;
@@ -2180,6 +2211,11 @@
     <div class="minecraft-loading" id="minecraftLoading">
         <h3>Minecraft Lo-Fi</h3>
         <p>Эта станция загружается дольше обычного. Пожалуйста, подождите немного...</p>
+    </div>
+    
+    <!-- НОВЫЙ ЭЛЕМЕНТ ДЛЯ ОТОБРАЖЕНИЯ ГРОМКОСТИ НА ГИФ-ЭКРАНЕ -->
+    <div class="volume-display" id="volumeDisplay">
+        <div id="volumeDisplayText">Громкость: 70%</div>
     </div>
     
     <div class="container" id="mainContainer">
@@ -2769,6 +2805,10 @@
             // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ УПОМИНАНИЙ
             const mentionsList = document.getElementById('mentionsList');
             
+            // НОВЫЙ ЭЛЕМЕНТ ДЛЯ ОТОБРАЖЕНИЯ ГРОМКОСТИ
+            const volumeDisplay = document.getElementById('volumeDisplay');
+            const volumeDisplayText = document.getElementById('volumeDisplayText');
+            
             let isPlaying = false;
             let audio = null;
             let currentStationIndex = 0;
@@ -2798,6 +2838,51 @@
             loadEmojis();
             loadTrendingGifs();
             initFeedbackSystem();
+            
+            // НОВАЯ ФУНКЦИЯ ДЛЯ ОБНОВЛЕНИЯ ГРОМКОСТИ
+            function updateVolume(value) {
+                if (value < 0) value = 0;
+                if (value > 100) value = 100;
+                
+                volumeSlider.value = value;
+                if (audio) {
+                    audio.volume = value / 100;
+                }
+                updateVolumeIcon();
+                
+                // Показываем индикатор громкости
+                volumeDisplayText.textContent = `Громкость: ${value}%`;
+                volumeDisplay.classList.add('show');
+                
+                // Скрываем индикатор через 2 секунды
+                setTimeout(() => {
+                    volumeDisplay.classList.remove('show');
+                }, 2000);
+            }
+            
+            // НОВЫЙ ОБРАБОТЧИК КЛАВИАТУРЫ ДЛЯ РЕГУЛИРОВКИ ГРОМКОСТИ
+            document.addEventListener('keydown', function(e) {
+                // Проверяем, что фокус не в поле ввода чата
+                if (e.target !== chatInput) {
+                    if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        const currentVolume = parseInt(volumeSlider.value);
+                        updateVolume(currentVolume + 5);
+                    } else if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        const currentVolume = parseInt(volumeSlider.value);
+                        updateVolume(currentVolume - 5);
+                    }
+                }
+            });
+            
+            // НОВЫЙ ОБРАБОТЧИК КОЛЕСИКА МЫШИ ДЛЯ ПОЛЗУНКА ГРОМКОСТИ
+            volumeSlider.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? -5 : 5;
+                const currentVolume = parseInt(volumeSlider.value);
+                updateVolume(currentVolume + delta);
+            });
 
             // Инициализация системы отзывов
             function initFeedbackSystem() {
@@ -3151,11 +3236,7 @@
             // ПРОСТОЙ И РАБОЧИЙ ОБРАБОТЧИК ГРОМКОСТИ
             volumeSlider.addEventListener('input', function() {
                 console.log('Volume changed to:', this.value);
-                if (audio) {
-                    audio.volume = this.value / 100;
-                    console.log('Audio volume set to:', audio.volume);
-                }
-                updateVolumeIcon();
+                updateVolume(this.value);
             });
             
             // Инициализация иконки громкости
@@ -3735,7 +3816,7 @@
             function shareRadioInChat() {
                 const user = auth.currentUser;
                 if (!user) {
-                    showNotification('Войдите в систему, чтобы делиться радио в чате', 'error');
+                    showNotification('Войдите в систему, чтобы делиться радио в чат', 'error');
                     shareModal.style.display = 'none';
                     return;
                 }

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .side-panel { flex: 1; background: #191414; border-radius: 12px; padding: 15px; display: flex; flex-direction: column; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.3); min-width: 180px; overflow: hidden; transition: all 0.3s ease; }
+        .left-panel { text-align: right; }
+        .stations-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .categories-container { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .category-btn { background: rgba(40,40,40,0.8); border: 1px solid rgba(255,255,255,0.2); color: #B3B3B3; padding: 6px 12px; border-radius: 15px; cursor: pointer; font-size: 0.8rem; transition: all 0.3s ease; white-space: nowrap; }
+        .category-btn:hover { background: rgba(29,185,84,0.2); color: white; }
+        .category-btn.active { background: rgba(29,185,84,0.3); color: #1DB954; border-color: #1DB954; }
+        .station-list { list-style: none; flex: 1; display: flex; flex-direction: column; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(29,185,84,0.3) #191414; padding-right: 5px; margin-bottom: 10px; }
+        .station-list::-webkit-scrollbar { width: 5px; }
+        .station-list::-webkit-scrollbar-track { background: #191414; }
+        .station-list::-webkit-scrollbar-thumb { background-color: rgba(29,185,84,0.3); border-radius: 5px; }
+        .station-list li { padding: 10px 12px; margin: 4px 0; background: rgba(40,40,40,0.8); border-radius: 6px; cursor: pointer; transition: all 0.3s ease; border-left: 3px solid #1DB954; font-size: 0.9rem; display: flex; align-items: center; justify-content: space-between; }
+        .station-list li:hover { background: rgba(29,185,84,0.2); transform: translateX(-3px); }
+        .station-list li.active { background: rgba(29,185,84,0.3); border-left: 3px solid #1DB954; box-shadow: 0 0 10px rgba(29,185,84,0.3); }
+        .station-likes { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: #B3B3B3; }
+        .station-likes .likes-count { min-width: 20px; text-align: center; }
+        .station-icon { margin-right: 10px; font-size: 1rem; width: 20px; text-align: center; }
+        .random-station-btn { background: rgba(29,185,84,0.2); border: 1px solid rgba(29,185,84,0.5); color: #1DB954; padding: 10px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; text-align: center; margin-top: 5px; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px; height: 36px; }
+        .random-station-btn:hover { background: rgba(29,185,84,0.3); box-shadow: 0 0 10px rgba(29,185,84,0.3); transform: translateY(-2px); }
+        .category-title { font-size: 0.9rem; color: #1DB954; margin-top: 10px; margin-bottom: 5px; padding-bottom: 3px; border-bottom: 1px solid rgba(29,185,84,0.3); }
+    </style>
+</head>
+<body>
+    <div class="side-panel left-panel crt-effect">
+        <div class="stations-header">
+            <h2>Радиостанции</h2>
+            <span class="station-count">11</span>
+        </div>
+        
+        <div class="categories-container">
+            <button class="category-btn active" data-category="all">Все</button>
+            <button class="category-btn" data-category="lofi">Lo-Fi</button>
+            <button class="category-btn" data-category="thematic">Тематические</button>
+            <button class="category-btn" data-category="no-copyright">Без АП</button>
+            <button class="category-btn" data-category="top">Лучшие</button>
+        </div>
+        
+        <ul class="station-list">
+            <div class="category-title">Международные</div>
+            <li class="active" data-station="kissint">
+                <div style="display: flex; align-items: center;">
+                    <span class="station-icon"><i class="fas fa-heart"></i></span> KISS FM
+                </div>
+                <div class="station-likes">
+                    <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                </div>
+            </li>
+            <!-- остальные станции -->
+        </ul>
+        
+        <div class="random-station-btn" id="random-station-btn">
+            <i class="fas fa-random"></i> Случайное радио
+        </div>
+    </div>
+
+    <script>
+        const stationItems = document.querySelectorAll('.station-list li');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const randomStationBtn = document.getElementById('random-station-btn');
+        
+        // Обработчики станций
+        stationItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const stationId = this.getAttribute('data-station');
+                if (window.parent && window.parent.changeStation) {
+                    window.parent.changeStation(stationId);
+                }
+            });
+        });
+        
+        // Обработчики категорий
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const category = this.dataset.category;
+                if (window.parent && window.parent.filterStations) {
+                    window.parent.filterStations(category);
+                }
+            });
+        });
+        
+        // Случайная станция
+        randomStationBtn.addEventListener('click', function() {
+            if (window.parent && window.parent.playRandomStation) {
+                window.parent.playRandomStation();
+            }
+        });
+    </script>
+</body>
+</html>

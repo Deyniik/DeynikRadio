@@ -3461,10 +3461,35 @@
                 showNotification('Никнейм сохранен!', 'success');
             }
             
+            // ИСПРАВЛЕННАЯ ФУНКЦИЯ ВХОДА ЧЕРЕЗ GOOGLE
             function signInWithGoogle() {
                 const provider = new firebase.auth.GoogleAuthProvider();
-                provider.setCustomParameters({ prompt: 'select_account' });
-                auth.signInWithPopup(provider);
+                provider.addScope('profile');
+                provider.addScope('email');
+                
+                // Используем redirect вместо popup для лучшей совместимости
+                auth.signInWithRedirect(provider).then(() => {
+                    console.log('Redirect initiated');
+                }).catch((error) => {
+                    console.error('Ошибка входа:', error);
+                    showNotification('Ошибка входа: ' + error.message, 'error');
+                });
+            }
+
+            // Обработка результата redirect
+            function handleRedirectResult() {
+                auth.getRedirectResult().then((result) => {
+                    if (result.user) {
+                        console.log('Успешный вход через Google:', result.user);
+                        showNotification('Успешный вход!', 'success');
+                    }
+                }).catch((error) => {
+                    console.error('Ошибка аутентификации:', error);
+                    // Не показываем ошибку пользователю, если это просто отсутствие результата
+                    if (error.code !== 'auth/no-auth-event') {
+                        showNotification('Ошибка входа: ' + error.message, 'error');
+                    }
+                });
             }
             
             // Функции для работы с чатом и реакциями
@@ -4330,6 +4355,11 @@
             
             // Слушатель состояния аутентификации
             auth.onAuthStateChanged(updateAuthUI);
+            
+            // Обработка redirect результата при загрузке
+            window.addEventListener('load', function() {
+                handleRedirectResult();
+            });
             
             // Переключение темы
             themeSwitcher.addEventListener('click', function() {

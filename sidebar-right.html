@@ -1,0 +1,97 @@
+<div class="side-panel right-panel">
+    <div class="chat-container">
+        <div class="chat-header">
+            <i class="fas fa-comments"></i>
+            <h2>Чат</h2>
+        </div>
+        
+        <div id="chatMessages" class="chat-messages">
+            </div>
+
+        <div id="mentionsList" class="mentions-list"></div>
+
+        <div id="replyIndicator" style="display: none;" class="reply-indicator">
+            Ответ на: <span id="replyUsername"></span>
+            <button id="cancelReplyBtn" class="reply-cancel-btn"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div class="chat-input-container">
+            <button id="emoji-btn" class="emoji-btn"><i class="far fa-smile"></i></button>
+            <button id="gif-btn" class="gif-btn"><i class="fas fa-gift"></i></button>
+            <input type="text" id="chat-input" class="chat-input" placeholder="Сообщение или @ник">
+            <button id="chat-send-btn" class="btn btn-send"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const sync = window.DeynikRadioSync;
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('chat-send-btn');
+    const replyIndicator = document.getElementById('replyIndicator');
+    const cancelReplyBtn = document.getElementById('cancelReplyBtn');
+    
+    let replyingToMessage = null;
+
+    function renderChat() {
+        chatMessages.innerHTML = '';
+        const messages = sync.state.chatMessages;
+
+        messages.forEach(message => {
+            const messageEl = document.createElement('div');
+            messageEl.className = 'message';
+            // Простая форматирование времени
+            const time = message.timestamp ? new Date(message.timestamp.toDate()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '...';
+            
+            let replyHtml = '';
+            if (message.replyTo) {
+                // В реальном приложении нужно найти оригинальное сообщение по message.replyTo, здесь заглушка
+                replyHtml = `<div class="reply-indicator">Ответ на: ${message.replyTo}</div>`;
+            }
+
+            messageEl.innerHTML = `
+                ${replyHtml}
+                <span class="message-user">${message.user}</span>
+                <span class="message-time">${time}</span>: 
+                <span class="message-text">${message.text}</span>
+                <button class="reply-btn" data-message-id="${message.id}" onclick="replyTo('${message.id}', '${message.user}')"><i class="fas fa-reply"></i></button>
+                <div class="message-reactions">
+                    </div>
+            `;
+            chatMessages.appendChild(messageEl);
+        });
+
+        // Прокрутка вниз при обновлении
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function replyTo(messageId, username) {
+        replyingToMessage = messageId;
+        document.getElementById('replyUsername').textContent = username;
+        replyIndicator.style.display = 'flex';
+        chatInput.focus();
+    }
+
+    cancelReplyBtn.onclick = () => {
+        replyingToMessage = null;
+        replyIndicator.style.display = 'none';
+    };
+
+    sendBtn.onclick = function() {
+        const text = chatInput.value.trim();
+        if (text) {
+            sync.sendChatMessage(text, replyingToMessage);
+            chatInput.value = '';
+            replyingToMessage = null;
+            replyIndicator.style.display = 'none';
+        }
+    };
+
+    // Слушаем обновления чата из sync.js
+    document.addEventListener('chatUpdate', renderChat);
+    document.addEventListener('chatMessageSent', renderChat); // Опционально для немедленного обновления
+
+    // Инициализация при загрузке
+    renderChat();
+</script>

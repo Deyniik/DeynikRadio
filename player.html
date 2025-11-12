@@ -1,39 +1,305 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .player-container { background: #191414; border-radius: 12px; padding: 15px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.3); height: auto; flex-shrink: 0; margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
-        .player-top { display: flex; align-items: center; justify-content: space-between; }
-        .player-left { display: flex; align-items: center; flex: 1; }
-        .player-icon { width: 48px; height: 48px; background: linear-gradient(135deg, #1DB954 0%, #191414 100%); border-radius: 50%; margin-right: 15px; display: flex; justify-content: center; align-items: center; font-size: 1.3rem; box-shadow: 0 0 10px rgba(29,185,84,0.5); transition: transform 0.3s ease; }
-        .player-icon.playing { animation: rotate 10s linear infinite; }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .station-text { flex: 1; }
-        .station-text h2 { font-size: 1.3rem; margin-bottom: 4px; color: #1DB954; }
-        .station-text p { color: #B3B3B3; font-size: 0.9rem; }
-        .player-center { display: flex; align-items: center; justify-content: center; flex: 1; gap: 10px; position: relative; }
-        .player-buttons { display: flex; align-items: center; justify-content: flex-end; flex: 1; gap: 15px; }
-        .btn { background: rgba(50,50,50,0.8); border: none; color: white; width: 42px; height: 42px; border-radius: 50%; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
-        .btn:hover { background: rgba(29,185,84,0.4); transform: scale(1.05); }
-        .btn-play { background: linear-gradient(135deg, #1DB954 0%, #191414 100%); width: 50px; height: 50px; font-size: 1.3rem; box-shadow: 0 0 12px rgba(29,185,84,0.6); }
-        .btn-play:hover { box-shadow: 0 0 16px rgba(29,185,84,0.8); }
-        .next-gif { position: absolute; left: calc(100% + 10px); width: 120px; height: 80px; z-index: 10; display: none; border-radius: 8px; opacity: 0; transform: scale(0.8); transition: all 0.3s ease; object-fit: cover; }
-        .next-gif.show { display: block; opacity: 1; transform: scale(1); animation: gifAppear 0.5s ease-out; }
-        @keyframes gifAppear { 0% { opacity: 0; transform: scale(0.8) translateX(-20px); } 70% { opacity: 1; transform: scale(1.05) translateX(0); } 100% { opacity: 1; transform: scale(1) translateX(0); } }
-        .btn-like-container { display: flex; align-items: center; gap: 8px; }
-        .likes-count-bottom { font-size: 0.9rem; color: #B3B3B3; font-weight: bold; min-width: 20px; text-align: center; }
-        .btn-like { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: rgba(50,50,50,0.8); border: none; color: white; width: 42px; height: 42px; border-radius: 50%; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
-        .btn-like i { font-size: 1.3rem; color: white; transition: all 0.3s ease; }
-        .btn-like.active i { color: white; }
-        .btn-like:hover { background: rgba(29,185,84,0.4); transform: scale(1.05); }
-        .player-bottom { display: flex; justify-content: center; align-items: center; width: 100%; }
-        .volume-control { display: flex; align-items: center; gap: 10px; width: 250px; max-width: 100%; }
-        .volume-icon { font-size: 1.1rem; color: #1DB954; width: 20px; text-align: center; }
-        .volume-slider { -webkit-appearance: none; width: 100%; height: 4px; background: rgba(80,80,80,0.7); border-radius: 5px; outline: none; cursor: pointer; }
-        .volume-slider:hover { background: rgba(100,100,100,0.8); }
-        .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #1DB954; cursor: pointer; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.5); }
-        .volume-slider::-webkit-slider-thumb:hover { transform: scale(1.1); box-shadow: 0 0 6px rgba(29,185,84,0.8); }
-        .volume-slider::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #1DB954; cursor: pointer; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.5); }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .player-container {
+            background: #191414;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            height: auto;
+            flex-shrink: 0;
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .player-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .player-left {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .player-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3rem;
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.5);
+            transition: transform 0.3s ease;
+        }
+        
+        .player-icon.playing {
+            animation: rotate 10s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .station-text {
+            flex: 1;
+        }
+        
+        .station-text h2 {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+            color: #1DB954;
+        }
+        
+        .station-text p {
+            color: #B3B3B3;
+            font-size: 0.9rem;
+        }
+        
+        .player-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            gap: 10px;
+            position: relative;
+        }
+        
+        .player-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex: 1;
+            gap: 15px;
+        }
+        
+        .btn {
+            background: rgba(50, 50, 50, 0.8);
+            border: none;
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:hover {
+            background: rgba(29, 185, 84, 0.4);
+            transform: scale(1.05);
+        }
+        
+        .btn-play {
+            background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
+            width: 50px;
+            height: 50px;
+            font-size: 1.3rem;
+            box-shadow: 0 0 12px rgba(29, 185, 84, 0.6);
+        }
+        
+        .btn-play:hover {
+            box-shadow: 0 0 16px rgba(29, 185, 84, 0.8);
+        }
+
+        .next-gif {
+            position: absolute;
+            left: calc(100% + 10px);
+            width: 120px;
+            height: 80px;
+            z-index: 10;
+            display: none;
+            border-radius: 8px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+            object-fit: cover;
+        }
+        
+        .next-gif.show {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+            animation: gifAppear 0.5s ease-out;
+        }
+        
+        @keyframes gifAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateX(-20px);
+            }
+            70% {
+                opacity: 1;
+                transform: scale(1.05) translateX(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateX(0);
+            }
+        }
+        
+        .btn-like-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .likes-count-bottom {
+            font-size: 0.9rem;
+            color: #B3B3B3;
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
+        }
+        
+        .btn-like {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            background: rgba(50, 50, 50, 0.8);
+            border: none;
+            color: white;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-like i {
+            font-size: 1.3rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-like.active i {
+            color: white;
+        }
+        
+        .btn-like:hover {
+            background: rgba(29, 185, 84, 0.4);
+            transform: scale(1.05);
+        }
+        
+        .player-bottom {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 250px;
+            max-width: 100%;
+        }
+        
+        .volume-icon {
+            font-size: 1.1rem;
+            color: #1DB954;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .volume-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: rgba(80, 80, 80, 0.7);
+            border-radius: 5px;
+            outline: none;
+            cursor: pointer;
+        }
+        
+        .volume-slider:hover {
+            background: rgba(100, 100, 100, 0.8);
+        }
+        
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #1DB954;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 0 4px rgba(0,0,0,0.5);
+        }
+        
+        .volume-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 6px rgba(29, 185, 84, 0.8);
+        }
+        
+        .volume-slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #1DB954;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 0 4px rgba(0,0,0,0.5);
+        }
+        
+        .crt-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .crt-effect::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0.1) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 3px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .reload-animation {
+            animation: spin 0.5s linear;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -82,6 +348,7 @@
     </div>
 
     <script>
+        // Полный код плеера
         const playButton = document.getElementById('play-btn');
         const prevButton = document.getElementById('prev-btn');
         const nextButton = document.getElementById('next-btn');
@@ -107,10 +374,19 @@
         nextButton.addEventListener('click', function() {
             if (window.parent && window.parent.nextStation) {
                 window.parent.nextStation();
+                // Показываем гифку с шансом 40%
+                if (Math.random() < 0.4) {
+                    showNextGif();
+                }
             }
         });
         
         refreshButton.addEventListener('click', function() {
+            this.classList.add('reload-animation');
+            setTimeout(() => {
+                this.classList.remove('reload-animation');
+            }, 500);
+            
             if (window.parent && window.parent.refreshStation) {
                 window.parent.refreshStation();
             }
@@ -120,6 +396,12 @@
             if (window.parent && window.parent.toggleLike) {
                 window.parent.toggleLike();
             }
+            
+            // Анимация кнопки
+            this.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 200);
         });
         
         shareBtn.addEventListener('click', function() {
@@ -132,7 +414,32 @@
             if (window.parent && window.parent.setVolume) {
                 window.parent.setVolume(this.value);
             }
+            updateVolumeIcon();
         });
+        
+        function updateVolumeIcon() {
+            const volume = volumeSlider.value;
+            const volumeIcons = document.querySelectorAll('.volume-icon i');
+            volumeIcons.forEach(icon => {
+                if (volume == 0) {
+                    icon.className = 'fas fa-volume-mute';
+                } else if (volume < 50) {
+                    icon.className = 'fas fa-volume-down';
+                } else {
+                    icon.className = 'fas fa-volume-up';
+                }
+            });
+        }
+        
+        function showNextGif() {
+            nextGif.classList.add('show');
+            setTimeout(() => {
+                nextGif.classList.remove('show');
+            }, 2000);
+        }
+        
+        // Инициализация иконки громкости
+        updateVolumeIcon();
         
         // Функции для обновления UI из родительского окна
         window.updatePlayerUI = function(station, isPlaying) {
@@ -144,18 +451,13 @@
             document.getElementById('player-icon').classList.toggle('playing', isPlaying);
         };
         
-        window.showNextGif = function() {
-            nextGif.classList.add('show');
-            setTimeout(() => {
-                nextGif.classList.remove('show');
-            }, 2000);
-        };
-        
         window.updateLikes = function(count, isLiked) {
             document.getElementById('likes-count-bottom').textContent = count;
             likeButton.classList.toggle('active', isLiked);
             likeButton.querySelector('i').className = isLiked ? 'fas fa-heart' : 'far fa-heart';
         };
+        
+        window.showNextButtonGif = showNextGif;
     </script>
 </body>
 </html>

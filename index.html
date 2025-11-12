@@ -2526,7 +2526,7 @@
     <div class="notification" id="notification">Текст уведомления</div>
 
     <script>
-        // Инициализация Firebase
+        // Инициализация Firebase с веб-конфигурацией
         const firebaseConfig = {
             apiKey: "AIzaSyBk4nxZ1ldNQUCxsbgaeYTkm9stq0o9o2Q",
             authDomain: "deygram-e4814.firebaseapp.com",
@@ -3461,37 +3461,56 @@
                 showNotification('Никнейм сохранен!', 'success');
             }
             
-            // ИСПРАВЛЕННАЯ ФУНКЦИЯ ВХОДА ЧЕРЕЗ GOOGLE
+            // ИСПРАВЛЕННАЯ ФУНКЦИЯ ВХОДА ЧЕРЕЗ GOOGLE ДЛЯ ВЕБ-ПРИЛОЖЕНИЯ
             function signInWithGoogle() {
                 const provider = new firebase.auth.GoogleAuthProvider();
+                
+                // Добавляем необходимые scope
                 provider.addScope('profile');
                 provider.addScope('email');
                 
-                // Используем redirect вместо popup для лучшей совместимости
-                auth.signInWithRedirect(provider).then(() => {
-                    console.log('Redirect initiated');
-                }).catch((error) => {
-                    console.error('Ошибка входа:', error);
-                    showNotification('Ошибка входа: ' + error.message, 'error');
+                // Устанавливаем custom parameters для лучшей совместимости
+                provider.setCustomParameters({
+                    prompt: 'select_account'
                 });
+                
+                console.log('Начинаем аутентификацию через Google...');
+                
+                // Используем signInWithPopup для веб-приложения
+                auth.signInWithPopup(provider)
+                    .then((result) => {
+                        // Успешный вход
+                        const user = result.user;
+                        console.log('Успешный вход:', user);
+                        showNotification(`Добро пожаловать, ${user.displayName || 'Пользователь'}!`, 'success');
+                    })
+                    .catch((error) => {
+                        // Обработка ошибок
+                        console.error('Ошибка входа:', error);
+                        
+                        let errorMessage = 'Неизвестная ошибка';
+                        
+                        switch(error.code) {
+                            case 'auth/popup-blocked':
+                                errorMessage = 'Всплывающее окно было заблокировано браузером. Разрешите всплывающие окна для этого сайта.';
+                                break;
+                            case 'auth/popup-closed-by-user':
+                                errorMessage = 'Окно входа было закрыто до завершения аутентификации.';
+                                break;
+                            case 'auth/cancelled-popup-request':
+                                errorMessage = 'Аутентификация была отменена.';
+                                break;
+                            case 'auth/unauthorized-domain':
+                                errorMessage = 'Домен не авторизован для OAuth аутентификации. Проверьте настройки в Firebase Console.';
+                                break;
+                            default:
+                                errorMessage = error.message || 'Произошла ошибка при входе';
+                        }
+                        
+                        showNotification('Ошибка входа: ' + errorMessage, 'error');
+                    });
             }
 
-            // Обработка результата redirect
-            function handleRedirectResult() {
-                auth.getRedirectResult().then((result) => {
-                    if (result.user) {
-                        console.log('Успешный вход через Google:', result.user);
-                        showNotification('Успешный вход!', 'success');
-                    }
-                }).catch((error) => {
-                    console.error('Ошибка аутентификации:', error);
-                    // Не показываем ошибку пользователю, если это просто отсутствие результата
-                    if (error.code !== 'auth/no-auth-event') {
-                        showNotification('Ошибка входа: ' + error.message, 'error');
-                    }
-                });
-            }
-            
             // Функции для работы с чатом и реакциями
             function loadChatHistory() {
                 if (chatUnsubscribe) chatUnsubscribe();
@@ -4355,11 +4374,6 @@
             
             // Слушатель состояния аутентификации
             auth.onAuthStateChanged(updateAuthUI);
-            
-            // Обработка redirect результата при загрузке
-            window.addEventListener('load', function() {
-                handleRedirectResult();
-            });
             
             // Переключение темы
             themeSwitcher.addEventListener('click', function() {

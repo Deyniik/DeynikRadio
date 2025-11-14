@@ -16,7 +16,7 @@
     <!-- Мета-теги для красивого шаринга -->
     <meta property="og:title" content="Deynik Radio">
     <meta property="og:description" content="Слушайте лучшие радиостанции в стильном ретро-интерфейсе">
-    <meta property="og:image" content="https://pa1.aminoapps.com/6401/f230449924aa89eb939c43865ca27be7dd321eb7_hq.gif">
+    <meta property="og:image" content="https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif">
     <meta property="og:url" content="https://deyniik.github.io/DeynikRadio/">
     <meta name="twitter:card" content="summary_large_image">
     
@@ -39,7 +39,6 @@
             transition: background-color 0.5s ease, color 0.5s ease;
         }
         
-        /* Экран загрузки */
         .loading-screen {
             position: fixed;
             top: 0;
@@ -152,7 +151,6 @@
             transform: scale(1.05);
         }
         
-        /* Стили для профиля пользователя */
         .user-profile {
             display: flex;
             align-items: center;
@@ -213,7 +211,6 @@
             background: rgba(29, 185, 84, 0.1);
         }
         
-        /* Выпадающее меню пользователя */
         .user-dropdown {
             position: absolute;
             top: 100%;
@@ -274,6 +271,63 @@
             transform: scale(1.05);
         }
 
+        .lite-switch {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 10px;
+        }
+
+        .lite-switch-label {
+            font-size: 0.8rem;
+            color: #B3B3B3;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #1DB954;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
         .feedback-btn, .support-btn, .download-app-btn {
             background: rgba(40, 40, 40, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -331,7 +385,6 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        /* КАТЕГОРИИ ВМЕСТО ПОИСКА */
         .categories-container {
             display: flex;
             gap: 8px;
@@ -412,7 +465,6 @@
             box-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
         }
         
-        /* Специальный стиль для новогоднего радио */
         .station-list li.christmas {
             border-left: 3px solid #FF0000;
             position: relative;
@@ -435,6 +487,32 @@
         .station-list li.christmas.active {
             background: rgba(255, 0, 0, 0.3);
             box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+        }
+
+        .station-list li.christmas-garland {
+            position: relative;
+            overflow: visible;
+        }
+
+        .station-list li.christmas-garland::after {
+            content: "";
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #ff0000, #ff8000, #ffff00, #00ff00, #0080ff, #0000ff, #8000ff);
+            background-size: 400% 400%;
+            animation: garland 3s linear infinite;
+            z-index: -1;
+            opacity: 0.7;
+        }
+
+        @keyframes garland {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
         .station-likes {
@@ -576,7 +654,6 @@
             color: #B3B3B3;
         }
         
-        /* Эффект лайка */
         .heart-effect {
             position: fixed;
             top: 50%;
@@ -648,7 +725,6 @@
             }
         }
         
-        /* ОБНОВЛЕННЫЙ ПЛЕЕР - БОЛЬШИЕ КНОПКИ НО ПРЕЖНЯЯ ВЫСОТА */
         .player-container {
             background: #191414;
             border-radius: 12px;
@@ -763,7 +839,6 @@
             box-shadow: 0 0 16px rgba(29, 185, 84, 0.8);
         }
 
-        /* ИЗМЕНЕННАЯ КНОПКА ЛАЙКА - ЦИФРА СНАРУЖИ */
         .btn-like-container {
             display: flex;
             align-items: center;
@@ -812,7 +887,6 @@
             transform: scale(1.05);
         }
         
-        /* ОБНОВЛЕННЫЙ ПОЛЗУНОК ГРОМКОСТИ - БОЛЬШАЯ ОБЛАСТЬ НАЖАТИЯ */
         .player-bottom {
             display: flex;
             justify-content: center;
@@ -848,7 +922,7 @@
         .volume-slider {
             -webkit-appearance: none;
             width: 100%;
-            height: 8px;
+            height: 6px;
             background: rgba(80, 80, 80, 0.7);
             border-radius: 5px;
             outline: none;
@@ -864,31 +938,30 @@
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            background: #1DB954;
+            background: white;
             cursor: pointer;
             border: 2px solid white;
-            box-shadow: 0 0 4px rgba(0,0,0,0.5);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
         }
         
         .volume-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-            box-shadow: 0 0 6px rgba(29, 185, 84, 0.8);
+            transform: scale(1.1);
+            box-shadow: 0 1px 5px rgba(0,0,0,0.5);
         }
         
         .volume-slider::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
-            background: #1DB954;
+            background: white;
             cursor: pointer;
             border: 2px solid white;
-            box-shadow: 0 0 4px rgba(0,0,0,0.5);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
         }
         
-        /* Стили для чата */
         .chat-container {
             flex: 1;
             display: flex;
@@ -1063,7 +1136,6 @@
             background: rgba(29, 185, 84, 0.2);
         }
         
-        /* Большое окно реакций */
         .reactions-modal {
             display: none;
             position: fixed;
@@ -1113,7 +1185,6 @@
             transform: scale(1.1);
         }
         
-        /* ОБНОВЛЕННЫЙ ЧАТ С КНОПКОЙ ЭМОДЗИ И ГИФОК */
         .chat-input-container {
             display: flex;
             gap: 8px;
@@ -1193,7 +1264,6 @@
             cursor: not-allowed;
         }
         
-        /* ОКНО ЭМОДЗИ С ПОИСКОМ */
         .emoji-picker {
             position: absolute;
             bottom: 45px;
@@ -1296,7 +1366,6 @@
             transform: scale(1.1);
         }
         
-        /* Окно поиска GIF */
         .gif-picker {
             position: absolute;
             bottom: 45px;
@@ -1433,7 +1502,6 @@
             opacity: 0.1;
         }
         
-        /* Модальные окна */
         .modal {
             display: none;
             position: fixed;
@@ -1531,7 +1599,6 @@
             background: rgba(255, 255, 255, 0.2);
         }
         
-        /* Модальное окно для смены ника */
         .nickname-modal-content {
             background-color: #191414;
             margin: 20% auto;
@@ -1589,7 +1656,6 @@
             background: rgba(255, 255, 255, 0.2);
         }
         
-        /* Уведомления */
         .notification {
             position: fixed;
             bottom: 20px;
@@ -1632,7 +1698,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* НОВЫЕ СТИЛИ ДЛЯ ФУНКЦИОНАЛА ОТВЕТОВ И ССЫЛОК */
         .reply-btn {
             position: absolute;
             right: 35px;
@@ -1716,7 +1781,6 @@
             margin-right: 5px;
         }
 
-        /* Анимация смены гифки */
         @keyframes gifTransition {
             0% {
                 opacity: 1;
@@ -1736,7 +1800,6 @@
             animation: gifTransition 0.6s ease-in-out;
         }
 
-        /* МОДАЛЬНОЕ ОКНО ДЛЯ ОТЗЫВОВ */
         .feedback-modal-content {
             background-color: #191414;
             margin: 5% auto;
@@ -1818,6 +1881,9 @@
             margin-bottom: 20px;
             outline: none;
             transition: all 0.3s ease;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
         }
 
         .feedback-textarea:focus {
@@ -1857,6 +1923,8 @@
             padding: 15px;
             margin-bottom: 15px;
             border-left: 3px solid #1DB954;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .review-header {
@@ -1879,15 +1947,24 @@
         .review-star {
             width: 16px;
             height: 16px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%231DB954" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>');
             background-size: contain;
             image-rendering: pixelated;
+        }
+
+        .review-star.filled {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%231DB954" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>');
+        }
+
+        .review-star.empty {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="gray" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>');
         }
 
         .review-text {
             font-size: 0.9rem;
             line-height: 1.4;
             color: #e0e0e0;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .no-reviews {
@@ -1898,7 +1975,13 @@
             font-size: 1rem;
         }
 
-        /* Стили для выпадающего списка упоминаний */
+        .average-rating {
+            text-align: center;
+            margin: 15px 0;
+            color: #1DB954;
+            font-size: 1.1rem;
+        }
+
         .mentions-list {
             position: absolute;
             bottom: 100%;
@@ -1947,7 +2030,6 @@
             background: #B3B3B3;
         }
 
-        /* НОВЫЕ СТИЛИ ДЛЯ ОТОБРАЖЕНИЯ ГРОМКОСТИ НА ГИФ-ЭКРАНЕ */
         .volume-display {
             position: absolute;
             top: 50%;
@@ -1972,7 +2054,6 @@
             opacity: 1;
         }
 
-        /* Стили для кнопок поддержки */
         .support-options {
             display: flex;
             flex-direction: column;
@@ -2111,7 +2192,6 @@
             }
         }
 
-        /* Темы */
         body.retro-theme {
             background-color: #121212;
             color: #FFFFFF;
@@ -2125,13 +2205,11 @@
 <body class="retro-theme">
     <div class="vintage-overlay"></div>
     
-    <!-- Экран загрузки -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-gif"></div>
         <div class="loading-text">Deynik Radio</div>
     </div>
     
-    <!-- Модальное окно для шаринга -->
     <div class="modal" id="shareModal">
         <div class="modal-content">
             <span class="close" id="closeShareModal">&times;</span>
@@ -2157,18 +2235,14 @@
         </div>
     </div>
     
-    <!-- Модальное окно для реакций -->
     <div class="reactions-modal" id="reactionsModal">
         <div class="reactions-modal-content">
             <span class="close" id="closeReactionsModal">&times;</span>
             <h3>Выберите реакцию</h3>
-            <div class="reactions-grid" id="reactionsGrid">
-                <!-- Реакции будут добавлены через JavaScript -->
-            </div>
+            <div class="reactions-grid" id="reactionsGrid"></div>
         </div>
     </div>
     
-    <!-- Модальное окно для смены ника -->
     <div class="modal" id="nicknameModal">
         <div class="nickname-modal-content">
             <span class="close" id="closeNicknameModal">&times;</span>
@@ -2181,7 +2255,6 @@
         </div>
     </div>
 
-    <!-- Модальное окно для отзывов -->
     <div class="modal" id="feedbackModal">
         <div class="feedback-modal-content">
             <span class="close" id="closeFeedbackModal">&times;</span>
@@ -2205,6 +2278,9 @@
             </div>
             
             <div class="feedback-tab-content" id="view-feedback">
+                <div class="average-rating" id="averageRating">
+                    Средняя оценка: <span id="averageRatingValue">0</span>/5
+                </div>
                 <div class="reviews-list" id="reviewsList">
                     <div class="no-reviews">Пока нет отзывов. Будьте первым!</div>
                 </div>
@@ -2212,12 +2288,11 @@
         </div>
     </div>
 
-    <!-- ОБНОВЛЕННОЕ МОДАЛЬНОЕ ОКНО ДЛЯ ПОДДЕРЖКИ -->
     <div class="modal" id="supportModal">
         <div class="modal-content">
             <span class="close" id="closeSupportModal">&times;</span>
-            <h3>Поддержать проект</h3>
-            <p style="margin-bottom: 15px; text-align: center;">Если вам нравится наше радио, вы можете поддержать его развитие:</p>
+            <h3 style="text-align: center;">Поддержать проект</h3>
+            <p style="margin: 15px 0; text-align: center;">Если вам нравится наше радио, вы можете поддержать его развитие:</p>
             
             <div class="support-options">
                 <a href="https://www.donationalerts.com/r/deynikk" target="_blank" class="support-option">
@@ -2264,13 +2339,11 @@
         </div>
     </div>
     
-    <!-- Плашка загрузки для Minecraft -->
     <div class="minecraft-loading" id="minecraftLoading">
         <h3>Minecraft Lo-Fi</h3>
         <p>Эта станция загружается дольше обычного. Пожалуйста, подождите немного...</p>
     </div>
     
-    <!-- НОВЫЙ ЭЛЕМЕНТ ДЛЯ ОТОБРАЖЕНИЯ ГРОМКОСТИ НА ГИФ-ЭКРАНЕ -->
     <div class="volume-display" id="volumeDisplay">
         <div id="volumeDisplayText"><i class="fas fa-volume-up"></i> 70%</div>
     </div>
@@ -2278,6 +2351,13 @@
     <div class="container" id="mainContainer">
         <header>
             <div class="header-left">
+                <div class="lite-switch">
+                    <span class="lite-switch-label">Lite</span>
+                    <label class="switch">
+                        <input type="checkbox" id="liteToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
                 <div id="auth-section">
                     <button class="google-login-btn" id="googleLoginBtn">
                         <i class="fab fa-google"></i> Войти через Google
@@ -2288,17 +2368,14 @@
                 <h1>Deynik Radio</h1>
             </div>
             <div class="header-right">
-                <!-- НОВАЯ КНОПКА ОТЗЫВОВ -->
                 <button class="feedback-btn" id="feedbackBtn">
                     <i class="fas fa-star"></i> Отзыв
                 </button>
                 
-                <!-- НОВАЯ КНОПКА ПОДДЕРЖКИ -->
                 <button class="support-btn" id="supportBtn">
                     <i class="fas fa-heart"></i> Поддержать
                 </button>
                 
-                <!-- НОВАЯ КНОПКА СКАЧИВАНИЯ ПРИЛОЖЕНИЯ -->
                 <a href="https://drive.google.com/file/d/17wrTw1oeFzpP_Ho6HLvqJfitNBJovTOV/view?usp=sharing" target="_blank" class="download-app-btn" id="downloadAppBtn">
                     <i class="fas fa-download"></i> Скачать приложение
                 </a>
@@ -2312,7 +2389,6 @@
                     <span class="station-count">12</span>
                 </div>
                 
-                <!-- КАТЕГОРИИ ВМЕСТО ПОИСКА -->
                 <div class="categories-container">
                     <button class="category-btn active" data-category="all">Все</button>
                     <button class="category-btn" data-category="lofi">Lo-Fi</button>
@@ -2321,9 +2397,7 @@
                     <button class="category-btn" data-category="top">Лучшие</button>
                 </div>
                 
-                <ul class="station-list" id="station-list">
-                    <!-- Станции будут загружены через JavaScript -->
-                </ul>
+                <ul class="station-list" id="station-list"></ul>
                 
                 <div class="random-station-btn" id="random-station-btn">
                     <i class="fas fa-random"></i> Случайное радио
@@ -2369,7 +2443,6 @@
                     <p id="quality">128 kbps</p>
                 </div>
                 
-                <!-- ЧАТ С КНОПКОЙ ЭМОДЗИ И ГИФОК -->
                 <div class="chat-container">
                     <div class="chat-header">
                         <i class="fas fa-comments"></i>
@@ -2394,10 +2467,8 @@
                             <i class="fas fa-paper-plane"></i>
                         </button>
                         
-                        <!-- Список упоминаний -->
                         <div class="mentions-list" id="mentionsList"></div>
                         
-                        <!-- ОКНО ЭМОДЗИ С ПОИСКОМ -->
                         <div class="emoji-picker" id="emoji-picker">
                             <input type="text" class="emoji-search" id="emoji-search" placeholder="Поиск эмодзи...">
                             <div class="emoji-categories">
@@ -2406,12 +2477,9 @@
                                 <button class="emoji-category" data-category="hearts">❤️</button>
                                 <button class="emoji-category" data-category="objects">🔔</button>
                             </div>
-                            <div class="emoji-grid" id="emoji-grid">
-                                <!-- Эмодзи будут добавлены через JavaScript -->
-                            </div>
+                            <div class="emoji-grid" id="emoji-grid"></div>
                         </div>
                         
-                        <!-- ОКНО ПОИСКА GIF -->
                         <div class="gif-picker" id="gif-picker">
                             <input type="text" class="gif-search" id="gif-search" placeholder="Поиск GIF...">
                             <div class="gif-trending">
@@ -2420,9 +2488,7 @@
                                 <button class="gif-trending-btn" data-term="dance">Танцы</button>
                                 <button class="gif-trending-btn" data-term="love">Любовь</button>
                             </div>
-                            <div class="gif-results" id="gif-results">
-                                <!-- GIF будут добавлены через JavaScript -->
-                            </div>
+                            <div class="gif-results" id="gif-results"></div>
                         </div>
                     </div>
                 </div>
@@ -2430,7 +2496,6 @@
         </div>
         
         <div class="player-container crt-effect">
-            <!-- ВЕРХНЯЯ ЧАСТЬ - БОЛЬШИЕ КНОПКИ НО ПРЕЖНЯЯ ВЫСОТА -->
             <div class="player-top">
                 <div class="player-left">
                     <div class="player-icon" id="player-icon">
@@ -2449,7 +2514,6 @@
                 </div>
                 
                 <div class="player-buttons">
-                    <!-- ИЗМЕНЕННАЯ КНОПКА ЛАЙКА - ЦИФРА СНАРУЖИ -->
                     <div class="btn-like-container">
                         <span class="likes-count-bottom" id="likes-count-bottom">0</span>
                         <button class="btn-like" id="like-btn" title="Лайкнуть станцию">
@@ -2465,7 +2529,6 @@
                 </div>
             </div>
             
-            <!-- НИЖНЯЯ ЧАСТЬ - ПОЛЗУНОК ОТЕДЛЬНО -->
             <div class="player-bottom">
                 <div class="volume-control">
                     <span class="volume-icon"><i class="fas fa-volume-down"></i></span>
@@ -2478,17 +2541,14 @@
         </div>
     </div>
     
-    <!-- Эффект лайка -->
     <div class="heart-effect" id="heartEffect">
         <i class="fas fa-heart"></i>
         <div class="heart-text">Нравится!</div>
     </div>
 
-    <!-- Уведомление -->
     <div class="notification" id="notification">Текст уведомления</div>
 
     <script>
-        // Инициализация Firebase с веб-конфигурацией
         const firebaseConfig = {
             apiKey: "AIzaSyBk4nxZ1ldNQUCxsbgaeYTkm9stq0o9o2Q",
             authDomain: "deygram-e4814.firebaseapp.com",
@@ -2498,12 +2558,10 @@
             appId: "1:591207353726:web:d20f5e648d3daf86fcb72f"
         };
 
-        // Инициализируем Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Объект с радиостанциями
         const radioStations = {
             kissint: {
                 name: "KISS FM",
@@ -2606,7 +2664,7 @@
                 category: "thematic"
             },
             christmas: {
-                name: "Christmas Hits",
+                name: "Christmas Radio",
                 url: "https://1000christmashits.stream.laut.fm/1000christmashits",
                 description: "Новогодние и рождественские хиты",
                 currentTrack: "Christmas Songs",
@@ -2618,7 +2676,6 @@
             }
         };
 
-        // Массив с гифками для обычных станций
         const gifs = [
             'https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif',
             'https://i.pinimg.com/originals/20/c8/3d/20c83d1cb257a6c4e5f68960ef0c3046.gif',
@@ -2643,7 +2700,6 @@
             'https://i.pinimg.com/originals/c4/67/13/c4671376fad5ff9cc8a83c3f2174fd73.gif'
         ];
 
-        // Массив с гифками для Minecraft станции
         const minecraftGifs = [
             'https://i.pinimg.com/originals/44/f2/f6/44f2f6325aa9bf8c93ed6c3d6e8f8d57.gif',
             'https://i.pinimg.com/originals/05/cf/1b/05cf1b97379bb751d2bf03b55ee16c5e.gif',
@@ -2655,10 +2711,8 @@
             'https://i.pinimg.com/originals/8a/34/3e/8a343ea387b21d843715d0a3a86059ed.gif'
         ];
 
-        // Массив ID станций для навигации
         const stationIds = Object.keys(radioStations);
         
-        // Эмодзи для поиска
         const emojiCategories = {
             all: ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🤩", "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🤭", "🤫", "🤥", "😶", "😐", "😑", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "🥱", "😴", "🤤", "😪", "😵", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👹", "👺", "🤡", "💩", "👻", "💀", "☠️", "👽", "👾", "🤖", "🎃"],
             smileys: ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🤩", "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🤭", "🤫", "🤥", "😶", "😐", "😑", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "🥱", "😴", "🤤", "😪", "😵", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👹", "👺", "🤡", "💩", "👻", "💀", "☠️", "👽", "👾", "🤖", "🎃"],
@@ -2666,7 +2720,6 @@
             objects: ["🔔", "🎵", "🎶", "🎼", "🎧", "🎤", "🎷", "🎸", "🎹", "🎺", "🎻", "🥁", "📻", "📱", "💻", "🖥️", "🖨️", "🎥", "📹", "📼", "🔍", "🔎", "💡", "📔", "📒", "📕", "📗", "📘", "📙", "📚", "📖", "🔖", "🎯", "🧩", "🚀", "⭐", "🌟", "🎁", "🎉", "🎊", "🎈", "🎂", "🍰", "🧁", "🥧", "🍦", "🍨", "🍩", "🍪", "🎀", "🎗️", "🎟️", "🎫", "🏆", "🏅", "🥇", "🥈", "🥉", "⚽", "🏀", "🏈", "⚾", "🥎", "🎾", "🏐", "🏉", "🥏", "🎱", "🪀", "🏓", "🏸", "🏒", "🏑", "🥍", "🏏", "🎿", "⛷️", "🏂", "🪂", "🏋️", "🤼", "🤸", "⛹️", "🤾", "🏌️", "🏇", "🧘"]
         };
         
-        // ПРОСТОЙ И РАБОЧИЙ ВАРИАНТ ЗАГРУЗКИ
         window.onload = function() {
             setTimeout(function() {
                 document.getElementById('loadingScreen').style.display = 'none';
@@ -2676,8 +2729,6 @@
         };
 
         function initApp() {
-            console.log('Приложение запущено!');
-            
             const playButton = document.getElementById('play-btn');
             const prevButton = document.getElementById('prev-btn');
             const nextButton = document.getElementById('next-btn');
@@ -2723,7 +2774,6 @@
             const googleLoginBtn = document.getElementById('googleLoginBtn');
             const stationList = document.getElementById('station-list');
             
-            // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ ОТЗЫВОВ
             const feedbackBtn = document.getElementById('feedbackBtn');
             const feedbackModal = document.getElementById('feedbackModal');
             const closeFeedbackModal = document.getElementById('closeFeedbackModal');
@@ -2733,19 +2783,19 @@
             const feedbackTabs = document.querySelectorAll('.feedback-tab');
             const feedbackTabContents = document.querySelectorAll('.feedback-tab-content');
             const reviewsList = document.getElementById('reviewsList');
+            const averageRatingValue = document.getElementById('averageRatingValue');
             
-            // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ ПОДДЕРЖКИ
             const supportBtn = document.getElementById('supportBtn');
             const supportModal = document.getElementById('supportModal');
             const closeSupportModal = document.getElementById('closeSupportModal');
             const closeSupportBtn = document.getElementById('closeSupportBtn');
             
-            // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ УПОМИНАНИЙ
             const mentionsList = document.getElementById('mentionsList');
             
-            // НОВЫЙ ЭЛЕМЕНТ ДЛЯ ОТОБРАЖЕНИЯ ГРОМКОСТИ
             const volumeDisplay = document.getElementById('volumeDisplay');
             const volumeDisplayText = document.getElementById('volumeDisplayText');
+            
+            const liteToggle = document.getElementById('liteToggle');
             
             let isPlaying = false;
             let audio = null;
@@ -2763,10 +2813,8 @@
             let currentMentionIndex = -1;
             let volumeDisplayTimeout = null;
             
-            // НОВЫЕ ПЕРЕМЕННЫЕ ДЛЯ ОТЗЫВОВ
             let currentRating = 0;
             
-            // Инициализация
             loadStationList();
             loadLikes();
             updateStationInfo();
@@ -2776,11 +2824,15 @@
             loadTrendingGifs();
             initFeedbackSystem();
             
-            // Функция загрузки списка станций
+            liteToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    window.location.href = 'https://deyniik.github.io/DeynikRadio/lite';
+                }
+            });
+            
             function loadStationList() {
                 stationList.innerHTML = '';
                 
-                // Все станции
                 const allStations = [
                     { id: 'kissint', category: 'international', title: 'Международные' },
                     { id: 'gaga', category: 'international' },
@@ -2800,7 +2852,6 @@
                 allStations.forEach(station => {
                     const stationData = radioStations[station.id];
                     
-                    // Добавляем заголовок категории если он изменился
                     if (station.title && station.title !== lastCategory) {
                         const categoryTitle = document.createElement('div');
                         categoryTitle.className = 'category-title';
@@ -2811,7 +2862,12 @@
                     
                     const stationItem = document.createElement('li');
                     stationItem.setAttribute('data-station', station.id);
-                    stationItem.className = stationData.isChristmas ? 'christmas' : '';
+                    
+                    if (stationData.isChristmas) {
+                        stationItem.className = 'christmas-garland';
+                    } else {
+                        stationItem.className = stationData.isChristmas ? 'christmas' : '';
+                    }
                     
                     if (station.id === currentStation) {
                         stationItem.classList.add('active');
@@ -2839,7 +2895,6 @@
                 });
             }
             
-            // НОВАЯ ФУНКЦИЯ ДЛЯ ОБНОВЛЕНИЯ ГРОМКОСТИ
             function updateVolume(value) {
                 if (value < 0) value = 0;
                 if (value > 100) value = 100;
@@ -2850,23 +2905,19 @@
                 }
                 updateVolumeIcon();
                 
-                // Показываем индикатор громкости
                 let volumeIcon = 'fa-volume-up';
                 if (value == 0) volumeIcon = 'fa-volume-mute';
                 else if (value < 50) volumeIcon = 'fa-volume-down';
                 
                 volumeDisplayText.innerHTML = `<i class="fas ${volumeIcon}"></i> ${value}%`;
                 
-                // Сбрасываем предыдущий таймер
                 if (volumeDisplayTimeout) {
                     clearTimeout(volumeDisplayTimeout);
                 }
                 
-                // Показываем индикатор
                 volumeDisplay.style.display = 'block';
                 volumeDisplay.style.opacity = '1';
                 
-                // Скрываем индикатор через 2 секунды после последнего изменения
                 volumeDisplayTimeout = setTimeout(() => {
                     volumeDisplay.style.opacity = '0';
                     setTimeout(() => {
@@ -2875,9 +2926,7 @@
                 }, 2000);
             }
             
-            // НОВЫЙ ОБРАБОТЧИК КЛАВИАТУРЫ ДЛЯ РЕГУЛИРОВКИ ГРОМКОСТИ
             document.addEventListener('keydown', function(e) {
-                // Проверяем, что фокус не в поле ввода чата
                 if (e.target !== chatInput) {
                     if (e.key === 'ArrowUp') {
                         e.preventDefault();
@@ -2891,7 +2940,6 @@
                 }
             });
             
-            // НОВЫЙ ОБРАБОТЧИК КОЛЕСИКА МЫШИ ДЛЯ ПОЛЗУНКА ГРОМКОСТИ
             volumeSlider.addEventListener('wheel', function(e) {
                 e.preventDefault();
                 const delta = e.deltaY > 0 ? -5 : 5;
@@ -2899,11 +2947,9 @@
                 updateVolume(currentVolume + delta);
             });
 
-            // Инициализация системы отзывов
             function initFeedbackSystem() {
                 displayReviews();
                 
-                // Обработчики для звезд рейтинга
                 const stars = ratingStars.querySelectorAll('.star');
                 stars.forEach(star => {
                     star.addEventListener('click', function() {
@@ -2921,19 +2967,15 @@
                     highlightStars(currentRating);
                 });
                 
-                // Обработчик отправки отзыва
                 submitFeedbackBtn.addEventListener('click', submitReview);
                 
-                // Обработчики переключения вкладок
                 feedbackTabs.forEach(tab => {
                     tab.addEventListener('click', function() {
                         const tabId = this.getAttribute('data-tab');
                         
-                        // Убрать активный класс у всех вкладок
                         feedbackTabs.forEach(t => t.classList.remove('active'));
                         feedbackTabContents.forEach(c => c.classList.remove('active'));
                         
-                        // Добавить активный класс к текущей вкладке
                         this.classList.add('active');
                         document.getElementById(tabId).classList.add('active');
                     });
@@ -2986,22 +3028,15 @@
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
-                // Сохраняем отзыв в Firestore
                 db.collection('reviews').add(review)
                     .then(() => {
-                        // Очистить форму
                         feedbackText.value = '';
                         setRating(0);
-                        
-                        // Обновить список отзывов
                         displayReviews();
-                        
-                        // Переключиться на вкладку с отзывами
                         feedbackTabs.forEach(t => t.classList.remove('active'));
                         feedbackTabContents.forEach(c => c.classList.remove('active'));
                         document.querySelector('[data-tab="view-feedback"]').classList.add('active');
                         document.getElementById('view-feedback').classList.add('active');
-                        
                         showNotification('Спасибо за ваш отзыв!', 'success');
                     })
                     .catch(error => {
@@ -3013,7 +3048,6 @@
             function displayReviews() {
                 reviewsList.innerHTML = '';
                 
-                // Загружаем отзывы из Firestore
                 db.collection('reviews')
                     .orderBy('timestamp', 'desc')
                     .limit(50)
@@ -3021,15 +3055,30 @@
                     .then((snapshot) => {
                         if (snapshot.empty) {
                             reviewsList.innerHTML = '<div class="no-reviews">Пока нет отзывов. Будьте первым!</div>';
+                            averageRatingValue.textContent = '0';
                             return;
                         }
                         
+                        let totalRating = 0;
+                        let reviewCount = 0;
+                        
                         snapshot.forEach(doc => {
                             const review = doc.data();
+                            totalRating += review.rating;
+                            reviewCount++;
+                            
                             const reviewItem = document.createElement('div');
                             reviewItem.className = 'review-item';
                             
-                            const starsHtml = Array(review.rating).fill('<div class="review-star"></div>').join('');
+                            let starsHtml = '';
+                            for (let i = 1; i <= 5; i++) {
+                                if (i <= review.rating) {
+                                    starsHtml += '<div class="review-star filled"></div>';
+                                } else {
+                                    starsHtml += '<div class="review-star empty"></div>';
+                                }
+                            }
+                            
                             const date = review.timestamp ? review.timestamp.toDate().toLocaleDateString('ru-RU') : 'недавно';
                             
                             reviewItem.innerHTML = `
@@ -3043,14 +3092,17 @@
                             
                             reviewsList.appendChild(reviewItem);
                         });
+                        
+                        const averageRating = reviewCount > 0 ? (totalRating / reviewCount).toFixed(1) : '0';
+                        averageRatingValue.textContent = averageRating;
                     })
                     .catch(error => {
                         console.error('Ошибка загрузки отзывов:', error);
                         reviewsList.innerHTML = '<div class="no-reviews">Ошибка загрузки отзывов</div>';
+                        averageRatingValue.textContent = '0';
                     });
             }
 
-            // Инициализация модального окна реакций
             function initReactionsModal() {
                 const reactions = [
                     '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', 
@@ -3086,7 +3138,6 @@
                 });
             }
 
-            // Загрузка эмодзи для чата
             function loadEmojis() {
                 emojiGrid.innerHTML = '';
                 emojiCategories.all.forEach(emoji => {
@@ -3101,7 +3152,6 @@
                 });
             }
 
-            // Фильтрация эмодзи по категории
             function filterEmojisByCategory(category) {
                 emojiGrid.innerHTML = '';
                 const emojis = category === 'all' ? emojiCategories.all : emojiCategories[category];
@@ -3118,7 +3168,6 @@
                 });
             }
 
-            // Фильтрация эмодзи по поиску
             function filterEmojis() {
                 const searchTerm = emojiSearch.value.toLowerCase();
                 const currentCategory = document.querySelector('.emoji-category.active').dataset.category;
@@ -3140,15 +3189,12 @@
                 });
             }
 
-            // Вставка эмодзи в поле ввода
             function insertEmoji(emoji) {
                 chatInput.value += emoji;
                 chatInput.focus();
             }
 
-            // Загрузка трендовых GIF
             function loadTrendingGifs() {
-                // Статические GIF для демонстрации
                 const trendingGifs = [
                     'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif',
                     'https://media.giphy.com/media/3o7aD2d7hy9ktXNDP2/giphy.gif',
@@ -3171,7 +3217,6 @@
                 });
             }
 
-            // Поиск GIF через Tenor API
             async function searchGifs(term = null) {
                 const searchTerm = term || gifSearch.value;
                 if (!searchTerm) {
@@ -3179,7 +3224,7 @@
                     return;
                 }
                 
-                const apiKey = 'LIVDSRZULELA'; // Бесплатный публичный ключ Tenor
+                const apiKey = 'LIVDSRZULELA';
                 const limit = 20;
                 
                 try {
@@ -3201,12 +3246,10 @@
                     });
                 } catch (error) {
                     console.error('Ошибка поиска GIF:', error);
-                    // Fallback на статические GIF
                     loadTrendingGifs();
                 }
             }
 
-            // Отправка GIF сообщения
             function sendGifMessage(gifUrl) {
                 const user = auth.currentUser;
                 if (!user) {
@@ -3228,28 +3271,22 @@
                 chatSendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                 
                 db.collection('chat').add(message)
-                    .then(() => {
-                        // GIF отправлен
-                    })
+                    .then(() => {})
                     .finally(() => {
                         chatSendBtn.disabled = false;
                         chatSendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
                     });
             }
 
-            // Функция для показа эффекта сердечка
             function showHeartEffect() {
                 heartEffect.style.display = 'flex';
                 heartEffect.style.opacity = '1';
                 
-                // Сбрасываем анимацию
                 heartEffect.style.animation = 'none';
-                void heartEffect.offsetWidth; // Trigger reflow
+                void heartEffect.offsetWidth;
                 
-                // Запускаем плавную анимацию
                 heartEffect.style.animation = 'heartPop 1.5s ease-out forwards';
                 
-                // Анимация для текста
                 const heartText = heartEffect.querySelector('.heart-text');
                 heartText.style.animation = 'textFade 1.5s ease-out 0.3s forwards';
                 
@@ -3258,7 +3295,6 @@
                 }, 1500);
             }
 
-            // Обновление иконки громкости
             function updateVolumeIcon() {
                 const volume = volumeSlider.value;
                 const volumeIcons = document.querySelectorAll('.volume-icon i');
@@ -3273,16 +3309,12 @@
                 });
             }
             
-            // ПРОСТОЙ И РАБОЧИЙ ОБРАБОТЧИК ГРОМКОСТИ
             volumeSlider.addEventListener('input', function() {
-                console.log('Volume changed to:', this.value);
                 updateVolume(this.value);
             });
             
-            // Инициализация иконки громкости
             updateVolumeIcon();
             
-            // Функция показа уведомления
             function showNotification(message, type = 'info') {
                 notification.textContent = message;
                 notification.className = 'notification';
@@ -3302,7 +3334,6 @@
                 }, 3000);
             }
             
-            // Функции для работы с лайками станций через Firebase
             function loadLikes() {
                 if (likesUnsubscribe) likesUnsubscribe();
                 
@@ -3316,7 +3347,6 @@
                             stationLikes[doc.id] = data;
                         });
                         
-                        // Проверяем какие станции лайкнул текущий пользователь
                         const user = auth.currentUser;
                         const userId = user ? user.uid : 'anonymous';
                         
@@ -3336,15 +3366,12 @@
                 const stationId = currentStation;
                 
                 if (userLikedStations.has(stationId)) {
-                    // Убираем лайк
                     removeLike(stationId, userId);
                 } else {
-                    // Ставим лайк
                     addLike(stationId, userId);
                     showHeartEffect();
                 }
                 
-                // Анимация кнопки
                 likeButton.style.transform = 'scale(1.2)';
                 setTimeout(() => {
                     likeButton.style.transform = 'scale(1)';
@@ -3356,7 +3383,6 @@
                 
                 stationRef.get().then((doc) => {
                     if (doc.exists) {
-                        // Обновляем существующий документ
                         const data = doc.data();
                         const newCount = (data.count || 0) + 1;
                         const users = data.users || {};
@@ -3367,7 +3393,6 @@
                             users: users
                         });
                     } else {
-                        // Создаем новый документ
                         stationRef.set({
                             count: 1,
                             users: {
@@ -3401,7 +3426,6 @@
             }
             
             function updateLikesUI() {
-                // Обновляем лайки в списке станций
                 const stationItems = document.querySelectorAll('.station-list li');
                 stationItems.forEach(item => {
                     const stationId = item.getAttribute('data-station');
@@ -3412,7 +3436,6 @@
                     }
                 });
                 
-                // Обновляем кнопку лайка в плеере
                 const isLiked = userLikedStations.has(currentStation);
                 likeButton.classList.toggle('active', isLiked);
                 likeButton.querySelector('i').className = isLiked ? 'fas fa-heart' : 'far fa-heart';
@@ -3421,7 +3444,6 @@
                 likesCountBottom.textContent = currentCount;
             }
             
-            // Функции для работы с аутентификацией и никами
             function updateAuthUI(user) {
                 const authSection = document.getElementById('auth-section');
                 
@@ -3502,31 +3524,22 @@
                 showNotification('Никнейм сохранен!', 'success');
             }
             
-            // ИСПРАВЛЕННАЯ ФУНКЦИЯ ВХОДА ЧЕРЕЗ GOOGLE ДЛЯ ВЕБ-ПРИЛОЖЕНИЯ
             function signInWithGoogle() {
                 const provider = new firebase.auth.GoogleAuthProvider();
                 
-                // Добавляем необходимые scope
                 provider.addScope('profile');
                 provider.addScope('email');
                 
-                // Устанавливаем custom parameters для лучшей совместимости
                 provider.setCustomParameters({
                     prompt: 'select_account'
                 });
                 
-                console.log('Начинаем аутентификацию через Google...');
-                
-                // Используем signInWithPopup для веб-приложения
                 auth.signInWithPopup(provider)
                     .then((result) => {
-                        // Успешный вход
                         const user = result.user;
-                        console.log('Успешный вход:', user);
                         showNotification(`Добро пожаловать, ${user.displayName || 'Пользователь'}!`, 'success');
                     })
                     .catch((error) => {
-                        // Обработка ошибок
                         console.error('Ошибка входа:', error);
                         
                         let errorMessage = 'Неизвестная ошибка';
@@ -3552,7 +3565,6 @@
                     });
             }
 
-            // Функции для работы с чатом и реакциями
             function loadChatHistory() {
                 if (chatUnsubscribe) chatUnsubscribe();
                 
@@ -3582,7 +3594,6 @@
                             addMessageToChat(message);
                         });
                         
-                        // ПРОКРУТКА ЧАТА К ПОСЛЕДНЕМУ СООБЩЕНИЮ
                         chatMessages.scrollTop = chatMessages.scrollHeight;
                     });
             }
@@ -3592,7 +3603,6 @@
                 messageElement.className = 'message';
                 messageElement.setAttribute('data-message-id', message.id);
                 
-                // Добавляем специальный класс для сообщений о радио
                 if (message.isRadioShare) {
                     messageElement.classList.add('share-radio-message');
                 }
@@ -3605,7 +3615,6 @@
                 
                 let messageContent = '';
                 
-                // Обрабатываем ответы на сообщения
                 if (message.replyTo) {
                     messageContent += `
                         <div class="reply-indicator">
@@ -3621,7 +3630,6 @@
                         <span class="message-time">${timeString}</span>
                     `;
                 } else if (message.isRadioShare && message.radioStation) {
-                    // Сообщение о пересылке радио
                     messageContent += `
                         <span class="share-radio-icon"><i class="fas fa-radio"></i></span>
                         <span class="message-user">${message.userName || 'Аноним'}</span>
@@ -3630,7 +3638,6 @@
                         <span class="message-time">${timeString}</span>
                     `;
                 } else {
-                    // Обычное текстовое сообщение с обработкой ссылок
                     const processedText = formatMessageText(message.text || '');
                     messageContent += `
                         <span class="message-user">${message.userName || 'Аноним'}:</span>
@@ -3639,7 +3646,6 @@
                     `;
                 }
                 
-                // Создаем реакции если они есть
                 let reactionsHTML = '';
                 if (message.reactions && Object.keys(message.reactions).length > 0) {
                     reactionsHTML = '<div class="message-reactions">';
@@ -3679,26 +3685,22 @@
                 
                 chatMessages.appendChild(messageElement);
                 
-                // Добавляем обработчики для кнопки ответа
                 const replyBtn = messageElement.querySelector('.reply-btn');
                 replyBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     startReply(message);
                 });
                 
-                // Добавляем обработчики для реакций
                 const reactionElements = messageElement.querySelectorAll('.reaction');
                 reactionElements.forEach(reaction => {
                     reaction.addEventListener('click', handleReactionClick);
                 });
                 
-                // Добавляем обработчик для кнопки реакции
                 const reactionBtn = messageElement.querySelector('.reaction-btn');
                 reactionBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     const picker = this.parentElement.querySelector('.reaction-picker');
                     if (picker) {
-                        // Скрываем все другие пикеры
                         document.querySelectorAll('.reaction-picker').forEach(p => {
                             if (p !== picker) p.classList.remove('show');
                         });
@@ -3706,7 +3708,6 @@
                     }
                 });
                 
-                // Добавляем обработчики для эмодзи в пикере
                 const emojiElements = messageElement.querySelectorAll('.reaction-emoji');
                 emojiElements.forEach(emoji => {
                     emoji.addEventListener('click', function(e) {
@@ -3716,7 +3717,6 @@
                     });
                 });
                 
-                // Добавляем обработчик для кнопки "больше реакций"
                 const moreReactionsBtn = messageElement.querySelector('.more-reactions-btn');
                 moreReactionsBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -3725,19 +3725,16 @@
                     this.parentElement.classList.remove('show');
                 });
                 
-                // Добавляем обработчик для сообщений о радио
                 if (message.isRadioShare && message.radioStation) {
                     messageElement.addEventListener('click', function() {
                         playSharedRadio(message.radioStation);
                     });
                 }
                 
-                // Добавляем обработчик для правого клика
                 messageElement.addEventListener('contextmenu', function(e) {
                     e.preventDefault();
                     const picker = this.querySelector('.reaction-picker');
                     if (picker) {
-                        // Скрываем все другие пикеры
                         document.querySelectorAll('.reaction-picker').forEach(p => {
                             if (p !== picker) p.classList.remove('show');
                         });
@@ -3746,24 +3743,19 @@
                 });
             }
             
-            // Функция для обработки ссылок в тексте сообщений
             function formatMessageText(text) {
                 if (!text) return '';
                 
-                // Регулярное выражение для поиска URL
                 const urlRegex = /(https?:\/\/[^\s]+)/g;
                 
-                // Заменяем URL на ссылки
                 return text.replace(urlRegex, function(url) {
                     return '<a href="' + url + '" target="_blank">' + url + '</a>';
                 });
             }
             
-            // Функция для ответа на сообщение
             function startReply(message) {
                 replyingToMessage = message;
                 
-                // Показываем индикатор ответа
                 const replyIndicator = document.createElement('div');
                 replyIndicator.className = 'reply-indicator';
                 replyIndicator.innerHTML = `
@@ -3771,21 +3763,17 @@
                     <button class="cancel-reply">✕</button>
                 `;
                 
-                // Удаляем предыдущий индикатор, если есть
                 const existingIndicator = document.querySelector('.reply-indicator:not(.message .reply-indicator)');
                 if (existingIndicator) {
                     existingIndicator.remove();
                 }
                 
-                // Вставляем индикатор перед полем ввода
                 const chatInputContainer = document.getElementById('chat-input-container');
                 chatInputContainer.parentNode.insertBefore(replyIndicator, chatInputContainer);
                 
-                // Добавляем обработчик для кнопки отмены
                 const cancelBtn = replyIndicator.querySelector('.cancel-reply');
                 cancelBtn.addEventListener('click', cancelReply);
                 
-                // Фокусируемся на поле ввода
                 chatInput.focus();
             }
             
@@ -3815,7 +3803,6 @@
                         const userReactions = reactions[emoji] || {};
                         
                         if (userReactions[userId]) {
-                            // Убираем реакцию
                             delete userReactions[userId];
                             if (Object.keys(userReactions).length === 0) {
                                 delete reactions[emoji];
@@ -3823,12 +3810,10 @@
                                 reactions[emoji] = userReactions;
                             }
                         } else {
-                            // Добавляем реакцию
                             userReactions[userId] = true;
                             reactions[emoji] = userReactions;
                         }
                         
-                        // Обновляем в Firestore
                         db.collection('chat').doc(messageId).update({
                             reactions: reactions
                         });
@@ -3851,7 +3836,6 @@
                     reactions: {}
                 };
                 
-                // Добавляем информацию о ответе, если есть
                 if (replyingToMessage) {
                     message.replyTo = {
                         userName: replyingToMessage.userName || replyingToMessage.user,
@@ -3874,15 +3858,12 @@
                     });
             }
             
-            // Функция для воспроизведения радио из сообщения
             function playSharedRadio(radioStation) {
-                // Находим станцию в нашем списке
                 const stationKey = Object.keys(radioStations).find(key => 
                     radioStations[key].name === radioStation.name
                 );
                 
                 if (stationKey) {
-                    // Переключаемся на эту станцию
                     const stationIndex = stationIds.indexOf(stationKey);
                     if (stationIndex !== -1) {
                         currentStationIndex = stationIndex;
@@ -3898,7 +3879,6 @@
                 }
             }
             
-            // Функция для отправки радио в чат
             function shareRadioInChat() {
                 const user = auth.currentUser;
                 if (!user) {
@@ -3936,31 +3916,25 @@
                     });
             }
             
-            // Функция смены гифки с красивой анимацией
             function changeGif() {
                 let randomGif;
                 if (currentStation === 'minecraft') {
-                    // Только Minecraft гифки для Minecraft станции
                     randomGif = minecraftGifs[Math.floor(Math.random() * minecraftGifs.length)];
                 } else {
-                    // Обычные гифки для всех остальных станций
                     randomGif = gifs[Math.floor(Math.random() * gifs.length)];
                 }
                 
-                // Добавляем класс анимации
                 mainGif.classList.add('gif-transition');
                 
                 setTimeout(() => {
                     mainGif.style.backgroundImage = `url('${randomGif}')`;
                     
-                    // Убираем класс анимации после завершения
                     setTimeout(() => {
                         mainGif.classList.remove('gif-transition');
                     }, 600);
                 }, 300);
             }
             
-            // Функция для сортировки станций по лайкам
             function sortStationsByLikes() {
                 const stationItems = document.querySelectorAll('.station-list li');
                 const sortedStations = [...stationItems].sort((a, b) => {
@@ -3968,37 +3942,31 @@
                     const stationB = b.getAttribute('data-station');
                     const likesA = stationLikes[stationA] ? stationLikes[stationA].count || 0 : 0;
                     const likesB = stationLikes[stationB] ? stationLikes[stationB].count || 0 : 0;
-                    return likesB - likesA; // Сортировка по убыванию
+                    return likesB - likesA;
                 });
                 
                 return sortedStations;
             }
             
-            // Функция для отображения станций в категории "Лучшие"
             function displayTopStations() {
                 const sortedStations = sortStationsByLikes();
                 
-                // Очищаем список
                 stationList.innerHTML = '';
                 
-                // Добавляем заголовок для лучших станций
                 const topTitle = document.createElement('div');
                 topTitle.className = 'category-title';
                 topTitle.textContent = 'Лучшие по лайкам';
                 stationList.appendChild(topTitle);
                 
-                // Добавляем отсортированные станции
                 sortedStations.forEach(item => {
                     stationList.appendChild(item);
                 });
             }
             
-            // Функция для восстановления исходного порядка станций
             function restoreOriginalStationOrder() {
                 loadStationList();
                 updateLikesUI();
                 
-                // Помечаем активную станцию
                 const stationItems = document.querySelectorAll('.station-list li');
                 stationItems.forEach(item => {
                     item.classList.remove('active');
@@ -4008,7 +3976,6 @@
                 });
             }
             
-            // НОВЫЕ ФУНКЦИИ ДЛЯ УПОМИНАНИЙ
             function handleMentions() {
                 const text = chatInput.value;
                 const cursorPosition = chatInput.selectionStart;
@@ -4020,13 +3987,11 @@
                     const spaceIndex = textAfterAt.indexOf(' ');
                     
                     if (spaceIndex === -1) {
-                        // Показываем список пользователей для упоминания
                         showMentionsList(textAfterAt);
                         return;
                     }
                 }
                 
-                // Скрываем список упоминаний, если условия не выполняются
                 hideMentions();
             }
             
@@ -4076,7 +4041,6 @@
                     const newText = text.substring(0, atSymbolIndex) + '@' + username + ' ' + text.substring(cursorPosition);
                     chatInput.value = newText;
                     
-                    // Устанавливаем курсор после упоминания
                     const newCursorPosition = atSymbolIndex + username.length + 2;
                     chatInput.setSelectionRange(newCursorPosition, newCursorPosition);
                 }
@@ -4118,12 +4082,10 @@
                 
                 if (mentions) {
                     mentions.forEach(mention => {
-                        const username = mention.substring(1); // Убираем @
+                        const username = mention.substring(1);
                         
-                        // Ищем пользователя в онлайн
                         Object.entries(onlineUsers).forEach(([userId, userData]) => {
                             if (userData.displayName === username && userData.isOnline) {
-                                // Воспроизводим звук уведомления
                                 playMentionSound();
                             }
                         });
@@ -4132,7 +4094,6 @@
             }
             
             function playMentionSound() {
-                // Создаем и воспроизводим звуковой сигнал
                 try {
                     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                     const oscillator = audioContext.createOscillator();
@@ -4154,7 +4115,6 @@
                 }
             }
             
-            // Обработчики чата
             chatInput.addEventListener('input', function() {
                 chatSendBtn.disabled = this.value.trim() === '';
                 handleMentions();
@@ -4162,7 +4122,6 @@
             
             chatInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter' && !chatSendBtn.disabled) {
-                    // Обрабатываем упоминания перед отправкой
                     processMentions(this.value);
                     sendMessage();
                 }
@@ -4181,12 +4140,10 @@
             });
             
             chatSendBtn.addEventListener('click', function() {
-                // Обрабатываем упоминания перед отправкой
                 processMentions(chatInput.value);
                 sendMessage();
             });
             
-            // Обработчики для шаринга
             shareBtn.addEventListener('click', function() {
                 shareModal.style.display = 'block';
             });
@@ -4208,7 +4165,6 @@
             
             shareInChatBtn.addEventListener('click', shareRadioInChat);
             
-            // Обработчики для поддержки
             supportBtn.addEventListener('click', function() {
                 supportModal.style.display = 'block';
             });
@@ -4221,12 +4177,10 @@
                 supportModal.style.display = 'none';
             });
             
-            // Закрытие модального окна реакций
             closeReactionsModal.addEventListener('click', function() {
                 reactionsModal.style.display = 'none';
             });
             
-            // Обработчики для модального окна ника
             closeNicknameModal.addEventListener('click', function() {
                 nicknameModal.style.display = 'none';
             });
@@ -4241,7 +4195,6 @@
                 if (e.key === 'Enter') saveNickname();
             });
             
-            // Обработчики для модального окна отзывов
             feedbackBtn.addEventListener('click', function() {
                 feedbackModal.style.display = 'block';
             });
@@ -4268,7 +4221,6 @@
                 }
             });
             
-            // КНОПКА ЭМОДЗИ - ОТКРЫТИЕ/ЗАКРЫТИЕ ОКОШКА
             emojiBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 emojiPicker.classList.toggle('show');
@@ -4276,7 +4228,6 @@
                 hideMentions();
             });
             
-            // КНОПКА GIF - ОТКРЫТИЕ/ЗАКРЫТИЕ ОКОШКА
             gifBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 gifPicker.classList.toggle('show');
@@ -4284,13 +4235,11 @@
                 hideMentions();
             });
             
-            // Поиск эмодзи
             emojiSearch.addEventListener('input', function(e) {
                 e.stopPropagation();
                 filterEmojis();
             });
             
-            // Категории эмодзи
             emojiCategoryBtns.forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -4300,13 +4249,11 @@
                 });
             });
             
-            // Поиск GIF
             gifSearch.addEventListener('input', function(e) {
                 e.stopPropagation();
                 searchGifs();
             });
             
-            // Трендовые GIF
             gifTrendingBtns.forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -4314,17 +4261,14 @@
                 });
             });
             
-            // Закрытие окон при клике вне их
             document.addEventListener('click', function() {
                 emojiPicker.classList.remove('show');
                 gifPicker.classList.remove('show');
-                // Скрываем все пикеры реакций
                 document.querySelectorAll('.reaction-picker').forEach(picker => {
                     picker.classList.remove('show');
                 });
             });
             
-            // Предотвращение закрытия окон при клике внутри них
             emojiPicker.addEventListener('click', function(e) {
                 e.stopPropagation();
             });
@@ -4333,12 +4277,9 @@
                 e.stopPropagation();
             });
             
-            // КАТЕГОРИИ - ФИЛЬТРАЦИЯ СТАНЦИЙ
             categoryBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    // Убираем активный класс у всех кнопок
                     categoryBtns.forEach(b => b.classList.remove('active'));
-                    // Добавляем активный класс к нажатой кнопке
                     btn.classList.add('active');
                     
                     const category = btn.dataset.category;
@@ -4351,7 +4292,6 @@
                     displayTopStations();
                     return;
                 } else {
-                    // Восстанавливаем исходный порядок для всех других категорий
                     restoreOriginalStationOrder();
                 }
                 
@@ -4365,7 +4305,6 @@
                         (category === 'thematic' && (station.category === 'thematic' || stationId === 'minecraft' || stationId === 'christmas')) ||
                         (category === 'no-copyright' && (station.category === 'no-copyright' || stationId === 'lofi' || stationId === 'chillhop' || stationId === 'lofihiphop' || stationId === 'minecraft'))) {
                         item.style.display = 'flex';
-                        // Показываем родительские категории если есть станции
                         if (item.previousElementSibling && item.previousElementSibling.classList.contains('category-title')) {
                             item.previousElementSibling.style.display = 'block';
                         }
@@ -4374,7 +4313,6 @@
                     }
                 });
                 
-                // Скрываем пустые категории
                 document.querySelectorAll('.category-title').forEach(title => {
                     const nextSibling = title.nextElementSibling;
                     if (!nextSibling || nextSibling.style.display === 'none') {
@@ -4396,19 +4334,16 @@
                 });
             }
             
-            // Следим за онлайн пользователями
             db.collection('onlineUsers').onSnapshot(snapshot => {
                 onlineUsers = {};
                 snapshot.forEach(doc => {
                     onlineUsers[doc.id] = doc.data();
                 });
                 
-                // Обновляем список упоминаний
                 updateMentionsList();
             });
             
             function updateMentionsList() {
-                // Если список упоминаний открыт, обновляем его
                 if (mentionsList.classList.contains('show')) {
                     const text = chatInput.value;
                     const cursorPosition = chatInput.selectionStart;
@@ -4426,13 +4361,10 @@
                 }
             }
             
-            // Слушатель состояния аутентификации
             auth.onAuthStateChanged(updateAuthUI);
             
-            // Обработчик кнопки лайка
             likeButton.addEventListener('click', toggleLike);
             
-            // Обработчик кнопки воспроизведения - ИСПРАВЛЕН ДЛЯ ПЕРЕЗАГРУЗКИ
             playButton.addEventListener('click', function() {
                 isPlaying = !isPlaying;
                 
@@ -4460,7 +4392,6 @@
                 }
             });
             
-            // Обработчик кнопки "Случайное радио"
             randomStationBtn.addEventListener('click', function() {
                 currentStationIndex = Math.floor(Math.random() * stationIds.length);
                 isPlaying = true;
@@ -4469,7 +4400,6 @@
                 changeStation();
             });
             
-            // Обработчик кнопки "Предыдущая станция"
             prevButton.addEventListener('click', function() {
                 currentStationIndex = (currentStationIndex - 1 + stationIds.length) % stationIds.length;
                 isPlaying = true;
@@ -4478,7 +4408,6 @@
                 changeStation();
             });
             
-            // Обработчик кнопки "Следующая станция"
             nextButton.addEventListener('click', function() {
                 currentStationIndex = (currentStationIndex + 1) % stationIds.length;
                 isPlaying = true;
@@ -4487,7 +4416,6 @@
                 changeStation();
             });
             
-            // Обработчик кнопки "Обновить" с анимацией - ИСПРАВЛЕНА ПАУЗА
             refreshButton.addEventListener('click', function() {
                 this.classList.add('reload-animation');
                 setTimeout(() => {
@@ -4500,7 +4428,6 @@
                     audio = new Audio(radioStations[currentStation].url + '?nocache=' + new Date().getTime());
                     audio.volume = volumeSlider.value / 100;
                     
-                    // ВОСПРОИЗВОДИМ ТОЛЬКО ЕСЛИ БЫЛО ВКЛЮЧЕНО ДО ПЕРЕЗАГРУЗКИ
                     if (wasPlaying) {
                         isPlaying = true;
                         playButton.innerHTML = '<i class="fas fa-pause"></i>';
@@ -4523,7 +4450,6 @@
                 }
             });
             
-            // Функция смены станции
             function changeStation() {
                 currentStation = stationIds[currentStationIndex];
                 updateStationInfo();
@@ -4536,7 +4462,6 @@
                     }
                 });
                 
-                // Показываем плашку загрузки для Minecraft
                 if (currentStation === 'minecraft') {
                     minecraftLoading.style.display = 'block';
                 } else {
@@ -4563,7 +4488,6 @@
                 updateLikesUI();
             }
             
-            // Функция обновления информации о станции
             function updateStationInfo() {
                 const station = radioStations[currentStation];
                 document.getElementById('current-station').textContent = station.name;
@@ -4577,7 +4501,6 @@
                 document.getElementById('current-artist').textContent = station.currentArtist;
             }
             
-            // Функция визуализации - ВОЗВРАЩЕНА
             function startVisualization() {
                 if (visualizationInterval) clearInterval(visualizationInterval);
                 visualizationInterval = setInterval(() => {
@@ -4592,7 +4515,6 @@
                 bars.forEach(bar => bar.style.height = '2px');
             }
             
-            // Закрываем dropdown при клике вне его
             document.addEventListener('click', function() {
                 const dropdown = document.getElementById('user-dropdown');
                 if (dropdown) dropdown.classList.remove('show');

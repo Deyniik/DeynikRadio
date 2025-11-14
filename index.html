@@ -274,48 +274,7 @@
             transform: scale(1.05);
         }
 
-        /* НОВАЯ КНОПКА ОТЗЫВОВ */
-        .feedback-btn {
-            background: rgba(40, 40, 40, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .feedback-btn:hover {
-            background: rgba(29, 185, 84, 0.3);
-            transform: scale(1.05);
-        }
-
-        /* НОВАЯ КНОПКА ПОДДЕРЖКИ */
-        .support-btn {
-            background: rgba(40, 40, 40, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .support-btn:hover {
-            background: rgba(29, 185, 84, 0.3);
-            transform: scale(1.05);
-        }
-        
-        /* НОВАЯ КНОПКА СКАЧИВАНИЯ ПРИЛОЖЕНИЯ */
-        .download-app-btn {
+        .feedback-btn, .support-btn, .download-app-btn {
             background: rgba(40, 40, 40, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
@@ -330,7 +289,7 @@
             text-decoration: none;
         }
         
-        .download-app-btn:hover {
+        .feedback-btn:hover, .support-btn:hover, .download-app-btn:hover {
             background: rgba(29, 185, 84, 0.3);
             transform: scale(1.05);
         }
@@ -2552,8 +2511,6 @@
                 description: "Лучшие мировые хиты в отличном качестве",
                 currentTrack: "Популярные хиты",
                 currentArtist: "KISS FM",
-                nextTrack: "Следующий хит",
-                nextArtist: "KISS FM",
                 quality: "128kbps",
                 icon: "fas fa-heart",
                 category: "international"
@@ -2564,8 +2521,6 @@
                 description: "Всем молчать! Играет мать!",
                 currentTrack: "Lady Gaga Hits",
                 currentArtist: "Lady Gaga",
-                nextTrack: "Next Gaga Track",
-                nextArtist: "Lady Gaga",
                 quality: "128kbps",
                 icon: "fas fa-paw",
                 category: "international"
@@ -2576,8 +2531,6 @@
                 description: "Аудиофильский микс рока и электроники без авторских прав",
                 currentTrack: "Eclectic Mix",
                 currentArtist: "Radio Paradise",
-                nextTrack: "Next Track",
-                nextArtist: "Radio Paradise",
                 quality: "FLAC 900+kbps",
                 icon: "fas fa-music",
                 category: "no-copyright"
@@ -2588,8 +2541,6 @@
                 description: "Легендарный лоу-фай стрим без авторских прав",
                 currentTrack: "Chill Beats",
                 currentArtist: "LoFi Artist",
-                nextTrack: "Relaxing Vibes",
-                nextArtist: "LoFi Producer",
                 quality: "192kbps",
                 icon: "fas fa-moon",
                 category: "lofi"
@@ -2600,8 +2551,6 @@
                 description: "Поп-хиты от iHeartRadio",
                 currentTrack: "Top 40 Hit",
                 currentArtist: "Popular Artist",
-                nextTrack: "Next Pop Hit",
-                nextArtist: "Chart Topper",
                 quality: "128kbps",
                 icon: "fas fa-broadcast-tower",
                 category: "international"
@@ -2612,8 +2561,6 @@
                 description: "Лучшие джазовые композиции",
                 currentTrack: "Smooth Jazz",
                 currentArtist: "Jazz Master",
-                nextTrack: "Cool Jazz",
-                nextArtist: "Jazz Legend",
                 quality: "192kbps",
                 icon: "fas fa-music",
                 category: "international"
@@ -2624,8 +2571,6 @@
                 description: "Расслабляющие биты для работы и отдыха без авторских прав",
                 currentTrack: "Chill Beats",
                 currentArtist: "Chillhop Music",
-                nextTrack: "Relaxing Vibes",
-                nextArtist: "Chillhop Producer",
                 quality: "128kbps",
                 icon: "fas fa-moon",
                 category: "lofi"
@@ -2636,8 +2581,6 @@
                 description: "Лучшие хип-хоп биты без авторских прав",
                 currentTrack: "Hip Hop Beats",
                 currentArtist: "LoFi Artist",
-                nextTrack: "Next Hip Hop",
-                nextArtist: "LoFi Producer",
                 quality: "128kbps",
                 icon: "fas fa-headphones",
                 category: "lofi"
@@ -2648,8 +2591,6 @@
                 description: "Уютные Minecraft саундтреки в Lo-Fi аранжировке",
                 currentTrack: "Minecraft Ambience",
                 currentArtist: "C418 Lo-Fi Remix",
-                nextTrack: "Sweden Chill",
-                nextArtist: "Minecraft Lofi",
                 quality: "128kbps",
                 icon: "fas fa-cube",
                 category: "no-copyright"
@@ -2660,8 +2601,6 @@
                 description: "Музыка для Хэллоуина и ужастиков",
                 currentTrack: "Spooky Sounds",
                 currentArtist: "Halloween FM",
-                nextTrack: "Scary Tunes",
-                nextArtist: "Halloween FM",
                 quality: "128kbps",
                 icon: "fas fa-ghost",
                 category: "thematic"
@@ -2672,8 +2611,6 @@
                 description: "Новогодние и рождественские хиты",
                 currentTrack: "Christmas Songs",
                 currentArtist: "Various Artists",
-                nextTrack: "Holiday Music",
-                nextArtist: "Christmas FM",
                 quality: "128kbps",
                 icon: "fas fa-tree",
                 category: "thematic",
@@ -2681,7 +2618,7 @@
             }
         };
 
-        // Массив с гифками для обычных станций - ДОБАВЛЕНЫ НОВЫЕ ГИФКИ
+        // Массив с гифками для обычных станций
         const gifs = [
             'https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif',
             'https://i.pinimg.com/originals/20/c8/3d/20c83d1cb257a6c4e5f68960ef0c3046.gif',
@@ -2698,7 +2635,6 @@
             'https://i.pinimg.com/originals/6e/fb/de/6efbde2becc91166553e90ca975aaf07.gif',
             'https://i.pinimg.com/originals/dc/9c/38/dc9c38d59ade3c7e307f64d52b3eba32.gif',
             'https://i.pinimg.com/originals/0e/85/86/0e8586ecd90850bf236dd7efdf5fa594.gif',
-            // ДОБАВЛЕНЫ НОВЫЕ ГИФКИ
             'https://steamuserimages-a.akamaihd.net/ugc/9667873298027977/D91C419D674235E03A5ED1DD814E2C7B2A3AFEB5/?imw=512&amp;imh=288&amp;ima=fit&amp;impolicy=Letterbox&amp;imcolor=%23000000&amp;letterbox=true',
             'https://i.pinimg.com/originals/36/e2/3a/36e23aa11a22646e9c5f611d3b7c56f7.gif',
             'https://i.pinimg.com/originals/e4/c3/9a/e4c39a73c1d9f9d32ca69f9ea0783c66.gif',
@@ -2816,14 +2752,12 @@
             let currentStationIndex = 0;
             let currentStation = stationIds[currentStationIndex];
             let visualizationInterval = null;
-            let currentTheme = 'retro';
             let chatUnsubscribe = null;
             let likesUnsubscribe = null;
             let stationLikes = {};
             let userLikedStations = new Set();
             let currentMessageForReaction = null;
             let userNickname = localStorage.getItem('userNickname') || '';
-            let currentGifUrl = 'https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif';
             let replyingToMessage = null;
             let onlineUsers = {};
             let currentMentionIndex = -1;

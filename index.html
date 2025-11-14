@@ -1984,18 +1984,78 @@
             display: none;
             font-size: 1.2rem;
             font-weight: bold;
+            transition: opacity 0.3s ease;
         }
 
         .volume-display.show {
             display: block;
-            animation: fadeInOut 2s ease;
+            opacity: 1;
         }
 
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        /* Стили для кнопок поддержки */
+        .support-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .support-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+        }
+
+        .support-option:hover {
+            background: rgba(29, 185, 84, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(29, 185, 84, 0.2);
+        }
+
+        .support-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(29, 185, 84, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #1DB954;
+        }
+
+        .support-info {
+            flex: 1;
+        }
+
+        .support-info h4 {
+            color: #1DB954;
+            margin-bottom: 5px;
+        }
+
+        .support-info p {
+            font-size: 0.8rem;
+            color: #B3B3B3;
+        }
+
+        .card-info {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+            font-family: monospace;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #1DB954;
         }
 
         @media (max-width: 900px) {
@@ -2067,6 +2127,14 @@
             .feedback-modal-content {
                 margin: 10% auto;
                 padding: 20px;
+            }
+
+            .support-options {
+                gap: 10px;
+            }
+
+            .support-option {
+                padding: 12px;
             }
         }
 
@@ -2171,32 +2239,48 @@
         </div>
     </div>
 
-    <!-- НОВОЕ МОДАЛЬНОЕ ОКНО ДЛЯ ПОДДЕРЖКИ -->
+    <!-- ОБНОВЛЕННОЕ МОДАЛЬНОЕ ОКНО ДЛЯ ПОДДЕРЖКИ -->
     <div class="modal" id="supportModal">
         <div class="modal-content">
             <span class="close" id="closeSupportModal">&times;</span>
             <h3>Поддержать проект</h3>
             <p style="margin-bottom: 15px; text-align: center;">Если вам нравится наше радио, вы можете поддержать его развитие:</p>
             
-            <div style="margin-bottom: 20px; text-align: center;">
-                <h3 style="color: #1DB954; margin-bottom: 10px;">Donation Alerts</h3>
-                <a href="https://www.donationalerts.com/r/deynikk" target="_blank" style="color: #1DB954; text-decoration: none; font-weight: bold;">
-                    https://www.donationalerts.com/r/deynikk
+            <div class="support-options">
+                <a href="https://www.donationalerts.com/r/deynikk" target="_blank" class="support-option">
+                    <div class="support-icon">
+                        <i class="fas fa-donate"></i>
+                    </div>
+                    <div class="support-info">
+                        <h4>Donation Alerts</h4>
+                        <p>Быстрые и безопасные пожертвования</p>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color: #B3B3B3;"></i>
                 </a>
-            </div>
-            
-            <div style="margin-bottom: 20px; text-align: center;">
-                <h3 style="color: #1DB954; margin-bottom: 10px;">Dalink</h3>
-                <a href="https://dalink.to/deynikk" target="_blank" style="color: #1DB954; text-decoration: none; font-weight: bold;">
-                    https://dalink.to/deynikk
+                
+                <a href="https://dalink.to/deynikk" target="_blank" class="support-option">
+                    <div class="support-icon">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <div class="support-info">
+                        <h4>Dalink</h4>
+                        <p>Альтернативный способ поддержки</p>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color: #B3B3B3;"></i>
                 </a>
-            </div>
-            
-            <div style="text-align: center;">
-                <h3 style="color: #1DB954; margin-bottom: 10px;">Банковская карта (Альфа Банк)</h3>
-                <p style="background: rgba(40, 40, 40, 0.8); padding: 10px; border-radius: 8px; font-family: monospace;">
-                    4081 7810 5059 7275 0268
-                </p>
+                
+                <div class="support-option" style="cursor: default;">
+                    <div class="support-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="support-info">
+                        <h4>Банковская карта (Альфа Банк)</h4>
+                        <p>Прямой перевод на карту</p>
+                        <div class="card-info">
+                            4081 7810 5059 7275 0268
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div class="share-buttons-simple" style="margin-top: 20px;">
@@ -2351,6 +2435,14 @@
                             <span class="likes-count">0</span> <i class="fas fa-heart"></i>
                         </div>
                     </li>
+                    <li data-station="minecraft">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-cube"></i></span> MINECRAFT Lo Fi
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
                     
                     <div class="category-title">Без АП</div>
                     <li data-station="minecraft">
@@ -2485,7 +2577,8 @@
                     <button class="btn btn-play" id="play-btn"><i class="fas fa-play"></i></button>
                     <button class="btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
                     <!-- ОБНОВЛЕННАЯ ГИФКА ПРИ ПЕРЕКЛЮЧЕНИИ -->
-                    <img src="https://pa1.aminoapps.com/6938/f8628ed41beb303e5390d4d776d2c84d2b2bafa7r1-320-92_00.gif" class="next-gif" id="nextGif">
+                    <img src="https://i.imgur.com/9w0p7qE.png" class="next-gif" id="nextGif">
+                    <div class="next-gif-text" id="nextGifText" style="display: none; position: absolute; left: calc(100% + 10px); top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.8); color: white; padding: 5px 10px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; z-index: 11;">Помогатор</div>
                 </div>
                 
                 <div class="player-buttons">
@@ -2545,7 +2638,7 @@
         const radioStations = {
             kissint: {
                 name: "KISS FM",
-                url: "https://cloud.revma.ihrhls.com/zc185?rj-org=n08a-e2&rj-ttl=5&rj-tok=AAABmWcyp-cAjUh581g70H83Ow",
+                url: "https://cloud.revma.ihrhls.com/zc185?rj-org=n3bb-e2&rj-ttl=5&rj-tok=AAABmoBxYDMAAxQEnNjentV4ug",
                 description: "Лучшие мировые хиты в отличном качестве",
                 currentTrack: "Популярные хиты",
                 currentArtist: "KISS FM",
@@ -2784,6 +2877,7 @@
             const likesCountBottom = document.getElementById('likes-count-bottom');
             const googleLoginBtn = document.getElementById('googleLoginBtn');
             const nextGif = document.getElementById('nextGif');
+            const nextGifText = document.getElementById('nextGifText');
             
             // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ ОТЗЫВОВ
             const feedbackBtn = document.getElementById('feedbackBtn');
@@ -2825,10 +2919,10 @@
             let replyingToMessage = null;
             let onlineUsers = {};
             let currentMentionIndex = -1;
+            let volumeDisplayTimeout = null;
             
             // НОВЫЕ ПЕРЕМЕННЫЕ ДЛЯ ОТЗЫВОВ
             let currentRating = 0;
-            let reviews = JSON.parse(localStorage.getItem('deynikRadioReviews')) || [];
             
             // Инициализация
             loadLikes();
@@ -2852,11 +2946,22 @@
                 
                 // Показываем индикатор громкости
                 volumeDisplayText.textContent = `Громкость: ${value}%`;
-                volumeDisplay.classList.add('show');
                 
-                // Скрываем индикатор через 2 секунды
-                setTimeout(() => {
-                    volumeDisplay.classList.remove('show');
+                // Сбрасываем предыдущий таймер
+                if (volumeDisplayTimeout) {
+                    clearTimeout(volumeDisplayTimeout);
+                }
+                
+                // Показываем индикатор
+                volumeDisplay.style.display = 'block';
+                volumeDisplay.style.opacity = '1';
+                
+                // Скрываем индикатор через 2 секунды после последнего изменения
+                volumeDisplayTimeout = setTimeout(() => {
+                    volumeDisplay.style.opacity = '0';
+                    setTimeout(() => {
+                        volumeDisplay.style.display = 'none';
+                    }, 300);
                 }, 2000);
             }
             
@@ -2953,61 +3058,86 @@
                     return;
                 }
                 
-                const userName = userNickname || (currentUser ? (currentUser.displayName || 'Аноним') : 'Аноним');
+                const user = auth.currentUser;
+                if (!user) {
+                    showNotification('Войдите в систему, чтобы оставить отзыв', 'error');
+                    return;
+                }
+                
+                const userName = userNickname || (user.displayName || 'Аноним');
+                const userId = user.uid;
                 
                 const review = {
-                    id: Date.now(),
+                    id: Date.now().toString(),
                     user: userName,
+                    userId: userId,
                     rating: currentRating,
                     text: reviewText,
-                    timestamp: new Date().toISOString()
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
-                reviews.unshift(review);
-                localStorage.setItem('deynikRadioReviews', JSON.stringify(reviews));
-                
-                // Очистить форму
-                feedbackText.value = '';
-                setRating(0);
-                
-                // Обновить список отзывов
-                displayReviews();
-                
-                // Переключиться на вкладку с отзывами
-                feedbackTabs.forEach(t => t.classList.remove('active'));
-                feedbackTabContents.forEach(c => c.classList.remove('active'));
-                document.querySelector('[data-tab="view-feedback"]').classList.add('active');
-                document.getElementById('view-feedback').classList.add('active');
-                
-                showNotification('Спасибо за ваш отзыв!', 'success');
+                // Сохраняем отзыв в Firestore
+                db.collection('reviews').add(review)
+                    .then(() => {
+                        // Очистить форму
+                        feedbackText.value = '';
+                        setRating(0);
+                        
+                        // Обновить список отзывов
+                        displayReviews();
+                        
+                        // Переключиться на вкладку с отзывами
+                        feedbackTabs.forEach(t => t.classList.remove('active'));
+                        feedbackTabContents.forEach(c => c.classList.remove('active'));
+                        document.querySelector('[data-tab="view-feedback"]').classList.add('active');
+                        document.getElementById('view-feedback').classList.add('active');
+                        
+                        showNotification('Спасибо за ваш отзыв!', 'success');
+                    })
+                    .catch(error => {
+                        console.error('Ошибка сохранения отзыва:', error);
+                        showNotification('Ошибка при отправке отзыва', 'error');
+                    });
             }
             
             function displayReviews() {
                 reviewsList.innerHTML = '';
                 
-                if (reviews.length === 0) {
-                    reviewsList.innerHTML = '<div class="no-reviews">Пока нет отзывов. Будьте первым!</div>';
-                    return;
-                }
-                
-                reviews.forEach(review => {
-                    const reviewItem = document.createElement('div');
-                    reviewItem.className = 'review-item';
-                    
-                    const starsHtml = Array(review.rating).fill('<div class="review-star"></div>').join('');
-                    const date = new Date(review.timestamp).toLocaleDateString('ru-RU');
-                    
-                    reviewItem.innerHTML = `
-                        <div class="review-header">
-                            <div class="review-user">${review.user}</div>
-                            <div class="review-rating">${starsHtml}</div>
-                        </div>
-                        <div class="review-text">${review.text}</div>
-                        <div style="font-size: 0.7rem; color: #888; margin-top: 8px;">${date}</div>
-                    `;
-                    
-                    reviewsList.appendChild(reviewItem);
-                });
+                // Загружаем отзывы из Firestore
+                db.collection('reviews')
+                    .orderBy('timestamp', 'desc')
+                    .limit(50)
+                    .get()
+                    .then((snapshot) => {
+                        if (snapshot.empty) {
+                            reviewsList.innerHTML = '<div class="no-reviews">Пока нет отзывов. Будьте первым!</div>';
+                            return;
+                        }
+                        
+                        snapshot.forEach(doc => {
+                            const review = doc.data();
+                            const reviewItem = document.createElement('div');
+                            reviewItem.className = 'review-item';
+                            
+                            const starsHtml = Array(review.rating).fill('<div class="review-star"></div>').join('');
+                            const date = review.timestamp ? review.timestamp.toDate().toLocaleDateString('ru-RU') : 'недавно';
+                            
+                            reviewItem.innerHTML = `
+                                <div class="review-header">
+                                    <div class="review-user">${review.user}</div>
+                                    <div class="review-rating">${starsHtml}</div>
+                                </div>
+                                <div class="review-text">${review.text}</div>
+                                <div style="font-size: 0.7rem; color: #888; margin-top: 8px;">${date}</div>
+                            `;
+                            
+                            reviewsList.appendChild(reviewItem);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Ошибка загрузки отзывов:', error);
+                        reviewsList.innerHTML = '<div class="no-reviews">Ошибка загрузки отзывов</div>';
+                    });
             }
 
             // Инициализация модального окна реакций
@@ -3541,6 +3671,7 @@
                             addMessageToChat(message);
                         });
                         
+                        // ПРОКРУТКА ЧАТА К ПОСЛЕДНЕМУ СООБЩЕНИЮ
                         chatMessages.scrollTop = chatMessages.scrollHeight;
                     });
             }
@@ -3934,17 +4065,160 @@
             // Функция для отображения станций в категории "Лучшие"
             function displayTopStations() {
                 const stationList = document.querySelector('.station-list');
-                stationList.innerHTML = '';
-                
                 const sortedStations = sortStationsByLikes();
                 
+                // Сохраняем заголовки категорий
+                const categoryTitles = document.querySelectorAll('.category-title');
+                const categoryTitlesArray = Array.from(categoryTitles);
+                
+                // Очищаем список
+                stationList.innerHTML = '';
+                
+                // Добавляем заголовок для лучших станций
+                const topTitle = document.createElement('div');
+                topTitle.className = 'category-title';
+                topTitle.textContent = 'Лучшие по лайкам';
+                stationList.appendChild(topTitle);
+                
+                // Добавляем отсортированные станции
                 sortedStations.forEach(item => {
                     stationList.appendChild(item);
                 });
+            }
+            
+            // Функция для восстановления исходного порядка станций
+            function restoreOriginalStationOrder() {
+                const stationList = document.querySelector('.station-list');
                 
-                // Скрываем все категории для лучших станций
-                document.querySelectorAll('.category-title').forEach(title => {
-                    title.style.display = 'none';
+                // Восстанавливаем исходный HTML списка станций
+                stationList.innerHTML = `
+                    <div class="category-title">Международные</div>
+                    <li class="active" data-station="kissint">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-heart"></i></span> KISS FM
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    <li data-station="gaga">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-paw"></i></span> Lady Gaga Radio
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    <li data-station="rp">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-music"></i></span> Radio Paradise
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    <li data-station="lofi">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-moon"></i></span> LoFi Girl
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    <li data-station="z100">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-broadcast-tower"></i></span> Z100 New York
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    <li data-station="jazz">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-music"></i></span> Jazz24
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    
+                    <div class="category-title">Lo-Fi</div>
+                    <li data-station="chillhop">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-moon"></i></span> Chillhop Radio
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    <li data-station="lofihiphop">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-headphones"></i></span> LoFi Hip Hop
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    <li data-station="lofigirl">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-moon"></i></span> LoFi Girl
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    
+                    <div class="category-title">Тематические</div>
+                    <li data-station="halloween">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-ghost"></i></span> Halloween Radio
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    <li data-station="minecraft">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-cube"></i></span> MINECRAFT Lo Fi
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                    
+                    <div class="category-title">Без АП</div>
+                    <li data-station="minecraft">
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="fas fa-cube"></i></span> MINECRAFT Lo Fi
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    </li>
+                `;
+                
+                // Обновляем обработчики событий для восстановленных элементов
+                const restoredItems = stationList.querySelectorAll('li');
+                restoredItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        const stationId = this.getAttribute('data-station');
+                        currentStationIndex = stationIds.indexOf(stationId);
+                        isPlaying = true;
+                        playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                        document.getElementById('player-icon').classList.add('playing');
+                        changeStation();
+                    });
+                });
+                
+                // Обновляем UI лайков
+                updateLikesUI();
+                
+                // Помечаем активную станцию
+                restoredItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('data-station') === currentStation) {
+                        item.classList.add('active');
+                    }
                 });
             }
             
@@ -3953,10 +4227,12 @@
                 // Шанс 40% показать гифку
                 if (Math.random() < 0.4) {
                     nextGif.classList.add('show');
+                    nextGifText.style.display = 'block';
                     
                     // Скрыть гифку через 2 секунды
                     setTimeout(() => {
                         nextGif.classList.remove('show');
+                        nextGifText.style.display = 'none';
                     }, 2000);
                 }
             }
@@ -4303,6 +4579,9 @@
                 if (category === 'top') {
                     displayTopStations();
                     return;
+                } else {
+                    // Восстанавливаем исходный порядок для всех других категорий
+                    restoreOriginalStationOrder();
                 }
                 
                 stationItems.forEach(item => {
@@ -4452,7 +4731,7 @@
                 showNextButtonGif();
             });
             
-            // Обработчик кнопки "Обновить" с анимацией
+            // Обработчик кнопки "Обновить" с анимацией - ИСПРАВЛЕНА ПАУЗА
             refreshButton.addEventListener('click', function() {
                 this.classList.add('reload-animation');
                 setTimeout(() => {
@@ -4464,11 +4743,19 @@
                     audio.pause();
                     audio = new Audio(radioStations[currentStation].url + '?nocache=' + new Date().getTime());
                     audio.volume = volumeSlider.value / 100;
-                    if (wasPlaying) {
-                        audio.play().catch(error => {
-                            console.error('Ошибка воспроизведения:', error);
-                        });
-                    }
+                    
+                    // ВСЕГДА ВОСПРОИЗВОДИМ ПОСЛЕ ПЕРЕЗАГРУЗКИ
+                    isPlaying = true;
+                    playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                    document.getElementById('player-icon').classList.add('playing');
+                    
+                    audio.play().catch(error => {
+                        console.error('Ошибка воспроизведения:', error);
+                        isPlaying = false;
+                        playButton.innerHTML = '<i class="fas fa-play"></i>';
+                        document.getElementById('player-icon').classList.remove('playing');
+                    });
+                    
                     changeGif();
                     showNotification('Станция перезагружена', 'success');
                 }

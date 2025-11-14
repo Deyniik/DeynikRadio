@@ -314,6 +314,27 @@
             transform: scale(1.05);
         }
         
+        /* НОВАЯ КНОПКА СКАЧИВАНИЯ ПРИЛОЖЕНИЯ */
+        .download-app-btn {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+        }
+        
+        .download-app-btn:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.05);
+        }
+        
         .content {
             display: flex;
             justify-content: space-between;
@@ -430,6 +451,31 @@
             background: rgba(29, 185, 84, 0.3);
             border-left: 3px solid #1DB954;
             box-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
+        }
+        
+        /* Специальный стиль для новогоднего радио */
+        .station-list li.christmas {
+            border-left: 3px solid #FF0000;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .station-list li.christmas::before {
+            content: "🎄";
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+        }
+        
+        .station-list li.christmas:hover {
+            background: rgba(255, 0, 0, 0.2);
+        }
+        
+        .station-list li.christmas.active {
+            background: rgba(255, 0, 0, 0.3);
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
         }
         
         .station-likes {
@@ -758,43 +804,6 @@
             box-shadow: 0 0 16px rgba(29, 185, 84, 0.8);
         }
 
-        /* ОБНОВЛЕННАЯ ГИФКА ПРИ ПЕРЕКЛЮЧЕНИИ - НОРМАЛЬНОГО РАЗМЕРА */
-        .next-gif {
-            position: absolute;
-            left: calc(100% + 10px);
-            width: 120px;
-            height: 80px;
-            z-index: 10;
-            display: none;
-            border-radius: 8px;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.3s ease;
-            object-fit: cover;
-        }
-        
-        .next-gif.show {
-            display: block;
-            opacity: 1;
-            transform: scale(1);
-            animation: gifAppear 0.5s ease-out;
-        }
-        
-        @keyframes gifAppear {
-            0% {
-                opacity: 0;
-                transform: scale(0.8) translateX(-20px);
-            }
-            70% {
-                opacity: 1;
-                transform: scale(1.05) translateX(0);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1) translateX(0);
-            }
-        }
-        
         /* ИЗМЕНЕННАЯ КНОПКА ЛАЙКА - ЦИФРА СНАРУЖИ */
         .btn-like-container {
             display: flex;
@@ -844,7 +853,7 @@
             transform: scale(1.05);
         }
         
-        /* ОБНОВЛЕННЫЙ ПОЛЗУНОК ГРОМКОСТИ */
+        /* ОБНОВЛЕННЫЙ ПОЛЗУНОК ГРОМКОСТИ - БОЛЬШАЯ ОБЛАСТЬ НАЖАТИЯ */
         .player-bottom {
             display: flex;
             justify-content: center;
@@ -858,6 +867,8 @@
             gap: 10px;
             width: 250px;
             max-width: 100%;
+            padding: 10px 0;
+            position: relative;
         }
         
         .volume-icon {
@@ -867,14 +878,24 @@
             text-align: center;
         }
         
+        .volume-slider-container {
+            flex: 1;
+            position: relative;
+            height: 30px;
+            display: flex;
+            align-items: center;
+        }
+        
         .volume-slider {
             -webkit-appearance: none;
             width: 100%;
-            height: 4px;
+            height: 8px;
             background: rgba(80, 80, 80, 0.7);
             border-radius: 5px;
             outline: none;
             cursor: pointer;
+            position: relative;
+            z-index: 1;
         }
         
         .volume-slider:hover {
@@ -884,8 +905,8 @@
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 14px;
-            height: 14px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: #1DB954;
             cursor: pointer;
@@ -894,13 +915,13 @@
         }
         
         .volume-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.1);
+            transform: scale(1.2);
             box-shadow: 0 0 6px rgba(29, 185, 84, 0.8);
         }
         
         .volume-slider::-moz-range-thumb {
-            width: 14px;
-            height: 14px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             background: #1DB954;
             cursor: pointer;
@@ -2117,13 +2138,6 @@
                 grid-template-columns: repeat(4, 1fr);
             }
 
-            .next-gif {
-                position: absolute;
-                left: calc(100% + 5px);
-                width: 100px;
-                height: 70px;
-            }
-
             .feedback-modal-content {
                 margin: 10% auto;
                 padding: 20px;
@@ -2299,7 +2313,7 @@
     
     <!-- НОВЫЙ ЭЛЕМЕНТ ДЛЯ ОТОБРАЖЕНИЯ ГРОМКОСТИ НА ГИФ-ЭКРАНЕ -->
     <div class="volume-display" id="volumeDisplay">
-        <div id="volumeDisplayText">Громкость: 70%</div>
+        <div id="volumeDisplayText"><i class="fas fa-volume-up"></i> 70%</div>
     </div>
     
     <div class="container" id="mainContainer">
@@ -2325,9 +2339,10 @@
                     <i class="fas fa-heart"></i> Поддержать
                 </button>
                 
-                <button class="theme-switcher" id="themeSwitcher">
-                    <i class="fas fa-palette"></i> Ретро
-                </button>
+                <!-- НОВАЯ КНОПКА СКАЧИВАНИЯ ПРИЛОЖЕНИЯ -->
+                <a href="https://drive.google.com/file/d/17wrTw1oeFzpP_Ho6HLvqJfitNBJovTOV/view?usp=sharing" target="_blank" class="download-app-btn" id="downloadAppBtn">
+                    <i class="fas fa-download"></i> Скачать приложение
+                </a>
             </div>
         </header>
         
@@ -2335,7 +2350,7 @@
             <div class="side-panel left-panel crt-effect">
                 <div class="stations-header">
                     <h2>Радиостанции</h2>
-                    <span class="station-count">11</span>
+                    <span class="station-count">12</span>
                 </div>
                 
                 <!-- КАТЕГОРИИ ВМЕСТО ПОИСКА -->
@@ -2347,112 +2362,8 @@
                     <button class="category-btn" data-category="top">Лучшие</button>
                 </div>
                 
-                <!-- УБРАНА ЗЕЛЕНАЯ ЛИНИЯ ПОСЛЕ КАТЕГОРИЙ -->
-                
-                <ul class="station-list">
-                    <div class="category-title">Международные</div>
-                    <li class="active" data-station="kissint">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-heart"></i></span> KISS FM
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-station="gaga">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-paw"></i></span> Lady Gaga Radio
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-station="rp">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-music"></i></span> Radio Paradise
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-station="lofi">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-moon"></i></span> LoFi Girl
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-station="z100">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-broadcast-tower"></i></span> Z100 New York
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-station="jazz">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-music"></i></span> Jazz24
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    
-                    <div class="category-title">Lo-Fi</div>
-                    <li data-station="chillhop">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-moon"></i></span> Chillhop Radio
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-station="lofihiphop">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-headphones"></i></span> LoFi Hip Hop
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-station="lofigirl">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-moon"></i></span> LoFi Girl
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    
-                    <div class="category-title">Тематические</div>
-                    <li data-station="halloween">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-ghost"></i></span> Halloween Radio
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-station="minecraft">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-cube"></i></span> MINECRAFT Lo Fi
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    
-                    <div class="category-title">Без АП</div>
-                    <li data-station="minecraft">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-cube"></i></span> MINECRAFT Lo Fi
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
+                <ul class="station-list" id="station-list">
+                    <!-- Станции будут загружены через JavaScript -->
                 </ul>
                 
                 <div class="random-station-btn" id="random-station-btn">
@@ -2576,9 +2487,6 @@
                     <button class="btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
                     <button class="btn btn-play" id="play-btn"><i class="fas fa-play"></i></button>
                     <button class="btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
-                    <!-- ОБНОВЛЕННАЯ ГИФКА ПРИ ПЕРЕКЛЮЧЕНИИ -->
-                    <img src="https://imgur.com/a/gN6FphD" id="nextGif">
-                    <div class="next-gif-text" id="nextGifText" style="display: none; position: absolute; left: calc(100% + 10px); top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.8); color: white; padding: 5px 10px; border-radius: 8px; font-size: 0.8rem; white-space: nowrap; z-index: 11;">Помогатор</div>
                 </div>
                 
                 <div class="player-buttons">
@@ -2602,7 +2510,9 @@
             <div class="player-bottom">
                 <div class="volume-control">
                     <span class="volume-icon"><i class="fas fa-volume-down"></i></span>
-                    <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
+                    <div class="volume-slider-container">
+                        <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
+                    </div>
                     <span class="volume-icon"><i class="fas fa-volume-up"></i></span>
                 </div>
             </div>
@@ -2732,18 +2642,6 @@
                 icon: "fas fa-headphones",
                 category: "lofi"
             },
-            lofigirl: {
-                name: "LoFi Girl",
-                url: "https://play.streamafrica.net/lofiradio",
-                description: "Легендарный лоу-фай стрим без авторских прав",
-                currentTrack: "Study Beats",
-                currentArtist: "LoFi Girl",
-                nextTrack: "Chill Vibes",
-                nextArtist: "LoFi Girl",
-                quality: "192kbps",
-                icon: "fas fa-moon",
-                category: "lofi"
-            },
             minecraft: {
                 name: "MINECRAFT Lo Fi",
                 url: "https://stream-173.zeno.fm/kp41ftw3zehvv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJrcDQxZnR3M3plaHZ2IiwiaG9zdCI6InN0cmVhbS0xNzMuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6Ii1MelctMUFsUmtLeHZoaWkwUXBSZWciLCJpYXQiOjE3NTg2NDUyNDAsImV4cCI6MTc1ODY0NTMwMH0.Ef_7t2RVX9WvfCeKorGs2acDLze7Sp8n5bzo3Ix58xE",
@@ -2767,6 +2665,19 @@
                 quality: "128kbps",
                 icon: "fas fa-ghost",
                 category: "thematic"
+            },
+            christmas: {
+                name: "Christmas Hits",
+                url: "https://1000christmashits.stream.laut.fm/1000christmashits",
+                description: "Новогодние и рождественские хиты",
+                currentTrack: "Christmas Songs",
+                currentArtist: "Various Artists",
+                nextTrack: "Holiday Music",
+                nextArtist: "Christmas FM",
+                quality: "128kbps",
+                icon: "fas fa-tree",
+                category: "thematic",
+                isChristmas: true
             }
         };
 
@@ -2838,12 +2749,10 @@
             const likeButton = document.getElementById('like-btn');
             const randomStationBtn = document.getElementById('random-station-btn');
             const volumeSlider = document.getElementById('volume-slider');
-            const stationItems = document.querySelectorAll('.station-list li');
             const visualization = document.getElementById('visualization');
             const bars = visualization.querySelectorAll('.bar');
             const mainGif = document.getElementById('mainGif');
             const playbackIndicator = document.getElementById('playback-indicator');
-            const themeSwitcher = document.getElementById('themeSwitcher');
             const shareBtn = document.getElementById('share-btn');
             const chatInput = document.getElementById('chat-input');
             const chatSendBtn = document.getElementById('chat-send-btn');
@@ -2876,8 +2785,7 @@
             const heartEffect = document.getElementById('heartEffect');
             const likesCountBottom = document.getElementById('likes-count-bottom');
             const googleLoginBtn = document.getElementById('googleLoginBtn');
-            const nextGif = document.getElementById('nextGif');
-            const nextGifText = document.getElementById('nextGifText');
+            const stationList = document.getElementById('station-list');
             
             // НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ ОТЗЫВОВ
             const feedbackBtn = document.getElementById('feedbackBtn');
@@ -2925,6 +2833,7 @@
             let currentRating = 0;
             
             // Инициализация
+            loadStationList();
             loadLikes();
             updateStationInfo();
             changeGif();
@@ -2932,6 +2841,69 @@
             loadEmojis();
             loadTrendingGifs();
             initFeedbackSystem();
+            
+            // Функция загрузки списка станций
+            function loadStationList() {
+                stationList.innerHTML = '';
+                
+                // Все станции
+                const allStations = [
+                    { id: 'kissint', category: 'international', title: 'Международные' },
+                    { id: 'gaga', category: 'international' },
+                    { id: 'rp', category: 'no-copyright' },
+                    { id: 'lofi', category: 'lofi' },
+                    { id: 'z100', category: 'international' },
+                    { id: 'jazz', category: 'international' },
+                    { id: 'chillhop', category: 'lofi', title: 'Lo-Fi' },
+                    { id: 'lofihiphop', category: 'lofi' },
+                    { id: 'minecraft', category: 'lofi' },
+                    { id: 'halloween', category: 'thematic', title: 'Тематические' },
+                    { id: 'christmas', category: 'thematic' }
+                ];
+                
+                let lastCategory = '';
+                
+                allStations.forEach(station => {
+                    const stationData = radioStations[station.id];
+                    
+                    // Добавляем заголовок категории если он изменился
+                    if (station.title && station.title !== lastCategory) {
+                        const categoryTitle = document.createElement('div');
+                        categoryTitle.className = 'category-title';
+                        categoryTitle.textContent = station.title;
+                        stationList.appendChild(categoryTitle);
+                        lastCategory = station.title;
+                    }
+                    
+                    const stationItem = document.createElement('li');
+                    stationItem.setAttribute('data-station', station.id);
+                    stationItem.className = stationData.isChristmas ? 'christmas' : '';
+                    
+                    if (station.id === currentStation) {
+                        stationItem.classList.add('active');
+                    }
+                    
+                    stationItem.innerHTML = `
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="${stationData.icon}"></i></span> ${stationData.name}
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    `;
+                    
+                    stationItem.addEventListener('click', function() {
+                        const stationId = this.getAttribute('data-station');
+                        currentStationIndex = stationIds.indexOf(stationId);
+                        isPlaying = true;
+                        playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                        document.getElementById('player-icon').classList.add('playing');
+                        changeStation();
+                    });
+                    
+                    stationList.appendChild(stationItem);
+                });
+            }
             
             // НОВАЯ ФУНКЦИЯ ДЛЯ ОБНОВЛЕНИЯ ГРОМКОСТИ
             function updateVolume(value) {
@@ -2945,7 +2917,11 @@
                 updateVolumeIcon();
                 
                 // Показываем индикатор громкости
-                volumeDisplayText.textContent = `Громкость: ${value}%`;
+                let volumeIcon = 'fa-volume-up';
+                if (value == 0) volumeIcon = 'fa-volume-mute';
+                else if (value < 50) volumeIcon = 'fa-volume-down';
+                
+                volumeDisplayText.innerHTML = `<i class="fas ${volumeIcon}"></i> ${value}%`;
                 
                 // Сбрасываем предыдущий таймер
                 if (volumeDisplayTimeout) {
@@ -3492,6 +3468,7 @@
             
             function updateLikesUI() {
                 // Обновляем лайки в списке станций
+                const stationItems = document.querySelectorAll('.station-list li');
                 stationItems.forEach(item => {
                     const stationId = item.getAttribute('data-station');
                     const likesCount = item.querySelector('.likes-count');
@@ -4051,6 +4028,7 @@
             
             // Функция для сортировки станций по лайкам
             function sortStationsByLikes() {
+                const stationItems = document.querySelectorAll('.station-list li');
                 const sortedStations = [...stationItems].sort((a, b) => {
                     const stationA = a.getAttribute('data-station');
                     const stationB = b.getAttribute('data-station');
@@ -4064,12 +4042,7 @@
             
             // Функция для отображения станций в категории "Лучшие"
             function displayTopStations() {
-                const stationList = document.querySelector('.station-list');
                 const sortedStations = sortStationsByLikes();
-                
-                // Сохраняем заголовки категорий
-                const categoryTitles = document.querySelectorAll('.category-title');
-                const categoryTitlesArray = Array.from(categoryTitles);
                 
                 // Очищаем список
                 stationList.innerHTML = '';
@@ -4088,153 +4061,17 @@
             
             // Функция для восстановления исходного порядка станций
             function restoreOriginalStationOrder() {
-                const stationList = document.querySelector('.station-list');
-                
-                // Восстанавливаем исходный HTML списка станций
-                stationList.innerHTML = `
-                    <div class="category-title">Международные</div>
-                    <li class="active" data-station="kissint">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-heart"></i></span> KISS FM
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-station="gaga">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-paw"></i></span> Lady Gaga Radio
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-station="rp">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-music"></i></span> Radio Paradise
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-station="lofi">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-moon"></i></span> LoFi Girl
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-station="z100">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-broadcast-tower"></i></span> Z100 New York
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-station="jazz">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-music"></i></span> Jazz24
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    
-                    <div class="category-title">Lo-Fi</div>
-                    <li data-station="chillhop">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-moon"></i></span> Chillhop Radio
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-station="lofihiphop">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-headphones"></i></span> LoFi Hip Hop
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-station="lofigirl">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-moon"></i></span> LoFi Girl
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    
-                    <div class="category-title">Тематические</div>
-                    <li data-station="halloween">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-ghost"></i></span> Halloween Radio
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    <li data-station="minecraft">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-cube"></i></span> MINECRAFT Lo Fi
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                    
-                    <div class="category-title">Без АП</div>
-                    <li data-station="minecraft">
-                        <div style="display: flex; align-items: center;">
-                            <span class="station-icon"><i class="fas fa-cube"></i></span> MINECRAFT Lo Fi
-                        </div>
-                        <div class="station-likes">
-                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
-                        </div>
-                    </li>
-                `;
-                
-                // Обновляем обработчики событий для восстановленных элементов
-                const restoredItems = stationList.querySelectorAll('li');
-                restoredItems.forEach(item => {
-                    item.addEventListener('click', function() {
-                        const stationId = this.getAttribute('data-station');
-                        currentStationIndex = stationIds.indexOf(stationId);
-                        isPlaying = true;
-                        playButton.innerHTML = '<i class="fas fa-pause"></i>';
-                        document.getElementById('player-icon').classList.add('playing');
-                        changeStation();
-                    });
-                });
-                
-                // Обновляем UI лайков
+                loadStationList();
                 updateLikesUI();
                 
                 // Помечаем активную станцию
-                restoredItems.forEach(item => {
+                const stationItems = document.querySelectorAll('.station-list li');
+                stationItems.forEach(item => {
                     item.classList.remove('active');
                     if (item.getAttribute('data-station') === currentStation) {
                         item.classList.add('active');
                     }
                 });
-            }
-            
-            // НОВАЯ ФУНКЦИЯ ДЛЯ ПОКАЗА ГИФКИ ПРИ ПЕРЕКЛЮЧЕНИИ
-            function showNextButtonGif() {
-                // Шанс 40% показать гифку
-                if (Math.random() < 0.4) {
-                    nextGif.classList.add('show');
-                    nextGifText.style.display = 'block';
-                    
-                    // Скрыть гифку через 2 секунды
-                    setTimeout(() => {
-                        nextGif.classList.remove('show');
-                        nextGifText.style.display = 'none';
-                    }, 2000);
-                }
             }
             
             // НОВЫЕ ФУНКЦИИ ДЛЯ УПОМИНАНИЙ
@@ -4584,11 +4421,15 @@
                     restoreOriginalStationOrder();
                 }
                 
+                const stationItems = document.querySelectorAll('.station-list li');
                 stationItems.forEach(item => {
                     const stationId = item.getAttribute('data-station');
                     const station = radioStations[stationId];
                     
-                    if (category === 'all' || station.category === category) {
+                    if (category === 'all' || 
+                        (category === 'lofi' && (station.category === 'lofi' || stationId === 'minecraft')) ||
+                        (category === 'thematic' && (station.category === 'thematic' || stationId === 'minecraft' || stationId === 'christmas')) ||
+                        (category === 'no-copyright' && (station.category === 'no-copyright' || stationId === 'lofi' || stationId === 'chillhop' || stationId === 'lofihiphop' || stationId === 'minecraft'))) {
                         item.style.display = 'flex';
                         // Показываем родительские категории если есть станции
                         if (item.previousElementSibling && item.previousElementSibling.classList.contains('category-title')) {
@@ -4654,27 +4495,10 @@
             // Слушатель состояния аутентификации
             auth.onAuthStateChanged(updateAuthUI);
             
-            // Переключение темы
-            themeSwitcher.addEventListener('click', function() {
-                if (currentTheme === 'retro') {
-                    document.body.className = 'cyber-theme';
-                    currentTheme = 'cyber';
-                    themeSwitcher.innerHTML = '<i class="fas fa-palette"></i> Кибер';
-                } else if (currentTheme === 'cyber') {
-                    document.body.className = 'matrix-theme';
-                    currentTheme = 'matrix';
-                    themeSwitcher.innerHTML = '<i class="fas fa-palette"></i> Матрица';
-                } else {
-                    document.body.className = 'retro-theme';
-                    currentTheme = 'retro';
-                    themeSwitcher.innerHTML = '<i class="fas fa-palette"></i> Ретро';
-                }
-            });
-            
             // Обработчик кнопки лайка
             likeButton.addEventListener('click', toggleLike);
             
-            // Обработчик кнопки воспроизведения
+            // Обработчик кнопки воспроизведения - ИСПРАВЛЕН ДЛЯ ПЕРЕЗАГРУЗКИ
             playButton.addEventListener('click', function() {
                 isPlaying = !isPlaying;
                 
@@ -4720,15 +4544,13 @@
                 changeStation();
             });
             
-            // Обработчик кнопки "Следующая станция" - ДОБАВЛЕН ПОКАЗ ГИФКИ
+            // Обработчик кнопки "Следующая станция"
             nextButton.addEventListener('click', function() {
                 currentStationIndex = (currentStationIndex + 1) % stationIds.length;
                 isPlaying = true;
                 playButton.innerHTML = '<i class="fas fa-pause"></i>';
                 document.getElementById('player-icon').classList.add('playing');
                 changeStation();
-                // ПОКАЗЫВАЕМ ГИФКУ С ШАНСОМ 40%
-                showNextButtonGif();
             });
             
             // Обработчик кнопки "Обновить" с анимацией - ИСПРАВЛЕНА ПАУЗА
@@ -4744,33 +4566,27 @@
                     audio = new Audio(radioStations[currentStation].url + '?nocache=' + new Date().getTime());
                     audio.volume = volumeSlider.value / 100;
                     
-                    // ВСЕГДА ВОСПРОИЗВОДИМ ПОСЛЕ ПЕРЕЗАГРУЗКИ
-                    isPlaying = true;
-                    playButton.innerHTML = '<i class="fas fa-pause"></i>';
-                    document.getElementById('player-icon').classList.add('playing');
-                    
-                    audio.play().catch(error => {
-                        console.error('Ошибка воспроизведения:', error);
+                    // ВОСПРОИЗВОДИМ ТОЛЬКО ЕСЛИ БЫЛО ВКЛЮЧЕНО ДО ПЕРЕЗАГРУЗКИ
+                    if (wasPlaying) {
+                        isPlaying = true;
+                        playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                        document.getElementById('player-icon').classList.add('playing');
+                        
+                        audio.play().catch(error => {
+                            console.error('Ошибка воспроизведения:', error);
+                            isPlaying = false;
+                            playButton.innerHTML = '<i class="fas fa-play"></i>';
+                            document.getElementById('player-icon').classList.remove('playing');
+                        });
+                    } else {
                         isPlaying = false;
                         playButton.innerHTML = '<i class="fas fa-play"></i>';
                         document.getElementById('player-icon').classList.remove('playing');
-                    });
+                    }
                     
                     changeGif();
                     showNotification('Станция перезагружена', 'success');
                 }
-            });
-            
-            // Обработчик выбора станции из списка
-            stationItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    const stationId = this.getAttribute('data-station');
-                    currentStationIndex = stationIds.indexOf(stationId);
-                    isPlaying = true;
-                    playButton.innerHTML = '<i class="fas fa-pause"></i>';
-                    document.getElementById('player-icon').classList.add('playing');
-                    changeStation();
-                });
             });
             
             // Функция смены станции
@@ -4778,6 +4594,7 @@
                 currentStation = stationIds[currentStationIndex];
                 updateStationInfo();
                 
+                const stationItems = document.querySelectorAll('.station-list li');
                 stationItems.forEach(item => {
                     item.classList.remove('active');
                     if (item.getAttribute('data-station') === currentStation) {

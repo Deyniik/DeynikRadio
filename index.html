@@ -151,6 +151,63 @@
             transform: scale(1.05);
         }
         
+        .lite-switch {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 10px;
+        }
+
+        .lite-switch-label {
+            font-size: 0.8rem;
+            color: #B3B3B3;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #1DB954;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        
         .user-profile {
             display: flex;
             align-items: center;
@@ -269,63 +326,6 @@
         .theme-switcher:hover {
             background: rgba(29, 185, 84, 0.3);
             transform: scale(1.05);
-        }
-
-        .lite-switch {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-right: 10px;
-        }
-
-        .lite-switch-label {
-            font-size: 0.8rem;
-            color: #B3B3B3;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 40px;
-            height: 20px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 20px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 2px;
-            bottom: 2px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: #1DB954;
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(20px);
         }
 
         .feedback-btn, .support-btn, .download-app-btn {
@@ -929,6 +929,7 @@
             cursor: pointer;
             position: relative;
             z-index: 1;
+            transition: background 0.2s ease;
         }
         
         .volume-slider:hover {
@@ -945,6 +946,7 @@
             cursor: pointer;
             border: 2px solid white;
             box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+            transition: all 0.2s ease;
         }
         
         .volume-slider::-webkit-slider-thumb:hover {
@@ -960,6 +962,7 @@
             cursor: pointer;
             border: 2px solid white;
             box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+            transition: all 0.2s ease;
         }
         
         .chat-container {
@@ -2351,17 +2354,17 @@
     <div class="container" id="mainContainer">
         <header>
             <div class="header-left">
+                <div id="auth-section">
+                    <button class="google-login-btn" id="googleLoginBtn">
+                        <i class="fab fa-google"></i> Войти через Google
+                    </button>
+                </div>
                 <div class="lite-switch">
                     <span class="lite-switch-label">Lite</span>
                     <label class="switch">
                         <input type="checkbox" id="liteToggle">
                         <span class="slider"></span>
                     </label>
-                </div>
-                <div id="auth-section">
-                    <button class="google-login-btn" id="googleLoginBtn">
-                        <i class="fab fa-google"></i> Войти через Google
-                    </button>
                 </div>
             </div>
             <div class="header-center">
@@ -2533,7 +2536,7 @@
                 <div class="volume-control">
                     <span class="volume-icon"><i class="fas fa-volume-down"></i></span>
                     <div class="volume-slider-container">
-                        <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
+                        <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70" step="0.1">
                     </div>
                     <span class="volume-icon"><i class="fas fa-volume-up"></i></span>
                 </div>
@@ -2697,7 +2700,15 @@
             'https://i.pinimg.com/originals/e4/c3/9a/e4c39a73c1d9f9d32ca69f9ea0783c66.gif',
             'https://i.pinimg.com/originals/0b/49/e3/0b49e3c7cdf6f64da625dd7b2ed94312.gif',
             'https://i.pinimg.com/originals/5d/1b/b3/5d1bb3546868cf3791880fa5720da7a2.gif',
-            'https://i.pinimg.com/originals/c4/67/13/c4671376fad5ff9cc8a83c3f2174fd73.gif'
+            'https://i.pinimg.com/originals/c4/67/13/c4671376fad5ff9cc8a83c3f2174fd73.gif',
+            'https://media1.tenor.com/m/znpkuJKdqGkAAAAd/the-simpsons-lisa-simpson.gif',
+            'https://i.pinimg.com/originals/22/1e/a5/221ea5d2720d805681eea3b689160671.gif',
+            'https://media1.tenor.com/m/joAGLtB1n8IAAAAd/the-simpsons-bart.gif',
+            'https://i.gifer.com/KGXA.gif',
+            'https://avatars.dzeninfra.ru/get-zen_doc/2907131/pub_5f6762b8b142594c536fda3a_5f6770b4c833846a1ddf46ac/orig',
+            'https://i.pinimg.com/originals/c2/5c/ae/c25cae326dcdc03ce3ced251d45a34b6.gif',
+            'https://i.pinimg.com/originals/e4/25/d3/e425d3861a7d09173b6f31faefd4460a.gif',
+            'https://i.pinimg.com/originals/74/1b/06/741b066eff82e56aaab12962512ba741.gif'
         ];
 
         const minecraftGifs = [
@@ -2909,7 +2920,7 @@
                 if (value == 0) volumeIcon = 'fa-volume-mute';
                 else if (value < 50) volumeIcon = 'fa-volume-down';
                 
-                volumeDisplayText.innerHTML = `<i class="fas ${volumeIcon}"></i> ${value}%`;
+                volumeDisplayText.innerHTML = `<i class="fas ${volumeIcon}"></i> ${Math.round(value)}%`;
                 
                 if (volumeDisplayTimeout) {
                     clearTimeout(volumeDisplayTimeout);
@@ -2930,11 +2941,11 @@
                 if (e.target !== chatInput) {
                     if (e.key === 'ArrowUp') {
                         e.preventDefault();
-                        const currentVolume = parseInt(volumeSlider.value);
+                        const currentVolume = parseFloat(volumeSlider.value);
                         updateVolume(currentVolume + 5);
                     } else if (e.key === 'ArrowDown') {
                         e.preventDefault();
-                        const currentVolume = parseInt(volumeSlider.value);
+                        const currentVolume = parseFloat(volumeSlider.value);
                         updateVolume(currentVolume - 5);
                     }
                 }
@@ -2943,8 +2954,12 @@
             volumeSlider.addEventListener('wheel', function(e) {
                 e.preventDefault();
                 const delta = e.deltaY > 0 ? -5 : 5;
-                const currentVolume = parseInt(volumeSlider.value);
+                const currentVolume = parseFloat(volumeSlider.value);
                 updateVolume(currentVolume + delta);
+            });
+
+            volumeSlider.addEventListener('input', function() {
+                updateVolume(this.value);
             });
 
             function initFeedbackSystem() {
@@ -3299,19 +3314,12 @@
                 const volume = volumeSlider.value;
                 const volumeIcons = document.querySelectorAll('.volume-icon i');
                 volumeIcons.forEach(icon => {
-                    if (volume == 0) {
-                        icon.className = 'fas fa-volume-mute';
-                    } else if (volume < 50) {
-                        icon.className = 'fas fa-volume-down';
-                    } else {
-                        icon.className = 'fas fa-volume-up';
-                    }
+                    if (volume == 0) volumeIcon = 'fa-volume-mute';
+                    else if (volume < 50) volumeIcon = 'fa-volume-down';
+                    else volumeIcon = 'fa-volume-up';
+                    icon.className = `fas ${volumeIcon}`;
                 });
             }
-            
-            volumeSlider.addEventListener('input', function() {
-                updateVolume(this.value);
-            });
             
             updateVolumeIcon();
             
@@ -3576,6 +3584,7 @@
                         
                         if (snapshot.empty) {
                             chatMessages.innerHTML = '<div class="message">Чат пуст. Будьте первым!</div>';
+                            scrollChatToBottom();
                             return;
                         }
                         
@@ -3594,8 +3603,14 @@
                             addMessageToChat(message);
                         });
                         
-                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                        scrollChatToBottom();
                     });
+            }
+
+            function scrollChatToBottom() {
+                setTimeout(() => {
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 100);
             }
 
             function addMessageToChat(message) {
@@ -3936,12 +3951,10 @@
             }
             
             function sortStationsByLikes() {
-                const stationItems = document.querySelectorAll('.station-list li');
-                const sortedStations = [...stationItems].sort((a, b) => {
-                    const stationA = a.getAttribute('data-station');
-                    const stationB = b.getAttribute('data-station');
-                    const likesA = stationLikes[stationA] ? stationLikes[stationA].count || 0 : 0;
-                    const likesB = stationLikes[stationB] ? stationLikes[stationB].count || 0 : 0;
+                const allStations = Object.keys(radioStations);
+                const sortedStations = [...allStations].sort((a, b) => {
+                    const likesA = stationLikes[a] ? stationLikes[a].count || 0 : 0;
+                    const likesB = stationLikes[b] ? stationLikes[b].count || 0 : 0;
                     return likesB - likesA;
                 });
                 
@@ -3958,8 +3971,42 @@
                 topTitle.textContent = 'Лучшие по лайкам';
                 stationList.appendChild(topTitle);
                 
-                sortedStations.forEach(item => {
-                    stationList.appendChild(item);
+                sortedStations.forEach(stationId => {
+                    const stationData = radioStations[stationId];
+                    const stationItem = document.createElement('li');
+                    stationItem.setAttribute('data-station', stationId);
+                    
+                    if (stationData.isChristmas) {
+                        stationItem.className = 'christmas-garland';
+                    } else {
+                        stationItem.className = stationData.isChristmas ? 'christmas' : '';
+                    }
+                    
+                    if (stationId === currentStation) {
+                        stationItem.classList.add('active');
+                    }
+                    
+                    const likesCount = stationLikes[stationId] ? stationLikes[stationId].count || 0 : 0;
+                    
+                    stationItem.innerHTML = `
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="${stationData.icon}"></i></span> ${stationData.name}
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">${likesCount}</span> <i class="fas fa-heart"></i>
+                        </div>
+                    `;
+                    
+                    stationItem.addEventListener('click', function() {
+                        const stationId = this.getAttribute('data-station');
+                        currentStationIndex = stationIds.indexOf(stationId);
+                        isPlaying = true;
+                        playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                        document.getElementById('player-icon').classList.add('playing');
+                        changeStation();
+                    });
+                    
+                    stationList.appendChild(stationItem);
                 });
             }
             
@@ -3976,171 +4023,64 @@
                 });
             }
             
-            function handleMentions() {
-                const text = chatInput.value;
-                const cursorPosition = chatInput.selectionStart;
-                const textBeforeCursor = text.substring(0, cursorPosition);
-                const atSymbolIndex = textBeforeCursor.lastIndexOf('@');
-                
-                if (atSymbolIndex !== -1) {
-                    const textAfterAt = textBeforeCursor.substring(atSymbolIndex + 1);
-                    const spaceIndex = textAfterAt.indexOf(' ');
-                    
-                    if (spaceIndex === -1) {
-                        showMentionsList(textAfterAt);
-                        return;
-                    }
-                }
-                
-                hideMentions();
-            }
-            
-            function showMentionsList(filter = '') {
-                mentionsList.innerHTML = '';
-                let hasResults = false;
-                
-                Object.entries(onlineUsers).forEach(([userId, userData]) => {
-                    if (userData.isOnline && 
-                        (filter === '' || userData.displayName.toLowerCase().includes(filter.toLowerCase()))) {
-                        const mentionItem = document.createElement('div');
-                        mentionItem.className = 'mention-item';
-                        mentionItem.innerHTML = `
-                            <div class="user-status"></div>
-                            <span>${userData.displayName}</span>
-                        `;
-                        
-                        mentionItem.addEventListener('click', () => {
-                            insertMention(userData.displayName);
-                        });
-                        
-                        mentionsList.appendChild(mentionItem);
-                        hasResults = true;
-                    }
-                });
-                
-                if (hasResults) {
-                    mentionsList.classList.add('show');
-                    currentMentionIndex = -1;
+            function filterStationsByCategory(category) {
+                if (category === 'top') {
+                    displayTopStations();
+                    return;
                 } else {
-                    hideMentions();
+                    restoreOriginalStationOrder();
                 }
-            }
-            
-            function hideMentions() {
-                mentionsList.classList.remove('show');
-                currentMentionIndex = -1;
-            }
-            
-            function insertMention(username) {
-                const text = chatInput.value;
-                const cursorPosition = chatInput.selectionStart;
-                const textBeforeCursor = text.substring(0, cursorPosition);
-                const atSymbolIndex = textBeforeCursor.lastIndexOf('@');
                 
-                if (atSymbolIndex !== -1) {
-                    const newText = text.substring(0, atSymbolIndex) + '@' + username + ' ' + text.substring(cursorPosition);
-                    chatInput.value = newText;
+                const stationItems = document.querySelectorAll('.station-list li');
+                stationItems.forEach(item => {
+                    const stationId = item.getAttribute('data-station');
+                    const station = radioStations[stationId];
                     
-                    const newCursorPosition = atSymbolIndex + username.length + 2;
-                    chatInput.setSelectionRange(newCursorPosition, newCursorPosition);
-                }
-                
-                hideMentions();
-                chatInput.focus();
-            }
-            
-            function navigateMentions(direction) {
-                const items = mentionsList.querySelectorAll('.mention-item');
-                if (items.length === 0) return;
-                
-                let activeIndex = -1;
-                items.forEach((item, index) => {
-                    if (item.classList.contains('active')) {
-                        activeIndex = index;
-                        item.classList.remove('active');
+                    if (category === 'all' || 
+                        (category === 'lofi' && station.category === 'lofi') ||
+                        (category === 'thematic' && station.category === 'thematic') ||
+                        (category === 'no-copyright' && station.category === 'no-copyright')) {
+                        item.style.display = 'flex';
+                        if (item.previousElementSibling && item.previousElementSibling.classList.contains('category-title')) {
+                            item.previousElementSibling.style.display = 'block';
+                        }
+                    } else {
+                        item.style.display = 'none';
                     }
                 });
                 
-                let newIndex = activeIndex + direction;
-                if (newIndex < 0) newIndex = items.length - 1;
-                if (newIndex >= items.length) newIndex = 0;
-                
-                items[newIndex].classList.add('active');
-                currentMentionIndex = newIndex;
-            }
-            
-            function selectMention() {
-                const activeItem = mentionsList.querySelector('.mention-item.active');
-                if (activeItem) {
-                    const username = activeItem.querySelector('span').textContent;
-                    insertMention(username);
-                }
-            }
-            
-            function processMentions(messageText) {
-                const mentions = messageText.match(/@(\w+)/g);
-                
-                if (mentions) {
-                    mentions.forEach(mention => {
-                        const username = mention.substring(1);
-                        
-                        Object.entries(onlineUsers).forEach(([userId, userData]) => {
-                            if (userData.displayName === username && userData.isOnline) {
-                                playMentionSound();
+                document.querySelectorAll('.category-title').forEach(title => {
+                    const nextSibling = title.nextElementSibling;
+                    if (!nextSibling || nextSibling.style.display === 'none') {
+                        let hasVisible = false;
+                        let sibling = title.nextElementSibling;
+                        while (sibling && !sibling.classList.contains('category-title')) {
+                            if (sibling.style.display !== 'none') {
+                                hasVisible = true;
+                                break;
                             }
-                        });
-                    });
-                }
-            }
-            
-            function playMentionSound() {
-                try {
-                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-                    oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
-                    
-                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-                    
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + 0.2);
-                } catch (error) {
-                    console.error('Ошибка воспроизведения звука:', error);
-                }
+                            sibling = sibling.nextElementSibling;
+                        }
+                        if (!hasVisible) {
+                            title.style.display = 'none';
+                        } else {
+                            title.style.display = 'block';
+                        }
+                    }
+                });
             }
             
             chatInput.addEventListener('input', function() {
                 chatSendBtn.disabled = this.value.trim() === '';
-                handleMentions();
             });
             
             chatInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter' && !chatSendBtn.disabled) {
-                    processMentions(this.value);
                     sendMessage();
                 }
             });
             
-            chatInput.addEventListener('keydown', function(e) {
-                if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-                    e.preventDefault();
-                    navigateMentions(e.key === 'ArrowDown' ? 1 : -1);
-                } else if (e.key === 'Enter' && mentionsList.classList.contains('show')) {
-                    e.preventDefault();
-                    selectMention();
-                } else if (e.key === 'Escape') {
-                    hideMentions();
-                }
-            });
-            
             chatSendBtn.addEventListener('click', function() {
-                processMentions(chatInput.value);
                 sendMessage();
             });
             
@@ -4225,14 +4165,12 @@
                 e.stopPropagation();
                 emojiPicker.classList.toggle('show');
                 gifPicker.classList.remove('show');
-                hideMentions();
             });
             
             gifBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 gifPicker.classList.toggle('show');
                 emojiPicker.classList.remove('show');
-                hideMentions();
             });
             
             emojiSearch.addEventListener('input', function(e) {
@@ -4286,80 +4224,6 @@
                     filterStationsByCategory(category);
                 });
             });
-            
-            function filterStationsByCategory(category) {
-                if (category === 'top') {
-                    displayTopStations();
-                    return;
-                } else {
-                    restoreOriginalStationOrder();
-                }
-                
-                const stationItems = document.querySelectorAll('.station-list li');
-                stationItems.forEach(item => {
-                    const stationId = item.getAttribute('data-station');
-                    const station = radioStations[stationId];
-                    
-                    if (category === 'all' || 
-                        (category === 'lofi' && (station.category === 'lofi' || stationId === 'minecraft')) ||
-                        (category === 'thematic' && (station.category === 'thematic' || stationId === 'minecraft' || stationId === 'christmas')) ||
-                        (category === 'no-copyright' && (station.category === 'no-copyright' || stationId === 'lofi' || stationId === 'chillhop' || stationId === 'lofihiphop' || stationId === 'minecraft'))) {
-                        item.style.display = 'flex';
-                        if (item.previousElementSibling && item.previousElementSibling.classList.contains('category-title')) {
-                            item.previousElementSibling.style.display = 'block';
-                        }
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-                
-                document.querySelectorAll('.category-title').forEach(title => {
-                    const nextSibling = title.nextElementSibling;
-                    if (!nextSibling || nextSibling.style.display === 'none') {
-                        let hasVisible = false;
-                        let sibling = title.nextElementSibling;
-                        while (sibling && !sibling.classList.contains('category-title')) {
-                            if (sibling.style.display !== 'none') {
-                                hasVisible = true;
-                                break;
-                            }
-                            sibling = sibling.nextElementSibling;
-                        }
-                        if (!hasVisible) {
-                            title.style.display = 'none';
-                        } else {
-                            title.style.display = 'block';
-                        }
-                    }
-                });
-            }
-            
-            db.collection('onlineUsers').onSnapshot(snapshot => {
-                onlineUsers = {};
-                snapshot.forEach(doc => {
-                    onlineUsers[doc.id] = doc.data();
-                });
-                
-                updateMentionsList();
-            });
-            
-            function updateMentionsList() {
-                if (mentionsList.classList.contains('show')) {
-                    const text = chatInput.value;
-                    const cursorPosition = chatInput.selectionStart;
-                    const textBeforeCursor = text.substring(0, cursorPosition);
-                    const atSymbolIndex = textBeforeCursor.lastIndexOf('@');
-                    
-                    if (atSymbolIndex !== -1) {
-                        const textAfterAt = textBeforeCursor.substring(atSymbolIndex + 1);
-                        const spaceIndex = textAfterAt.indexOf(' ');
-                        
-                        if (spaceIndex === -1) {
-                            showMentionsList(textAfterAt);
-                        }
-                    }
-                }
-            }
             
             auth.onAuthStateChanged(updateAuthUI);
             

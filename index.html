@@ -4,7 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deynik Radio</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
+    
+    <!-- Добавляем PWA манифест -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Иконки для PWA -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512x512.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Pacifico&display=swap" rel="stylesheet">
     
@@ -2203,6 +2213,97 @@
         body.retro-theme .vintage-overlay {
             display: block;
         }
+        
+        /* Стили для кнопки установки PWA */
+        .pwa-install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(29, 185, 84, 0.95);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 100px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+        
+        .pwa-install-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .pwa-install-icon {
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .pwa-install-text {
+            flex: 1;
+        }
+        
+        .pwa-install-text h4 {
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+        
+        .pwa-install-text p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        .pwa-install-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .pwa-install-btn {
+            background: white;
+            color: #1DB954;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .pwa-install-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: scale(1.05);
+        }
+        
+        .pwa-dismiss-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .pwa-dismiss-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
 <body class="retro-theme">
@@ -2211,6 +2312,23 @@
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-gif"></div>
         <div class="loading-text">Deynik Radio</div>
+    </div>
+    
+    <!-- Модальное окно для установки PWA -->
+    <div class="pwa-install-prompt" id="pwaInstallPrompt" style="display: none;">
+        <div class="pwa-install-content">
+            <div class="pwa-install-icon">
+                <i class="fas fa-download"></i>
+            </div>
+            <div class="pwa-install-text">
+                <h4>Установить Deynik Radio</h4>
+                <p>Добавьте приложение на главный экран для быстрого доступа</p>
+            </div>
+            <div class="pwa-install-buttons">
+                <button class="pwa-install-btn" id="pwaInstallBtn">Установить</button>
+                <button class="pwa-dismiss-btn" id="pwaDismissBtn">Позже</button>
+            </div>
+        </div>
     </div>
     
     <div class="modal" id="shareModal">
@@ -2379,9 +2497,10 @@
                     <i class="fas fa-heart"></i> Поддержать
                 </button>
                 
-                <a href="https://drive.google.com/file/d/17wrTw1oeFzpP_Ho6HLvqJfitNBJovTOV/view?usp=sharing" target="_blank" class="download-app-btn" id="downloadAppBtn">
+                <!-- Изменена кнопка: теперь открывает окно установки PWA -->
+                <button class="download-app-btn" id="downloadAppBtn">
                     <i class="fas fa-download"></i> Скачать приложение
-                </a>
+                </button>
             </div>
         </header>
         
@@ -2808,6 +2927,11 @@
             
             const liteToggle = document.getElementById('liteToggle');
             
+            const downloadAppBtn = document.getElementById('downloadAppBtn');
+            const pwaInstallPrompt = document.getElementById('pwaInstallPrompt');
+            const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+            const pwaDismissBtn = document.getElementById('pwaDismissBtn');
+            
             let isPlaying = false;
             let audio = null;
             let currentStationIndex = 0;
@@ -2826,6 +2950,10 @@
             
             let currentRating = 0;
             
+            // Переменные для PWA
+            let deferredPrompt = null;
+            let isAppInstalled = false;
+            
             loadStationList();
             loadLikes();
             updateStationInfo();
@@ -2835,11 +2963,108 @@
             loadTrendingGifs();
             initFeedbackSystem();
             
+            // Инициализация PWA
+            initPWA();
+            
             liteToggle.addEventListener('change', function() {
                 if (this.checked) {
                     window.location.href = 'https://deyniik.github.io/DeynikRadio/lite';
                 }
             });
+            
+            // Обработчик для кнопки "Скачать приложение"
+            downloadAppBtn.addEventListener('click', function() {
+                showPWAInstallPrompt();
+            });
+            
+            // Обработчик для кнопки установки PWA
+            pwaInstallBtn.addEventListener('click', function() {
+                installPWA();
+            });
+            
+            // Обработчик для кнопки отказа от установки PWA
+            pwaDismissBtn.addEventListener('click', function() {
+                hidePWAInstallPrompt();
+                // Сохраняем в localStorage, чтобы не показывать снова сегодня
+                localStorage.setItem('pwaDismissed', new Date().toDateString());
+            });
+            
+            function initPWA() {
+                // Проверяем, установлено ли приложение
+                if (window.matchMedia('(display-mode: standalone)').matches) {
+                    isAppInstalled = true;
+                    console.log('Приложение установлено как PWA');
+                }
+                
+                // Слушаем событие beforeinstallprompt
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    // Предотвращаем автоматическое отображение подсказки
+                    e.preventDefault();
+                    // Сохраняем событие для использования позже
+                    deferredPrompt = e;
+                    console.log('PWA может быть установлено');
+                    
+                    // Проверяем, не отказывался ли пользователь сегодня
+                    const lastDismissed = localStorage.getItem('pwaDismissed');
+                    const today = new Date().toDateString();
+                    
+                    if (lastDismissed !== today && !isAppInstalled) {
+                        // Показываем кнопку установки
+                        setTimeout(() => {
+                            showPWAInstallPrompt();
+                        }, 3000);
+                    }
+                });
+                
+                // Отслеживаем установку
+                window.addEventListener('appinstalled', () => {
+                    isAppInstalled = true;
+                    deferredPrompt = null;
+                    hidePWAInstallPrompt();
+                    console.log('PWA было установлено');
+                    showNotification('Приложение успешно установлено!', 'success');
+                });
+                
+                // Проверяем, если приложение уже установлено
+                if (window.navigator.standalone === true) {
+                    isAppInstalled = true;
+                }
+            }
+            
+            function showPWAInstallPrompt() {
+                if (deferredPrompt && !isAppInstalled) {
+                    pwaInstallPrompt.style.display = 'block';
+                } else if (isAppInstalled) {
+                    showNotification('Приложение уже установлено на вашем устройстве', 'info');
+                } else {
+                    showNotification('Установка приложения доступна только в современных браузерах', 'info');
+                }
+            }
+            
+            function hidePWAInstallPrompt() {
+                pwaInstallPrompt.style.display = 'none';
+            }
+            
+            function installPWA() {
+                if (deferredPrompt) {
+                    // Показываем нативное окно установки
+                    deferredPrompt.prompt();
+                    
+                    // Ждем результата
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('Пользователь принял запрос на установку');
+                            isAppInstalled = true;
+                        } else {
+                            console.log('Пользователь отклонил запрос на установку');
+                            // Сохраняем отказ в localStorage
+                            localStorage.setItem('pwaDismissed', new Date().toDateString());
+                        }
+                        deferredPrompt = null;
+                        hidePWAInstallPrompt();
+                    });
+                }
+            }
             
             function loadStationList() {
                 stationList.innerHTML = '';
@@ -4158,6 +4383,9 @@
                 }
                 if (event.target === supportModal) {
                     supportModal.style.display = 'none';
+                }
+                if (event.target === pwaInstallPrompt) {
+                    hidePWAInstallPrompt();
                 }
             });
             

@@ -1,1 +1,367 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Deynik Music - Видеоклипы</title>
+    
+    <!-- Open Graph метатеги -->
+    <meta property="og:title" content="Deynik Music">
+    <meta property="og:description" content="Слушай музыку и смотри клипы">
+    <meta property="og:image" content="https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="720">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://deyniik.github.io/Deynik-Music/">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* ВСЕ СТИЛИ ПРЯМО ЗДЕСЬ - ЧТОБЫ ТОЧНО РАБОТАЛО */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; color: white; font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .top-nav { height: 65px; display: flex; align-items: center; padding: 0 20px; justify-content: space-between; background: #000; }
+        .logo-area { width: 380px; display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .logo-area h1 { font-size: 26px; font-weight: 900; letter-spacing: -1.5px; }
+        .app-main { flex: 1; display: flex; gap: 10px; padding: 0 10px 10px; overflow: hidden; }
+        .panel { background: #121212; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; }
+        .side { width: 380px; flex-shrink: 0; }
+        .center { flex: 1; overflow-y: auto; scrollbar-width: none; position: relative; background: #121212; }
+        .player-bar { height: 75px; background: #000; display: grid; grid-template-columns: 350px 1fr 350px; align-items: center; padding: 0 25px; }
+        .p-btn { width: 38px; height: 38px; background: #1a1a1a; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .p-btn:hover { background: #252525; }
+        .bar-bg { flex: 1; height: 5px; background: #3e3e3e; border-radius: 3px; cursor: pointer; }
+        .bar-fill { height: 100%; background: white; width: 0%; border-radius: 3px; }
+        .vol-slider { width: 110px; height: 5px; background: #3e3e3e; border-radius: 3px; cursor: pointer; }
+        .vol-fill { height: 100%; background: white; width: 70%; border-radius: 3px; }
+        .tab { background: #232323; border: none; color: white; padding: 6px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; }
+        .tab.active { background: white; color: black; }
+        .filter-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 25px; }
+        .filter-scroll { display: flex; gap: 8px; overflow-x: visible; flex-wrap: wrap; }
+        
+        /* СТИЛИ ДЛЯ ВИДЕО */
+        .video-card { cursor: pointer; transition: 0.3s; border-radius: 12px; background: transparent; }
+        .video-card:hover .video-play-overlay { opacity: 1; }
+        .video-thumbnail { position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; background: #1a1a1a; }
+        .video-thumbnail-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+        .video-duration { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; z-index: 3; }
+        .video-play-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; z-index: 2; }
+        .recommendation-item { display: flex; gap: 12px; align-items: center; padding: 8px; cursor: pointer; border-radius: 8px; transition: 0.2s; margin-bottom: 8px; }
+        .recommendation-item:hover { background: #1a1a1a; }
+        .recommendation-thumbnail { width: 120px; aspect-ratio: 16/9; border-radius: 6px; overflow: hidden; background: #1a1a1a; flex-shrink: 0; }
+        .recommendation-thumbnail img { width: 100%; height: 100%; object-fit: cover; }
+        .kinescope-player { position: relative; width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 16px; overflow: hidden; }
+        .kinescope-player iframe { position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: 0; }
+    </style>
+</head>
+<body>
+    <header class="top-nav">
+        <div class="logo-area" onclick="location.hash='#home'">
+            <h1>Deynik Music</h1>
+            <svg width="34" height="34" viewBox="0 0 100 100">
+                <polygon points="12,12 75,50 12,88" fill="#CC6B26" rx="8"/>
+                <path d="M65,30 Q88,50 65,70 M78,15 Q110,50 78,85" stroke="#CC6B26" fill="none" stroke-width="8" stroke-linecap="round" transform="translate(5,0)"/>
+            </svg>
+        </div>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Поиск треков или исполнителей" style="width:400px; height:40px; background:#1a1a1a; border-radius:20px; border:none; color:white; text-align:center;">
+        </div>
+        <div style="width:380px;"></div>
+    </header>
 
+    <div class="app-main">
+        <aside class="panel side">
+            <div class="filter-nav">
+                <div class="filter-scroll">
+                    <button class="tab active" onclick="window.location.hash='#home'">🏠</button>
+                    <button class="tab" onclick="window.location.hash='#videos'">Видеоклипы</button>
+                    <button class="tab">Исполнители</button>
+                    <button class="tab">Альбомы</button>
+                    <button class="tab">Плейлисты</button>
+                </div>
+            </div>
+            <div style="overflow-y:auto;">
+                <div class="side-item" style="display:flex; gap:12px; align-items:center; padding:8px;">
+                    <div style="width:52px; height:52px; border-radius:6px; background:linear-gradient(135deg,#450af5,#c4efd9); display:flex; align-items:center; justify-content:center;">
+                        <i data-lucide="heart" fill="white" color="white" size="24"></i>
+                    </div>
+                    <div><b>Любимые треки</b><br><small style="color:#7a7a7a;">Плейлист • 0 треков</small></div>
+                </div>
+                <div id="filtered-content"></div>
+                <div id="pinned-side-container" style="margin-top:20px;"></div>
+            </div>
+        </aside>
+
+        <main class="panel center scroll-hide" id="content-area"></main>
+
+        <aside class="panel side">
+            <img id="side-cover" src="" style="width:100%; border-radius:10px; margin-bottom:20px; display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h2 id="side-title" style="font-size:24px; font-weight:800;">Выберите трек</h2>
+                    <p id="side-artist" style="color:#7a7a7a; font-size:17px;"></p>
+                </div>
+                <i data-lucide="heart" id="like-side" class="like-btn" onclick="toggleLike()"></i>
+            </div>
+            <div style="margin-top:35px; display:flex; flex-direction:column; flex:1; min-height:0;">
+                <p style="font-weight:700; margin-bottom:12px; font-size:12px; color:#7a7a7a; text-transform:uppercase;">Очередь</p>
+                <div id="queue-list" style="overflow-y:auto; flex:1;"></div>
+            </div>
+        </aside>
+    </div>
+
+    <footer class="player-bar">
+        <div style="display:flex; align-items:center; gap:15px; transform:translateY(-4px);">
+            <img id="p-img" src="" style="width:58px; height:58px; border-radius:4px; background:#1a1a1a; display:none;">
+            <div>
+                <b id="p-title" style="font-size:15px; display:block; font-weight:600;">Выберите трек</b>
+                <span id="p-artist" style="color:#7a7a7a; font-size:13px;"></span>
+            </div>
+            <i data-lucide="heart" id="like-player" size="20" class="like-btn" style="margin-left:20px;" onclick="toggleLike()"></i>
+        </div>
+
+        <div style="display:flex; flex-direction:column; align-items:center; gap:6px; transform:translateY(-4px);">
+            <div style="display:flex; align-items:center; gap:20px;">
+                <div class="p-btn" onclick="prevTrack()"><i data-lucide="skip-back" fill="white" size="18"></i></div>
+                <div class="p-btn" style="background:white;" onclick="togglePlay()">
+                    <i id="main-play-btn" data-lucide="play" fill="black" size="22" style="margin-left:2px;"></i>
+                </div>
+                <div class="p-btn" onclick="nextTrack()"><i data-lucide="skip-forward" fill="white" size="18"></i></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; width:100%; max-width:550px;">
+                <span id="c-time" style="font-size:11px; color:#7a7a7a; width:35px;">0:00</span>
+                <div class="bar-bg" onclick="seek(event)">
+                    <div id="p-fill" class="bar-fill"></div>
+                </div>
+                <span id="d-time" style="font-size:11px; color:#7a7a7a; width:35px;">0:00</span>
+            </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; align-items:center; transform:translateY(-4px);">
+            <div style="display:flex; align-items:center; gap:12px;" onwheel="handleVolumeWheel(event)">
+                <i data-lucide="volume-2" size="18" color="#7a7a7a"></i>
+                <div class="vol-slider" id="vol-slider" onmousedown="startVolDrag(event)">
+                    <div id="v-fill" class="vol-fill" style="width:70%;"></div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ========== БАЗА ДАННЫХ ВИДЕО ==========
+        const videoDatabase = [
+            {
+                id: 'abracadabra',
+                title: 'Abracadabra',
+                artist: 'Lady Gaga',
+                duration: '3:43',
+                videoId: '23P3nMBcJP5impENM59GKy',
+                embedUrl: 'https://kinescope.io/embed/23P3nMBcJP5impENM59GKy?autoplay=1',
+                thumbnail: 'https://s3.k-connect.ru/static/uploads/comments/11559/maxresdefault_1.jpg',
+                avatar: 'https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg'
+            },
+            {
+                id: '22',
+                title: '22',
+                artist: 'Taylor Swift',
+                duration: '3:52',
+                videoId: '6jSnedNm6D26XFkfqRZ1xi',
+                embedUrl: 'https://kinescope.io/embed/6jSnedNm6D26XFkfqRZ1xi?autoplay=1',
+                thumbnail: 'https://s3.k-connect.ru/static/uploads/comments/11561/sddefault.jpg',
+                avatar: 'https://s3.k-connect.ru/static/uploads/post/11563/ZiWYMMBLcz_channels4_profile%20(1).webp'
+            },
+            {
+                id: 'opalite',
+                title: 'Opalite',
+                artist: 'Taylor Swift',
+                duration: '4:15',
+                videoId: '4v59o3MEohNejrECfLGgAc',
+                embedUrl: 'https://kinescope.io/embed/4v59o3MEohNejrECfLGgAc?autoplay=1',
+                thumbnail: 'https://s3.k-connect.ru/static/uploads/comments/11560/maxresdefault.jpg',
+                avatar: 'https://s3.k-connect.ru/static/uploads/post/11563/ZiWYMMBLcz_channels4_profile%20(1).webp'
+            }
+        ];
+
+        window.videoDatabase = videoDatabase;
+        window.currentVideoId = null;
+        window.isVideoPlaying = false;
+        
+        // ========== ЗАГРУЗКА КОНТЕНТА ==========
+        async function loadContent() {
+            const hash = location.hash.replace('#', '') || 'home';
+            
+            if (hash === 'videos') {
+                document.getElementById('content-area').innerHTML = generateVideosPage();
+                document.querySelector('.panel.side:last-child h2').innerText = 'Смотрите так же';
+                document.getElementById('side-artist').style.display = 'none';
+                document.getElementById('side-cover').style.display = 'none';
+                document.getElementById('like-side').style.display = 'none';
+                lucide.createIcons();
+            }
+            else if (hash.startsWith('video-')) {
+                const videoId = hash.replace('video-', '');
+                const video = videoDatabase.find(v => v.id === videoId);
+                if (video) {
+                    document.getElementById('content-area').innerHTML = generateVideoPage(video);
+                    document.querySelector('.panel.side:last-child h2').innerText = 'Смотрите так же';
+                    document.getElementById('side-artist').style.display = 'none';
+                    document.getElementById('side-cover').style.display = 'none';
+                    document.getElementById('like-side').style.display = 'none';
+                    
+                    // Обновляем плеер
+                    setTimeout(() => {
+                        document.getElementById('p-title').innerText = video.title;
+                        document.getElementById('p-artist').innerText = video.artist;
+                        document.getElementById('p-img').src = video.thumbnail;
+                        document.getElementById('p-img').style.display = 'block';
+                        document.getElementById('main-play-btn').setAttribute('data-lucide', 'pause');
+                        window.currentVideoId = video.id;
+                        window.isVideoPlaying = true;
+                        lucide.createIcons();
+                    }, 500);
+                    
+                    // Обновляем рекомендации
+                    updateRecommendations(video);
+                }
+            }
+        }
+
+        // ========== ГЕНЕРАЦИЯ СТРАНИЦ ==========
+        function generateVideosPage() {
+            return `
+                <div style="padding:0; width:100%;">
+                    <h1 style="font-size:32px; font-weight:800; margin-bottom:30px;">Видеоклипы</h1>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:24px;">
+                        ${videoDatabase.map(v => `
+                            <div class="video-card" onclick="location.hash='#video-${v.id}'">
+                                <div class="video-thumbnail">
+                                    <img src="${v.thumbnail}" class="video-thumbnail-img">
+                                    <div class="video-duration">${v.duration}</div>
+                                    <div class="video-play-overlay">
+                                        <i data-lucide="play" size="40" color="white" fill="white"></i>
+                                    </div>
+                                </div>
+                                <div style="display:flex; gap:12px; margin-top:12px;">
+                                    <img src="${v.avatar}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+                                    <div>
+                                        <b style="font-size:15px;">${v.title}</b><br>
+                                        <small style="color:#7a7a7a;">${v.artist}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateVideoPage(video) {
+            return `
+                <div style="padding:0; width:100%;">
+                    <div style="margin-bottom:30px;">
+                        <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+                            <div class="p-btn" style="width:45px; height:45px; background:#1a1a1a;" onclick="location.hash='#videos'">
+                                <i data-lucide="arrow-left" size="20" color="white"></i>
+                            </div>
+                            <div>
+                                <h1 style="font-size:28px; font-weight:800; margin-bottom:4px;">${video.title}</h1>
+                                <p style="color:#7a7a7a; font-size:16px;">${video.artist}</p>
+                            </div>
+                        </div>
+                        
+                        <div style="width:100%; position:relative; aspect-ratio:16/9; background:#000; border-radius:16px; overflow:hidden;">
+                            <iframe 
+                                src="${video.embedUrl}"
+                                style="position:absolute; width:100%; height:100%; top:0; left:0; border:0;"
+                                allow="autoplay; fullscreen; picture-in-picture"
+                                allowfullscreen
+                            ></iframe>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ========== РЕКОМЕНДАЦИИ ==========
+        function updateRecommendations(currentVideo) {
+            const container = document.querySelector('#queue-list');
+            if (!container) return;
+            
+            const others = videoDatabase.filter(v => v.id !== currentVideo.id);
+            const shuffled = [...others].sort(() => Math.random() - 0.5).slice(0, 5);
+            
+            container.innerHTML = shuffled.map(v => `
+                <div class="recommendation-item" onclick="location.hash='#video-${v.id}'">
+                    <div class="recommendation-thumbnail">
+                        <img src="${v.thumbnail}" loading="lazy">
+                    </div>
+                    <div style="flex:1;">
+                        <span style="font-size:14px; font-weight:600; display:block; margin-bottom:4px;">${v.title}</span>
+                        <span style="font-size:12px; color:#7a7a7a;">${v.artist}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ========== УПРАВЛЕНИЕ ПЛЕЕРОМ ==========
+        window.togglePlay = function() {
+            const btn = document.getElementById('main-play-btn');
+            if (window.location.hash.includes('video-')) {
+                const isPlaying = btn.getAttribute('data-lucide') === 'pause';
+                btn.setAttribute('data-lucide', isPlaying ? 'play' : 'pause');
+                window.isVideoPlaying = !isPlaying;
+                lucide.createIcons();
+            }
+        };
+
+        window.nextTrack = function() {
+            if (window.location.hash.includes('video-') && window.currentVideoId) {
+                const index = videoDatabase.findIndex(v => v.id === window.currentVideoId);
+                if (index < videoDatabase.length - 1) {
+                    location.hash = `#video-${videoDatabase[index + 1].id}`;
+                }
+            }
+        };
+
+        window.prevTrack = function() {
+            if (window.location.hash.includes('video-') && window.currentVideoId) {
+                const index = videoDatabase.findIndex(v => v.id === window.currentVideoId);
+                if (index > 0) {
+                    location.hash = `#video-${videoDatabase[index - 1].id}`;
+                }
+            }
+        };
+
+        // ========== ГРОМКОСТЬ ==========
+        window.startVolDrag = function(e) {
+            window.isVolDragging = true;
+            updateVolume(e);
+        };
+
+        function updateVolume(e) {
+            const rect = document.getElementById('vol-slider').getBoundingClientRect();
+            const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+            document.getElementById('v-fill').style.width = (pct * 100) + '%';
+        }
+
+        window.handleVolumeWheel = function(e) {
+            e.preventDefault();
+            const vol = document.getElementById('v-fill');
+            const pct = parseFloat(vol.style.width) || 70;
+            const newPct = Math.max(0, Math.min(100, pct + (e.deltaY < 0 ? 5 : -5)));
+            vol.style.width = newPct + '%';
+        };
+
+        window.addEventListener('mousemove', (e) => { if (window.isVolDragging) updateVolume(e); });
+        window.addEventListener('mouseup', () => { window.isVolDragging = false; });
+
+        // ========== СТАРТ ==========
+        window.addEventListener('hashchange', loadContent);
+        window.onload = () => {
+            loadContent();
+            lucide.createIcons();
+        };
+    </script>
+</body>
+</html>

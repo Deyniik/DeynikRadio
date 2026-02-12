@@ -16,6 +16,7 @@
     
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://player.kinescope.io/v2/player.js"></script>
     <style>
         /* ВСЕ СТИЛИ ДЛЯ ВИДЕО */
         .video-card {
@@ -107,8 +108,8 @@
             color: #7a7a7a;
         }
         
-        /* СТИЛИ ДЛЯ VK VIDEO - ПОЛНОСТЬЮ БЕЗ ЭЛЕМЕНТОВ УПРАВЛЕНИЯ */
-        .vk-player {
+        /* СТИЛИ ДЛЯ KINESCOPE */
+        .kinescope-player {
             position: relative;
             width: 100%;
             aspect-ratio: 16/9;
@@ -116,30 +117,13 @@
             border-radius: 16px;
             overflow: hidden;
         }
-        .vk-player iframe {
+        .kinescope-player iframe {
             position: absolute;
             width: 100%;
             height: 100%;
             top: 0;
             left: 0;
             border: 0;
-            pointer-events: auto;
-        }
-        
-        /* СКРЫВАЕМ ВСЕ ЭЛЕМЕНТЫ УПРАВЛЕНИЯ VK */
-        .vk-player iframe {
-            margin-top: -60px; /* Сдвигаем чтобы скрыть верхний бар */
-            height: calc(100% + 120px); /* Компенсируем сдвиг */
-        }
-        
-        /* КОНТЕЙНЕР ДЛЯ ВИДЕО С ОБРЕЗАНИЕМ */
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16/9;
-            border-radius: 16px;
-            overflow: hidden;
-            background: #000;
         }
     </style>
 </head>
@@ -258,14 +242,15 @@
             {title:"Die With A Smile", url:"https://s3.k-connect.ru/static/music/1475/5970/1770656935_Lady_Gaga_-_Die_With_A_Smile.mp3", time:"4:11"}
         ];
         
-        // ========== БАЗА ДАННЫХ ВИДЕО - VK VIDEO ==========
+        // ========== БАЗА ДАННЫХ ВИДЕО - KINESCOPE ==========
         window.videoDatabase = [
             {
                 id: '22',
                 title: '22',
                 artist: 'Taylor Swift',
                 duration: '3:52',
-                embedCode: 'https://vkvideo.ru/video_ext.php?oid=-12256840&id=456273777&hash=ae8f7c3d2b5e1a4f&hd=3&autoplay=1',
+                videoId: '6jSnedNm6D26XFkfqRZ1xi',
+                embedUrl: 'https://kinescope.io/embed/6jSnedNm6D26XFkfqRZ1xi?autoplay=true',
                 thumbnail: 'https://s3.k-connect.ru/static/uploads/comments/11561/sddefault.jpg',
                 avatar: 'https://s3.k-connect.ru/static/uploads/post/11563/ZiWYMMBLcz_channels4_profile%20(1).webp',
                 category: 'pop'
@@ -275,7 +260,8 @@
                 title: 'Opalite',
                 artist: 'Taylor Swift',
                 duration: '4:15',
-                embedCode: 'https://vkvideo.ru/video_ext.php?oid=-12256840&id=456273779&hash=d8457f5ded305c34&hd=3&autoplay=1',
+                videoId: '4v59o3MEohNejrECfLGgAc',
+                embedUrl: 'https://kinescope.io/embed/4v59o3MEohNejrECfLGgAc?autoplay=true',
                 thumbnail: 'https://s3.k-connect.ru/static/uploads/comments/11560/maxresdefault.jpg',
                 avatar: 'https://s3.k-connect.ru/static/uploads/post/11563/ZiWYMMBLcz_channels4_profile%20(1).webp',
                 category: 'pop'
@@ -285,7 +271,8 @@
                 title: 'Abracadabra',
                 artist: 'Lady Gaga',
                 duration: '3:43',
-                embedCode: 'https://vkvideo.ru/video_ext.php?oid=-12256840&id=456273778&hash=c6a9b8e7d4f3c2a1&hd=3&autoplay=1',
+                videoId: '23P3nMBcJP5impENM59GKy',
+                embedUrl: 'https://kinescope.io/embed/23P3nMBcJP5impENM59GKy?autoplay=true',
                 thumbnail: 'https://s3.k-connect.ru/static/uploads/comments/11559/maxresdefault_1.jpg',
                 avatar: 'https://s3.k-connect.ru/static/music/1475/5955/1770656744_cover.jpeg',
                 category: 'pop'
@@ -303,6 +290,7 @@
         window.trackLikes = {};
         window.videoLikes = {};
         window.currentVideoId = null;
+        window.currentPlayer = null;
         window.isVideoPlaying = false;
         
         window.audio = audio;
@@ -393,7 +381,58 @@
             const contentArea = document.getElementById('content-area');
             contentArea.innerHTML = await generateSingleVideoPage(video);
             lucide.createIcons();
+            
+            // Инициализируем Kinescope плеер
+            setTimeout(() => {
+                const iframe = document.querySelector('#video-player-section iframe');
+                if (iframe) {
+                    // Сохраняем ссылку на плеер
+                    window.currentPlayer = iframe;
+                    
+                    // Обновляем UI плеера
+                    document.getElementById('p-title').innerText = video.title;
+                    document.getElementById('p-artist').innerText = video.artist;
+                    document.getElementById('p-img').src = video.thumbnail;
+                    document.getElementById('p-img').style.display = 'block';
+                    document.getElementById('main-play-btn').setAttribute('data-lucide', 'pause');
+                    
+                    window.isVideoPlaying = true;
+                    lucide.createIcons();
+                    
+                    // Начинаем отслеживать время видео (через postMessage)
+                    window.setupVideoTracking(iframe);
+                }
+            }, 500);
         }
+
+        // ========== ОТСЛЕЖИВАНИЕ ВРЕМЕНИ ВИДЕО ==========
+        window.setupVideoTracking = function(iframe) {
+            // Kinescope не дает прямого доступа к времени через API,
+            // но мы можем синхронизировать через нижний плеер
+            
+            // Обновляем время каждую секунду (имитация)
+            let duration = 0;
+            const video = window.videoDatabase.find(v => v.id === window.currentVideoId);
+            
+            // Парсим длительность из строки (3:52 -> 232 секунды)
+            if (video) {
+                const parts = video.duration.split(':');
+                duration = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+                document.getElementById('d-time').innerText = video.duration;
+            }
+            
+            let currentTime = 0;
+            window.videoInterval = setInterval(() => {
+                if (window.isVideoPlaying && window.location.hash.startsWith('#video-')) {
+                    currentTime += 1;
+                    if (currentTime > duration) currentTime = duration;
+                    
+                    const pct = (currentTime / duration) * 100;
+                    document.getElementById('p-fill').style.width = pct + '%';
+                    document.getElementById('c-time').innerText = formatTime(currentTime);
+                }
+            }, 1000);
+        };
 
         // ========== ГЕНЕРАЦИЯ СЕТКИ ВИДЕО ==========
         async function generateVideosGrid() {
@@ -464,15 +503,13 @@
                         </div>
                         
                         <div id="video-player-section" style="width: 100%; margin-bottom: 30px;">
-                            <div class="video-wrapper">
-                                <div class="vk-player">
-                                    <iframe 
-                                        src="${video.embedCode}" 
-                                        allow="autoplay; encrypted-media; fullscreen; picture-in-picture; screen-wake-lock;" 
-                                        frameborder="0" 
-                                        allowfullscreen
-                                    ></iframe>
-                                </div>
+                            <div class="kinescope-player">
+                                <iframe 
+                                    src="${video.embedUrl}" 
+                                    allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" 
+                                    frameborder="0" 
+                                    allowfullscreen
+                                ></iframe>
                             </div>
                         </div>
                     </div>
@@ -488,13 +525,29 @@
             });
         };
 
-        // ========== ПЕРЕОПРЕДЕЛЕНИЯ ==========
+        // ========== УПРАВЛЕНИЕ ПЛЕЕРОМ ==========
         window.togglePlay = function() {
-            const playBtn = document.getElementById('main-play-btn');
-            if (playBtn) {
-                const isPlaying = playBtn.getAttribute('data-lucide') === 'pause';
-                playBtn.setAttribute('data-lucide', isPlaying ? 'play' : 'pause');
+            if (window.location.hash.startsWith('#video-') && window.currentPlayer) {
+                if (window.isVideoPlaying) {
+                    // Отправляем команду паузы в iframe
+                    window.currentPlayer.contentWindow.postMessage({
+                        type: 'pause'
+                    }, '*');
+                    document.getElementById('main-play-btn')?.setAttribute('data-lucide', 'play');
+                    window.isVideoPlaying = false;
+                } else {
+                    // Отправляем команду воспроизведения
+                    window.currentPlayer.contentWindow.postMessage({
+                        type: 'play'
+                    }, '*');
+                    document.getElementById('main-play-btn')?.setAttribute('data-lucide', 'pause');
+                    window.isVideoPlaying = true;
+                }
                 lucide.createIcons();
+            } else {
+                if (!audio.src) return;
+                audio.paused ? audio.play() : audio.pause();
+                if (window.currentTracks[window.currentIdx]) updateUI(window.currentTracks[window.currentIdx]);
             }
         };
 
@@ -503,6 +556,8 @@
                 const videos = window.videoDatabase;
                 const currentIndex = videos.findIndex(v => v.id === window.currentVideoId);
                 if (currentIndex < videos.length - 1) {
+                    // Очищаем предыдущий интервал
+                    if (window.videoInterval) clearInterval(window.videoInterval);
                     location.hash = `#video-${videos[currentIndex + 1].id}`;
                 }
             } else {
@@ -517,12 +572,40 @@
                 const videos = window.videoDatabase;
                 const currentIndex = videos.findIndex(v => v.id === window.currentVideoId);
                 if (currentIndex > 0) {
+                    if (window.videoInterval) clearInterval(window.videoInterval);
                     location.hash = `#video-${videos[currentIndex - 1].id}`;
                 }
             } else {
                 if (window.currentIdx > 0) {
                     window.playTrack(window.currentIdx - 1, window.currentTracks);
                 }
+            }
+        };
+
+        window.seek = function(e) {
+            if (window.location.hash.startsWith('#video-') && window.currentPlayer) {
+                const video = window.videoDatabase.find(v => v.id === window.currentVideoId);
+                if (video) {
+                    const parts = video.duration.split(':');
+                    const duration = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+                    
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const pct = (e.clientX - rect.left) / rect.width;
+                    const seekTime = pct * duration;
+                    
+                    // Отправляем команду перемотки
+                    window.currentPlayer.contentWindow.postMessage({
+                        type: 'seek',
+                        time: seekTime
+                    }, '*');
+                    
+                    // Обновляем UI
+                    document.getElementById('p-fill').style.width = (pct * 100) + '%';
+                    document.getElementById('c-time').innerText = formatTime(seekTime);
+                }
+            } else if (audio.duration) {
+                const rect = e.currentTarget.getBoundingClientRect();
+                audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
             }
         };
 
@@ -591,6 +674,14 @@
             let pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
             audio.volume = pct;
             document.getElementById('v-fill').style.width = (pct * 100) + '%';
+            
+            // Отправляем команду громкости в iframe
+            if (window.location.hash.startsWith('#video-') && window.currentPlayer) {
+                window.currentPlayer.contentWindow.postMessage({
+                    type: 'volume',
+                    volume: pct
+                }, '*');
+            }
         }
 
         window.handleVolumeWheel = function(e) {
@@ -599,6 +690,13 @@
             newVol = Math.max(0, Math.min(1, newVol));
             audio.volume = newVol;
             document.getElementById('v-fill').style.width = (newVol * 100) + '%';
+            
+            if (window.location.hash.startsWith('#video-') && window.currentPlayer) {
+                window.currentPlayer.contentWindow.postMessage({
+                    type: 'volume',
+                    volume: newVol
+                }, '*');
+            }
         };
 
         window.addEventListener('mousemove', (e) => { if (isVolDragging) updateVolumeFromEvent(e); });
@@ -714,13 +812,6 @@
             const secs = Math.floor(seconds % 60);
             return mins + ':' + (secs < 10 ? '0' : '') + secs;
         }
-
-        window.seek = function(e) {
-            if (!window.location.hash.startsWith('#video-') && audio.duration) {
-                const rect = e.currentTarget.getBoundingClientRect();
-                audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
-            }
-        };
 
         // ========== ЛЕВАЯ ПАНЕЛЬ ==========
         window.filterSide = function(type, el) {

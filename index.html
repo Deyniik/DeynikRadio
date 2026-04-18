@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deynik Radio</title>
-    
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/x-icon" href="/favicon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
@@ -41,6 +40,7 @@
             flex-direction: column;
             padding: 12px;
             overflow: hidden;
+            transition: background-color 0.5s ease, color 0.5s ease;
         }
         
         .loading-screen {
@@ -175,6 +175,63 @@
         .google-login-btn:hover {
             background: rgba(29, 185, 84, 0.3);
             transform: scale(1.05);
+        }
+        
+        .lite-switch {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 10px;
+        }
+
+        .lite-switch-label {
+            font-size: 0.8rem;
+            color: #B3B3B3;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #1DB954;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
         }
         
         .user-profile {
@@ -319,6 +376,7 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             min-width: 180px;
             overflow: hidden;
+            transition: all 0.3s ease;
         }
         
         .left-panel {
@@ -421,10 +479,30 @@
         
         .station-list li.christmas {
             border-left: 3px solid #FF0000;
+            position: relative;
+        }
+        
+        .station-list li.christmas::before {
+            content: "🎄";
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
         }
         
         .station-list li.halloween {
             border-left: 3px solid #FF6600;
+            position: relative;
+        }
+        
+        .station-list li.halloween::before {
+            content: "🎃";
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
         }
         
         .station-likes {
@@ -454,46 +532,6 @@
         
         .station-likes.liked i {
             color: #1DB954;
-        }
-        
-        .broken-heart-effect {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1001;
-            pointer-events: none;
-            opacity: 0;
-            animation: breakHeartAnim 0.8s ease-out forwards;
-        }
-        
-        .broken-heart-effect svg {
-            width: 80px;
-            height: 80px;
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
-        }
-        
-        @keyframes breakHeartAnim {
-            0% {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.3);
-            }
-            20% {
-                opacity: 1;
-                transform: translate(-50%, -60%) scale(1.1);
-            }
-            40% {
-                opacity: 1;
-                transform: translate(-50%, -65%) scale(1.2);
-            }
-            60% {
-                opacity: 1;
-                transform: translate(-50%, -70%) scale(1.1);
-            }
-            100% {
-                opacity: 0;
-                transform: translate(-50%, -100%) scale(0.8);
-            }
         }
         
         .station-icon {
@@ -538,6 +576,25 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .gif-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15) 0px,
+                rgba(0, 0, 0, 0.15) 2px,
+                transparent 2px,
+                transparent 4px
+            );
+            pointer-events: none;
+            z-index: 10;
         }
         
         .gif-placeholder {
@@ -547,23 +604,42 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            transition: all 0.5s ease;
         }
         
-        .youtube-embed {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .youtube-embed iframe {
+        .reload-overlay {
             position: absolute;
-            top: -10%;
+            top: 0;
             left: 0;
             width: 100%;
-            height: 120%;
-            pointer-events: none;
-            object-fit: cover;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .reload-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .reload-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(29, 185, 84, 0.3);
+            border-top: 4px solid #1DB954;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         .playback-indicator {
@@ -577,6 +653,7 @@
             pointer-events: none;
             z-index: 5;
             opacity: 0;
+            transition: opacity 0.5s ease;
             animation: softPulse 3s infinite ease-in-out;
         }
         
@@ -949,18 +1026,18 @@
         }
         
         .chat-header h3 {
-            font-size: 1rem;
+            font-size: 1.1rem;
         }
         
         .listeners-count {
             background: rgba(29, 185, 84, 0.2);
-            padding: 2px 8px;
+            padding: 2px 10px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             color: #1DB954;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
         }
         
         .chat-messages {
@@ -1671,16 +1748,11 @@
             box-shadow: 0 0 20px rgba(29, 185, 84, 0.5);
             display: none;
         }
-        
+
         .reload-animation {
             animation: spin 0.5s linear;
         }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
+
         .reply-btn {
             position: absolute;
             right: 35px;
@@ -1700,16 +1772,16 @@
             font-size: 0.7rem;
             color: #B3B3B3;
         }
-        
+
         .message:hover .reply-btn {
             opacity: 1;
         }
-        
+
         .reply-btn:hover {
             background: rgba(29, 185, 84, 0.2);
             color: #1DB954;
         }
-        
+
         .reply-indicator {
             background: rgba(29, 185, 84, 0.1);
             border-left: 2px solid #1DB954;
@@ -1719,11 +1791,11 @@
             font-size: 0.7rem;
             color: #B3B3B3;
         }
-        
+
         .reply-indicator strong {
             color: #1DB954;
         }
-        
+
         .cancel-reply {
             background: none;
             border: none;
@@ -1732,17 +1804,17 @@
             margin-left: 5px;
             font-size: 0.7rem;
         }
-        
+
         .cancel-reply:hover {
             color: #1DB954;
         }
-        
+
         .message a {
             color: #1DB954;
             text-decoration: underline;
             word-break: break-all;
         }
-        
+
         .message a:hover {
             color: #1ed760;
         }
@@ -1753,24 +1825,24 @@
             margin-top: 5px;
             cursor: pointer;
         }
-        
+
         .share-radio-message {
             background: rgba(29, 185, 84, 0.1);
             border-left: 3px solid #1DB954;
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        
+
         .share-radio-message:hover {
             background: rgba(29, 185, 84, 0.2);
             transform: translateX(3px);
         }
-        
+
         .share-radio-icon {
             color: #1DB954;
             margin-right: 5px;
         }
-        
+
         @keyframes gifTransition {
             0% {
                 opacity: 1;
@@ -1785,11 +1857,11 @@
                 transform: scale(1);
             }
         }
-        
+
         .gif-transition {
             animation: gifTransition 0.6s ease-in-out;
         }
-        
+
         .feedback-modal-content {
             background-color: #191414;
             margin: 5% auto;
@@ -1801,44 +1873,44 @@
             position: relative;
             box-shadow: 0 0 30px rgba(29, 185, 84, 0.3);
         }
-        
+
         .feedback-tabs {
             display: flex;
             margin-bottom: 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .feedback-tab {
             padding: 10px 20px;
             cursor: pointer;
             transition: all 0.3s ease;
             border-bottom: 2px solid transparent;
         }
-        
+
         .feedback-tab.active {
             border-bottom: 2px solid #1DB954;
             color: #1DB954;
         }
-        
+
         .feedback-tab:hover {
             color: #1DB954;
         }
-        
+
         .feedback-tab-content {
             display: none;
         }
-        
+
         .feedback-tab-content.active {
             display: block;
         }
-        
+
         .rating-stars {
             display: flex;
             justify-content: center;
             gap: 10px;
             margin: 25px 0;
         }
-        
+
         .star {
             width: 35px;
             height: 35px;
@@ -1848,16 +1920,16 @@
             transition: all 0.2s ease;
             image-rendering: pixelated;
         }
-        
+
         .star.active {
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%231DB954" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>');
             transform: scale(1.1);
         }
-        
+
         .star:hover {
             transform: scale(1.2);
         }
-        
+
         .feedback-textarea {
             width: 100%;
             height: 120px;
@@ -1875,12 +1947,12 @@
             overflow-wrap: break-word;
             white-space: pre-wrap;
         }
-        
+
         .feedback-textarea:focus {
             border-color: #1DB954;
             box-shadow: 0 0 5px rgba(29, 185, 84, 0.3);
         }
-        
+
         .submit-feedback {
             background: rgba(29, 185, 84, 0.8);
             border: none;
@@ -1894,19 +1966,19 @@
             margin: 0 auto;
             font-weight: bold;
         }
-        
+
         .submit-feedback:hover {
             background: rgba(29, 185, 84, 1);
             transform: scale(1.05);
             box-shadow: 0 0 15px rgba(29, 185, 84, 0.5);
         }
-        
+
         .reviews-list {
             max-height: 400px;
             overflow-y: auto;
             margin-top: 20px;
         }
-        
+
         .review-item {
             background: rgba(40, 40, 40, 0.6);
             border-radius: 8px;
@@ -1916,39 +1988,39 @@
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
-        
+
         .review-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
-        
+
         .review-user {
             font-weight: bold;
             color: #1DB954;
         }
-        
+
         .review-rating {
             display: flex;
             gap: 3px;
         }
-        
+
         .review-star {
             width: 16px;
             height: 16px;
             background-size: contain;
             image-rendering: pixelated;
         }
-        
+
         .review-star.filled {
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%231DB954" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>');
         }
-        
+
         .review-star.empty {
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="gray" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>');
         }
-        
+
         .review-text {
             font-size: 0.9rem;
             line-height: 1.4;
@@ -1956,7 +2028,7 @@
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
-        
+
         .no-reviews {
             text-align: center;
             color: #888;
@@ -1964,14 +2036,14 @@
             margin: 40px 0;
             font-size: 1rem;
         }
-        
+
         .average-rating {
             text-align: center;
             margin: 15px 0;
             color: #1DB954;
             font-size: 1.1rem;
         }
-        
+
         .mentions-list {
             position: absolute;
             bottom: 100%;
@@ -2019,7 +2091,7 @@
         .user-status.offline {
             background: #B3B3B3;
         }
-        
+
         .volume-display {
             position: fixed;
             top: 50%;
@@ -2038,12 +2110,12 @@
             font-weight: bold;
             letter-spacing: 1px;
         }
-        
+
         .volume-display.show {
             display: block;
             animation: volumeFade 2s ease-out forwards;
         }
-        
+
         @keyframes volumeFade {
             0% {
                 opacity: 0;
@@ -2063,14 +2135,14 @@
                 visibility: hidden;
             }
         }
-        
+
         .support-options {
             display: flex;
             flex-direction: column;
             gap: 15px;
             margin: 20px 0;
         }
-        
+
         .support-option {
             display: flex;
             align-items: center;
@@ -2084,13 +2156,13 @@
             text-decoration: none;
             color: white;
         }
-        
+
         .support-option:hover {
             background: rgba(29, 185, 84, 0.2);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(29, 185, 84, 0.2);
         }
-        
+
         .support-icon {
             width: 40px;
             height: 40px;
@@ -2102,21 +2174,21 @@
             font-size: 1.2rem;
             color: #1DB954;
         }
-        
+
         .support-info {
             flex: 1;
         }
-        
+
         .support-info h4 {
             color: #1DB954;
             margin-bottom: 5px;
         }
-        
+
         .support-info p {
             font-size: 0.8rem;
             color: #B3B3B3;
         }
-        
+
         .card-info {
             background: rgba(40, 40, 40, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -2128,7 +2200,80 @@
             font-size: 0.9rem;
             color: #1DB954;
         }
-        
+
+        @media (max-width: 900px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .side-panel {
+                width: 100%;
+                height: 200px;
+                margin-bottom: 12px;
+            }
+            
+            .gif-container {
+                width: 100%;
+                height: 250px;
+                order: -1;
+            }
+            
+            .player-container {
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px;
+            }
+            
+            .player-top {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .volume-control {
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            .categories-container {
+                overflow-x: auto;
+                padding-bottom: 5px;
+            }
+            
+            .emoji-picker, .gif-picker {
+                width: 250px;
+                left: -50px;
+            }
+            
+            .header-center {
+                flex: 1;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .reactions-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+            
+            .emoji-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .feedback-modal-content {
+                margin: 10% auto;
+                padding: 20px;
+            }
+
+            .support-options {
+                gap: 10px;
+            }
+
+            .support-option {
+                padding: 12px;
+            }
+        }
+
         body.retro-theme {
             background-color: #121212;
             color: #FFFFFF;
@@ -2293,7 +2438,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="modal" id="feedbackModal">
         <div class="feedback-modal-content">
             <span class="close" id="closeFeedbackModal">&times;</span>
@@ -2326,7 +2471,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="modal" id="supportModal">
         <div class="modal-content">
             <span class="close" id="closeSupportModal">&times;</span>
@@ -2383,6 +2528,13 @@
                 <div id="auth-section">
                     <button class="google-login-btn" id="googleLoginBtn"><i class="fab fa-google"></i> Войти через Google</button>
                 </div>
+                <div class="lite-switch">
+                    <span class="lite-switch-label">Lite</span>
+                    <label class="switch">
+                        <input type="checkbox" id="liteToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
             </div>
             <div class="header-center"><h1>Deynik Radio</h1></div>
             <div class="header-right">
@@ -2417,8 +2569,11 @@
                 </div>
             </div>
             
-            <div class="gif-container crt-effect" id="gifContainer">
+            <div class="gif-container" id="gifContainer">
                 <div class="gif-placeholder" id="mainGif"></div>
+                <div class="reload-overlay" id="reloadOverlay">
+                    <div class="reload-spinner"></div>
+                </div>
                 <div class="playback-indicator" id="playback-indicator"></div>
                 <div class="visualization" id="visualization">
                     <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
@@ -2536,9 +2691,9 @@
         <i class="fas fa-heart"></i>
         <div class="heart-text">Нравится!</div>
     </div>
-    
+
     <div class="notification" id="notification">Текст уведомления</div>
-    
+
     <script>
         const progressBar = document.getElementById('loadingProgress');
         const loadingStatus = document.getElementById('loadingStatus');
@@ -2560,7 +2715,7 @@
             messagingSenderId: "591207353726",
             appId: "1:591207353726:web:d20f5e648d3daf86fcb72f"
         };
-        
+
         updateProgress(15, 'Подключение к Firebase...');
         
         firebase.initializeApp(firebaseConfig);
@@ -2569,6 +2724,7 @@
         
         updateProgress(30, 'Firebase готов...');
         
+        // Радиостанции с обновлёнными ссылками
         const radioStations = {
             kissint: {
                 name: "KISS FM",
@@ -2704,15 +2860,14 @@
             },
             halloweenlofi: {
                 name: "Halloween LoFi",
-                url: "https://www.youtube.com/embed/3GQY80jyysQ?autoplay=1&mute=0&loop=1&playlist=3GQY80jyysQ",
-                description: "Стрим Halloween LoFi (Lo-Fi хоррор миксы)",
+                url: "https://www.youtube.com/live/3GQY80jyysQ?si=d4v5grMO0xxjwzfU",
+                description: "Стрим Halloween LoFi с YouTube (только звук)",
                 currentTrack: "Halloween LoFi Mix",
                 currentArtist: "YouTube Live",
                 quality: "Live Stream",
                 icon: "fas fa-pumpkin",
-                category: "lofi",
-                isYouTube: true,
-                youtubeId: "3GQY80jyysQ"
+                category: "dark",
+                isYouTube: true
             },
             darkpop: {
                 name: "Dark Pop",
@@ -2816,16 +2971,19 @@
                 customGifs: true
             }
         };
-        
+
+        // Гифки для Taylor Swift
         const taylorGifs = [
             'https://i.pinimg.com/originals/79/80/3b/79803b3ac8921977acae46b7ac15c111.gif',
             'https://i.pinimg.com/originals/ac/f9/a1/acf9a142488486f67b5232b38350a3a7.gif',
             'https://i.gifer.com/ZajA.gif',
             'https://i.pinimg.com/originals/b0/4a/14/b04a142d91051b21705dafd27c6cae5a.gif',
             'https://media1.tenor.com/m/-fAW9eIDzsUAAAAC/willow-taylor-swift.gif',
-            'https://media1.tenor.com/m/6QDe6RCa2pkAAAAC/taylor-swift-taylor.gif'
+            'https://media1.tenor.com/m/6QDe6RCa2pkAAAAC/taylor-swift-taylor.gif',
+            'https://i.gifer.com/WXoO.gif',
+            'https://i.pinimg.com/originals/69/87/81/698781048f6079f9b291bfa685fd236b.gif'
         ];
-        
+
         const gifs = [
             'https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif',
             'https://i.pinimg.com/originals/20/c8/3d/20c83d1cb257a6c4e5f68960ef0c3046.gif',
@@ -2836,12 +2994,12 @@
             'https://i.pinimg.com/originals/51/7d/50/517d50010dfe6e71d17548cae0f6f0dc.gif',
             'https://i.pinimg.com/originals/43/1c/e5/431ce5d15aab86f66a91ec9a07c9114f.gif'
         ];
-        
+
         const minecraftGifs = [
             'https://i.pinimg.com/originals/44/f2/f6/44f2f6325aa9bf8c93ed6c3d6e8f8d57.gif',
             'https://i.pinimg.com/originals/da/85/43/da8543494a3baaec4fc61c2b952f8de0.gif'
         ];
-        
+
         const stationIds = Object.keys(radioStations);
         
         const emojiCategories = {
@@ -2864,7 +3022,7 @@
                 }, 300);
             }, 500);
         };
-        
+
         function initApp() {
             const playButton = document.getElementById('play-btn');
             const prevButton = document.getElementById('prev-btn');
@@ -2910,7 +3068,7 @@
             const likesCountBottom = document.getElementById('likes-count-bottom');
             const googleLoginBtn = document.getElementById('googleLoginBtn');
             const stationList = document.getElementById('station-list');
-            const listenersCountSpan = document.getElementById('listenersCountValue');
+            const reloadOverlay = document.getElementById('reloadOverlay');
             
             const feedbackBtn = document.getElementById('feedbackBtn');
             const feedbackModal = document.getElementById('feedbackModal');
@@ -2933,6 +3091,8 @@
             const volumeDisplay = document.getElementById('volumeDisplay');
             const volumeDisplayText = document.getElementById('volumeDisplayText');
             
+            const liteToggle = document.getElementById('liteToggle');
+            
             const pwaInstallPrompt = document.getElementById('pwaInstallPrompt');
             const pwaInstallBtn = document.getElementById('pwaInstallBtn');
             const pwaDismissBtn = document.getElementById('pwaDismissBtn');
@@ -2952,417 +3112,118 @@
             let onlineUsers = {};
             let currentMentionIndex = -1;
             let volumeDisplayTimeout = null;
-            let retryCount = 0;
-            let isYouTubeMode = false;
-            let loadingTimeout = null;
             
             let currentRating = 0;
             let deferredPrompt = null;
             let isAppInstalled = false;
             
-            const savedVolume = localStorage.getItem('radioVolume');
-            if (savedVolume !== null) {
-                volumeSlider.value = savedVolume;
-                updateVolumeIcon();
-            }
-            
-            function showBufferIndicator() {
-                // Не показываем надпись буферизации
-            }
-            
-            function hideBufferIndicator() {
-                // Не показываем надпись буферизации
-            }
-            
             function showBrokenHeart() {
                 const brokenHeartDiv = document.createElement('div');
-                brokenHeartDiv.className = 'broken-heart-effect';
-                brokenHeartDiv.innerHTML = `<svg viewBox="0 0 24 24" width="80" height="80" fill="white"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35zM12 19.93l.33-.3C17.2 15.49 20 12.45 20 8.5 20 6.5 18.5 5 16.5 5c-1.54 0-3.04.99-3.57 2.36h-1.87C10.54 5.99 9.04 5 7.5 5 5.5 5 4 6.5 4 8.5c0 3.95 2.8 6.99 7.67 11.13l.33.3z"/><path d="M12 13.5l-2-2 2-2 2 2-2 2z" fill="#121212"/><path d="M10 9.5l-2 2 2 2 2-2-2-2z" fill="#121212"/></svg>`;
+                brokenHeartDiv.className = 'broken-heart';
+                brokenHeartDiv.innerHTML = '💔';
                 document.body.appendChild(brokenHeartDiv);
                 setTimeout(() => {
                     brokenHeartDiv.remove();
                 }, 800);
             }
             
-            function showHeartEffect() {
-                heartEffect.style.display = 'flex';
-                heartEffect.style.animation = 'heartPop 1.5s ease-out forwards';
-                setTimeout(() => heartEffect.style.display = 'none', 1500);
-            }
-            
-            function updateVolumeIcon() {
-                const vol = volumeSlider.value;
-                const icon = vol == 0 ? 'fa-volume-mute' : vol < 50 ? 'fa-volume-down' : 'fa-volume-up';
-                document.querySelectorAll('.volume-icon i').forEach(i => i.className = `fas ${icon}`);
-            }
-            
-            function showNotification(msg, type = 'info') {
-                notification.textContent = msg;
-                notification.style.background = type === 'success' ? '#1DB954' : type === 'error' ? '#FF5722' : '#2196F3';
-                notification.classList.add('show');
-                setTimeout(() => notification.classList.remove('show'), 3000);
-            }
-            
-            function loadLikes() {
-                if (likesUnsubscribe) likesUnsubscribe();
-                likesUnsubscribe = db.collection('stationLikes').onSnapshot(snapshot => {
-                    stationLikes = {};
-                    userLikedStations.clear();
-                    snapshot.forEach(doc => { stationLikes[doc.id] = doc.data(); });
-                    const user = auth.currentUser;
-                    if (user) {
-                        Object.keys(stationLikes).forEach(sid => {
-                            if (stationLikes[sid].users && stationLikes[sid].users[user.uid]) userLikedStations.add(sid);
-                        });
-                    }
-                    updateLikesUI();
-                    loadStationList();
-                });
-            }
-            
-            function toggleLike() {
-                const user = auth.currentUser;
-                const userId = user ? user.uid : 'anonymous';
-                if (userLikedStations.has(currentStation)) {
-                    removeLike(currentStation, userId);
-                    showBrokenHeart();
-                } else {
-                    addLike(currentStation, userId);
-                    showHeartEffect();
-                }
-                likeButton.style.transform = 'scale(1.2)';
-                setTimeout(() => likeButton.style.transform = 'scale(1)', 200);
-            }
-            
-            function addLike(stationId, userId) {
-                db.collection('stationLikes').doc(stationId).get().then(doc => {
-                    if (doc.exists) {
-                        const data = doc.data();
-                        const users = data.users || {};
-                        users[userId] = true;
-                        doc.ref.update({ count: (data.count || 0) + 1, users });
-                    } else {
-                        db.collection('stationLikes').doc(stationId).set({ count: 1, users: { [userId]: true } });
-                    }
-                });
-            }
-            
-            function removeLike(stationId, userId) {
-                db.collection('stationLikes').doc(stationId).get().then(doc => {
-                    if (doc.exists) {
-                        const data = doc.data();
-                        const users = data.users || {};
-                        delete users[userId];
-                        const newCount = Math.max(0, (data.count || 0) - 1);
-                        if (newCount === 0) doc.ref.delete();
-                        else doc.ref.update({ count: newCount, users });
-                    }
-                });
-            }
-            
-            function updateLikesUI() {
-                document.querySelectorAll('.station-list li').forEach(item => {
-                    const sid = item.getAttribute('data-station');
-                    const likesDiv = item.querySelector('.station-likes');
-                    if (likesDiv) {
-                        const span = likesDiv.querySelector('.likes-count');
-                        if (span) span.textContent = stationLikes[sid] ? stationLikes[sid].count || 0 : 0;
-                        if (userLikedStations.has(sid)) {
-                            likesDiv.classList.add('liked');
-                        } else {
-                            likesDiv.classList.remove('liked');
-                        }
-                    }
-                });
-                const liked = userLikedStations.has(currentStation);
-                likeButton.classList.toggle('active', liked);
-                likeButton.querySelector('i').className = liked ? 'fas fa-heart' : 'far fa-heart';
-                likesCountBottom.textContent = stationLikes[currentStation] ? stationLikes[currentStation].count || 0 : 0;
-            }
-            
-            function updateAuthUI(user) {
-                const authSection = document.getElementById('auth-section');
-                if (user) {
-                    const name = userNickname || user.displayName || 'Пользователь';
-                    const letter = name.charAt(0).toUpperCase();
-                    authSection.innerHTML = `<div class="user-profile" id="user-profile"><div class="user-avatar">${letter}</div><div class="user-name">${name.substring(0,15)}</div><button class="edit-nickname-btn"><i class="fas fa-pencil-alt"></i></button><div class="user-dropdown" id="user-dropdown"><div class="dropdown-item" id="edit-nickname-dropdown"><i class="fas fa-user-edit"></i> Сменить ник</div><div class="dropdown-item" id="sign-out-btn"><i class="fas fa-sign-out-alt"></i> Выйти</div></div></div>`;
-                    document.querySelector('.edit-nickname-btn').onclick = (e) => { e.stopPropagation(); nicknameInput.value = userNickname || user.displayName || ''; nicknameModal.style.display = 'block'; };
-                    document.getElementById('edit-nickname-dropdown').onclick = () => { nicknameInput.value = userNickname || user.displayName || ''; nicknameModal.style.display = 'block'; };
-                    document.getElementById('sign-out-btn').onclick = () => auth.signOut();
-                    document.getElementById('user-profile').onclick = (e) => { e.stopPropagation(); document.getElementById('user-dropdown').classList.toggle('show'); };
-                    document.addEventListener('click', () => document.getElementById('user-dropdown')?.classList.remove('show'));
-                    loadChatHistory();
-                } else {
-                    authSection.innerHTML = '<button class="google-login-btn" id="googleLoginBtn"><i class="fab fa-google"></i> Войти через Google</button>';
-                    document.getElementById('googleLoginBtn').onclick = () => { const provider = new firebase.auth.GoogleAuthProvider(); auth.signInWithPopup(provider).catch(e => showNotification('Ошибка входа', 'error')); };
-                    loadChatHistory();
-                }
-            }
-            
-            function saveNickname() {
-                const newName = nicknameInput.value.trim();
-                if (!newName) { showNotification('Введите никнейм', 'error'); return; }
-                userNickname = newName;
-                localStorage.setItem('userNickname', userNickname);
-                nicknameModal.style.display = 'none';
-                updateAuthUI(auth.currentUser);
-                showNotification('Никнейм сохранен!', 'success');
-            }
-            
-            function loadChatHistory() {
-                if (chatUnsubscribe) chatUnsubscribe();
-                chatUnsubscribe = db.collection('chat').orderBy('timestamp', 'desc').limit(50).onSnapshot(snapshot => {
-                    chatMessages.innerHTML = '';
-                    if (snapshot.empty) { chatMessages.innerHTML = '<div class="message">Чат пуст</div>'; return; }
-                    const msgs = [];
-                    snapshot.forEach(doc => msgs.push({ id: doc.id, ...doc.data() }));
-                    msgs.sort((a,b) => (a.timestamp?.toDate?.() || 0) - (b.timestamp?.toDate?.() || 0));
-                    msgs.forEach(m => addMessageToChat(m));
-                    setTimeout(() => chatMessages.scrollTop = chatMessages.scrollHeight, 100);
-                });
-            }
-            
-            function addMessageToChat(msg) {
-                const div = document.createElement('div');
-                div.className = 'message';
-                if (msg.isRadioShare) div.classList.add('share-radio-message');
-                div.setAttribute('data-message-id', msg.id);
-                let time = 'только что';
-                if (msg.timestamp) {
-                    const t = msg.timestamp.toDate ? msg.timestamp.toDate() : new Date(msg.timestamp);
-                    time = t.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-                }
-                let content = '';
-                if (msg.replyTo) content += `<div class="reply-indicator">Ответ на: <strong>${msg.replyTo.userName || msg.replyTo.user}</strong>: ${(msg.replyTo.text || '').substring(0,30)}${(msg.replyTo.text||'').length>30?'...':''}</div>`;
-                if (msg.gif) {
-                    content += `<span class="message-user">${msg.userName || 'Аноним'}:</span> <img src="${msg.gif}" class="message-gif" alt="GIF" onerror="this.style.display='none'"><span class="message-time">${time}</span>`;
-                } else if (msg.isRadioShare && msg.radioStation) {
-                    content += `<span class="share-radio-icon"><i class="fas fa-radio"></i></span> <span class="message-user">${msg.userName || 'Аноним'}</span> поделился: <strong>${msg.radioStation.name}</strong><span class="message-time">${time}</span>`;
-                } else {
-                    let text = (msg.text || '').replace(/(https?:\/\/[^\s]+\.(?:gif|jpg|jpeg|png|webp))/gi, '<img src="$1" class="message-gif" alt="image" onerror="this.style.display=\'none\'">');
-                    text = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
-                    content += `<span class="message-user">${msg.userName || 'Аноним'}:</span> ${text}<span class="message-time">${time}</span>`;
-                }
-                let reactions = '';
-                if (msg.reactions && Object.keys(msg.reactions).length) {
-                    reactions = '<div class="message-reactions">';
-                    Object.entries(msg.reactions).forEach(([emoji, users]) => {
-                        if (Object.keys(users).length) reactions += `<div class="reaction" data-emoji="${emoji}" data-message-id="${msg.id}"><span>${emoji}</span><span class="reaction-count">${Object.keys(users).length}</span></div>`;
-                    });
-                    reactions += '</div>';
-                }
-                div.innerHTML = `${content}${reactions}<button class="reply-btn" data-message-id="${msg.id}"><i class="fas fa-reply"></i></button><button class="reaction-btn" data-message-id="${msg.id}"><i class="far fa-smile"></i></button><div class="reaction-picker" id="reaction-picker-${msg.id}"><span class="reaction-emoji" data-emoji="👍">👍</span><span class="reaction-emoji" data-emoji="❤️">❤️</span><span class="reaction-emoji" data-emoji="😂">😂</span><span class="reaction-emoji" data-emoji="😮">😮</span><span class="reaction-emoji" data-emoji="😢">😢</span><span class="reaction-emoji" data-emoji="🎵">🎵</span><span class="more-reactions-btn" data-message-id="${msg.id}">⋯</span></div>`;
-                chatMessages.appendChild(div);
-                
-                div.querySelector('.reply-btn').onclick = (e) => { e.stopPropagation(); startReply(msg); };
-                div.querySelectorAll('.reaction').forEach(r => r.onclick = (e) => { e.stopPropagation(); addReactionToMessage(msg.id, r.getAttribute('data-emoji')); });
-                div.querySelector('.reaction-btn').onclick = (e) => { e.stopPropagation(); const p = div.querySelector('.reaction-picker'); document.querySelectorAll('.reaction-picker').forEach(pk => pk.classList.remove('show')); p.classList.toggle('show'); };
-                div.querySelectorAll('.reaction-emoji').forEach(e => e.onclick = (ev) => { ev.stopPropagation(); addReactionToMessage(msg.id, e.getAttribute('data-emoji')); e.parentElement.classList.remove('show'); });
-                div.querySelector('.more-reactions-btn').onclick = (e) => { e.stopPropagation(); currentMessageForReaction = msg.id; reactionsModal.style.display = 'block'; e.target.parentElement.classList.remove('show'); };
-                if (msg.isRadioShare && msg.radioStation) div.onclick = () => playSharedRadio(msg.radioStation);
-            }
-            
-            function startReply(msg) {
-                replyingToMessage = msg;
-                const existing = document.querySelector('.reply-indicator:not(.message .reply-indicator)');
-                if (existing) existing.remove();
-                const ind = document.createElement('div');
-                ind.className = 'reply-indicator';
-                ind.innerHTML = `Ответ на: <strong>${msg.userName || msg.user}</strong>: ${(msg.text || '').substring(0,30)}${(msg.text||'').length>30?'...':''}<button class="cancel-reply">✕</button>`;
-                document.getElementById('chat-input-container').parentNode.insertBefore(ind, document.getElementById('chat-input-container'));
-                ind.querySelector('.cancel-reply').onclick = () => { replyingToMessage = null; ind.remove(); };
-                chatInput.focus();
-            }
-            
-            function addReactionToMessage(msgId, emoji) {
-                const user = auth.currentUser;
-                const uid = user ? user.uid : 'anonymous';
-                db.collection('chat').doc(msgId).get().then(doc => {
-                    if (doc.exists) {
-                        const data = doc.data();
-                        const reactions = data.reactions || {};
-                        const ur = reactions[emoji] || {};
-                        if (ur[uid]) delete ur[uid];
-                        else ur[uid] = true;
-                        if (Object.keys(ur).length === 0) delete reactions[emoji];
-                        else reactions[emoji] = ur;
-                        db.collection('chat').doc(msgId).update({ reactions });
-                    }
-                });
-            }
-            
-            function sendMessage() {
-                const user = auth.currentUser;
-                const text = chatInput.value.trim();
-                if (!text) return;
-                const name = userNickname || (user?.displayName || 'Аноним');
-                const msg = { text, userName: name, userId: user?.uid || 'anonymous', timestamp: new Date(), reactions: {} };
-                if (replyingToMessage) msg.replyTo = { userName: replyingToMessage.userName || replyingToMessage.user, text: replyingToMessage.text, messageId: replyingToMessage.id };
-                chatSendBtn.disabled = true;
-                chatSendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                db.collection('chat').add(msg).finally(() => {
-                    chatInput.value = '';
-                    chatSendBtn.disabled = false;
-                    chatSendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
-                    const ind = document.querySelector('.reply-indicator:not(.message .reply-indicator)');
-                    if (ind) ind.remove();
-                    replyingToMessage = null;
-                });
-            }
-            
-            function playSharedRadio(radioStation) {
-                const key = Object.keys(radioStations).find(k => radioStations[k].name === radioStation.name);
-                if (key) {
-                    currentStationIndex = stationIds.indexOf(key);
-                    currentStation = key;
-                    isPlaying = true;
-                    playButton.innerHTML = '<i class="fas fa-pause"></i>';
-                    document.getElementById('player-icon').classList.add('playing');
-                    changeStation();
-                    showNotification(`Включена: ${radioStation.name}`, 'success');
-                } else showNotification('Станция не найдена', 'error');
-            }
-            
-            function shareRadioInChat() {
-                const user = auth.currentUser;
-                if (!user) { showNotification('Войдите в систему', 'error'); return; }
-                const name = userNickname || user.displayName || 'Пользователь';
-                const station = radioStations[currentStation];
-                db.collection('chat').add({ userName: name, userId: user.uid, isRadioShare: true, radioStation: station, timestamp: new Date(), reactions: {} }).then(() => {
-                    shareModal.style.display = 'none';
-                    showNotification('Радио отправлено в чат!', 'success');
-                }).catch(() => showNotification('Ошибка', 'error'));
-            }
-            
-            function changeGif() {
-                if (isYouTubeMode) return;
-                
-                let gifList;
-                if (currentStation === 'taylorswift') {
-                    gifList = taylorGifs;
-                } else if (currentStation === 'minecraft') {
-                    gifList = minecraftGifs;
-                } else {
-                    gifList = gifs;
-                }
-                let gif = gifList[Math.floor(Math.random() * gifList.length)];
-                mainGif.classList.add('gif-transition');
+            function showReloadAnimation() {
+                reloadOverlay.classList.add('active');
                 setTimeout(() => {
-                    mainGif.style.backgroundImage = `url('${gif}')`;
-                    mainGif.style.backgroundSize = 'cover';
-                    mainGif.style.backgroundPosition = 'center';
-                    setTimeout(() => mainGif.classList.remove('gif-transition'), 600);
-                }, 300);
+                    reloadOverlay.classList.remove('active');
+                }, 800);
             }
             
-            function setupYouTubeMode() {
-                isYouTubeMode = true;
-                const station = radioStations[currentStation];
-                if (station.isYouTube && station.youtubeId) {
-                    mainGif.innerHTML = `<div class="youtube-embed"><iframe src="${station.url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
-                    mainGif.style.backgroundImage = 'none';
-                }
-            }
-            
-            function removeYouTubeMode() {
-                if (isYouTubeMode) {
-                    isYouTubeMode = false;
-                    mainGif.innerHTML = '';
-                    mainGif.style.backgroundImage = '';
-                    changeGif();
-                }
-            }
-            
-            function sortStationsByLikes() {
-                return [...stationIds].sort((a,b) => (stationLikes[b]?.count||0) - (stationLikes[a]?.count||0));
-            }
-            
-            let currentCategoryFilter = 'all';
-            
-            function displayTopStations() {
-                const sorted = sortStationsByLikes();
-                stationList.innerHTML = '';
-                const title = document.createElement('div');
-                title.className = 'category-title';
-                title.textContent = '🏆 Лучшие по лайкам';
-                stationList.appendChild(title);
-                sorted.forEach(id => {
-                    const st = radioStations[id];
-                    if (!st) return;
-                    const li = document.createElement('li');
-                    li.setAttribute('data-station', id);
-                    if (id === currentStation) li.classList.add('active');
-                    if (st.isChristmas) li.classList.add('christmas');
-                    if (st.isHalloween) li.classList.add('halloween');
-                    const isLiked = userLikedStations.has(id);
-                    li.innerHTML = `<div><span class="station-icon"><i class="${st.icon}"></i></span> ${st.name}</div><div class="station-likes ${isLiked ? 'liked' : ''}" data-station="${id}"><span class="likes-count">${stationLikes[id]?.count||0}</span> <i class="fas fa-heart"></i></div>`;
-                    
-                    const likesDiv = li.querySelector('.station-likes');
-                    likesDiv.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        const stationId = this.getAttribute('data-station');
-                        const userId = auth.currentUser ? auth.currentUser.uid : 'anonymous';
-                        if (userLikedStations.has(stationId)) {
-                            removeLike(stationId, userId);
-                            showBrokenHeart();
-                            this.classList.remove('liked');
+            // Функция для получения информации о треке Taylor Swift с 101.ru
+            async function fetchTaylorSwiftTrack() {
+                try {
+                    const response = await fetch('https://101.ru/radio/user/870911');
+                    const text = await response.text();
+                    const titleMatch = text.match(/<title>(.*?)<\/title>/);
+                    if (titleMatch) {
+                        let title = titleMatch[1];
+                        title = title.replace('TaylorSwiftOnline - радио онлайн. Слушать бесплатно', '').trim();
+                        if (title && title !== '' && title !== 'TaylorSwiftOnline') {
+                            const parts = title.split(' - ');
+                            if (parts.length >= 2) {
+                                document.getElementById('current-track-info').textContent = `"${parts.slice(1).join(' - ')}"`;
+                                document.getElementById('current-artist-info').textContent = parts[0];
+                                document.getElementById('current-track').textContent = `"${parts.slice(1).join(' - ')}"`;
+                                document.getElementById('current-artist').textContent = parts[0];
+                            } else {
+                                document.getElementById('current-track-info').textContent = `"${title}"`;
+                                document.getElementById('current-artist-info').textContent = 'Taylor Swift';
+                                document.getElementById('current-track').textContent = `"${title}"`;
+                                document.getElementById('current-artist').textContent = 'Taylor Swift';
+                            }
                         } else {
-                            addLike(stationId, userId);
-                            showHeartEffect();
-                            this.classList.add('liked');
+                            document.getElementById('current-track-info').textContent = '"Taylor Swift Mix"';
+                            document.getElementById('current-artist-info').textContent = 'Taylor Swift';
+                            document.getElementById('current-track').textContent = '"Taylor Swift Mix"';
+                            document.getElementById('current-artist').textContent = 'Taylor Swift';
                         }
-                        const countSpan = this.querySelector('.likes-count');
-                        const currentCount = stationLikes[stationId] ? stationLikes[stationId].count || 0 : 0;
-                        const newCount = userLikedStations.has(stationId) ? currentCount + 1 : Math.max(0, currentCount - 1);
-                        countSpan.textContent = newCount;
-                        if (stationId === currentStation) {
-                            likesCountBottom.textContent = newCount;
-                            likeButton.classList.toggle('active', userLikedStations.has(stationId));
-                            likeButton.querySelector('i').className = userLikedStations.has(stationId) ? 'fas fa-heart' : 'far fa-heart';
-                        }
-                    });
-                    
-                    li.addEventListener('click', function(e) {
-                        if (e.target.closest('.station-likes')) return;
-                        currentStationIndex = stationIds.indexOf(id);
-                        isPlaying = true;
-                        playButton.innerHTML = '<i class="fas fa-pause"></i>';
-                        document.getElementById('player-icon').classList.add('playing');
-                        changeStation();
-                    });
-                    stationList.appendChild(li);
-                });
+                    }
+                } catch(e) {
+                    console.log('Не удалось получить трек с 101.ru');
+                    document.getElementById('current-track-info').textContent = '"Taylor Swift Radio"';
+                    document.getElementById('current-artist-info').textContent = 'Taylor Swift';
+                    document.getElementById('current-track').textContent = '"Taylor Swift Radio"';
+                    document.getElementById('current-artist').textContent = 'Taylor Swift';
+                }
             }
             
-            function filterStationsByCategory(category) {
-                currentCategoryFilter = category;
-                if (category === 'top') { displayTopStations(); return; }
-                loadStationList();
-                updateLikesUI();
-                document.querySelectorAll('.station-list li').forEach(item => {
-                    const id = item.getAttribute('data-station');
-                    const st = radioStations[id];
-                    if (!st) return;
-                    let show = category === 'all';
-                    if (!show && category === 'lofi' && st.category === 'lofi') show = true;
-                    if (!show && category === 'thematic' && st.category === 'thematic') show = true;
-                    if (!show && category === 'no-copyright' && st.category === 'no-copyright') show = true;
-                    if (!show && category === 'dark' && st.category === 'dark') show = true;
-                    if (!show && category === 'anime' && st.category === 'anime') show = true;
-                    if (!show && category === 'classic' && st.category === 'classic') show = true;
-                    if (!show && category === 'country' && st.category === 'country') show = true;
-                    item.style.display = show ? 'flex' : 'none';
-                });
-                document.querySelectorAll('.category-title').forEach(title => {
-                    let has = false;
-                    let sib = title.nextElementSibling;
-                    while (sib && !sib.classList.contains('category-title')) {
-                        if (sib.style.display !== 'none') { has = true; break; }
-                        sib = sib.nextElementSibling;
-                    }
-                    title.style.display = has ? 'block' : 'none';
-                });
+            // Обновление трека каждые 10 секунд для Taylor Swift
+            setInterval(() => {
+                if (currentStation === 'taylorswift') {
+                    fetchTaylorSwiftTrack();
+                }
+            }, 10000);
+            
+            loadStationList();
+            loadLikes();
+            updateStationInfo();
+            changeGif();
+            initReactionsModal();
+            loadEmojis();
+            loadTrendingGifs();
+            initFeedbackSystem();
+            initPWA();
+            
+            liteToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    localStorage.setItem('liteModeEnabled', 'true');
+                    window.location.href = 'https://deyniik.github.io/DeynikRadio/lite';
+                } else {
+                    localStorage.removeItem('liteModeEnabled');
+                }
+            });
+            
+            if (localStorage.getItem('liteModeEnabled') === 'true') {
+                liteToggle.checked = true;
+                localStorage.removeItem('liteModeEnabled');
+                setTimeout(() => { liteToggle.checked = false; }, 100);
             }
+            
+            pwaInstallBtn.addEventListener('click', function() { installPWA(); });
+            pwaDismissBtn.addEventListener('click', function() { hidePWAInstallPrompt(); localStorage.setItem('pwaDismissed', new Date().toDateString()); });
+            
+            function initPWA() {
+                if (window.matchMedia('(display-mode: standalone)').matches) isAppInstalled = true;
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    const lastDismissed = localStorage.getItem('pwaDismissed');
+                    if (lastDismissed !== new Date().toDateString() && !isAppInstalled) {
+                        setTimeout(() => showPWAInstallPrompt(), 3000);
+                    }
+                });
+                window.addEventListener('appinstalled', () => { isAppInstalled = true; deferredPrompt = null; hidePWAInstallPrompt(); showNotification('Приложение установлено!', 'success'); });
+                if (window.navigator.standalone === true) isAppInstalled = true;
+            }
+            
+            function showPWAInstallPrompt() { if (deferredPrompt && !isAppInstalled) pwaInstallPrompt.style.display = 'block'; }
+            function hidePWAInstallPrompt() { pwaInstallPrompt.style.display = 'none'; }
+            function installPWA() { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { deferredPrompt = null; hidePWAInstallPrompt(); }); } }
             
             function loadStationList() {
                 stationList.innerHTML = '';
@@ -3455,28 +3316,20 @@
                     
                     stationList.appendChild(stationItem);
                 });
-                
-                if (currentCategoryFilter !== 'all' && currentCategoryFilter !== 'top') {
-                    filterStationsByCategory(currentCategoryFilter);
-                }
             }
-            
-            let volumeHideTimeout;
             
             function updateVolume(value) {
                 if (value < 0) value = 0;
                 if (value > 100) value = 100;
                 volumeSlider.value = value;
                 if (audio) audio.volume = value / 100;
-                localStorage.setItem('radioVolume', value);
                 updateVolumeIcon();
                 let volumeIcon = value == 0 ? 'fa-volume-mute' : value < 50 ? 'fa-volume-down' : 'fa-volume-up';
                 volumeDisplayText.innerHTML = `<i class="fas ${volumeIcon}"></i> ${Math.round(value)}%`;
-                
-                if (volumeHideTimeout) clearTimeout(volumeHideTimeout);
+                if (volumeDisplayTimeout) clearTimeout(volumeDisplayTimeout);
                 volumeDisplay.style.display = 'block';
                 volumeDisplay.classList.add('show');
-                volumeHideTimeout = setTimeout(() => {
+                volumeDisplayTimeout = setTimeout(() => {
                     volumeDisplay.classList.remove('show');
                     setTimeout(() => volumeDisplay.style.display = 'none', 300);
                 }, 2000);
@@ -3649,6 +3502,361 @@
                 });
             }
             
+            function showHeartEffect() {
+                heartEffect.style.display = 'flex';
+                heartEffect.style.animation = 'heartPop 1.5s ease-out forwards';
+                setTimeout(() => heartEffect.style.display = 'none', 1500);
+            }
+            
+            function updateVolumeIcon() {
+                const vol = volumeSlider.value;
+                const icon = vol == 0 ? 'fa-volume-mute' : vol < 50 ? 'fa-volume-down' : 'fa-volume-up';
+                document.querySelectorAll('.volume-icon i').forEach(i => i.className = `fas ${icon}`);
+            }
+            
+            function showNotification(msg, type = 'info') {
+                notification.textContent = msg;
+                notification.style.background = type === 'success' ? '#1DB954' : type === 'error' ? '#FF5722' : '#2196F3';
+                notification.classList.add('show');
+                setTimeout(() => notification.classList.remove('show'), 3000);
+            }
+            
+            function loadLikes() {
+                if (likesUnsubscribe) likesUnsubscribe();
+                likesUnsubscribe = db.collection('stationLikes').onSnapshot(snapshot => {
+                    stationLikes = {};
+                    userLikedStations.clear();
+                    snapshot.forEach(doc => { stationLikes[doc.id] = doc.data(); });
+                    const user = auth.currentUser;
+                    if (user) {
+                        Object.keys(stationLikes).forEach(sid => {
+                            if (stationLikes[sid].users && stationLikes[sid].users[user.uid]) userLikedStations.add(sid);
+                        });
+                    }
+                    updateLikesUI();
+                    loadStationList();
+                });
+            }
+            
+            function toggleLike() {
+                const user = auth.currentUser;
+                const userId = user ? user.uid : 'anonymous';
+                if (userLikedStations.has(currentStation)) {
+                    removeLike(currentStation, userId);
+                    showBrokenHeart();
+                } else {
+                    addLike(currentStation, userId);
+                    showHeartEffect();
+                }
+                likeButton.style.transform = 'scale(1.2)';
+                setTimeout(() => likeButton.style.transform = 'scale(1)', 200);
+            }
+            
+            function addLike(stationId, userId) {
+                db.collection('stationLikes').doc(stationId).get().then(doc => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        const users = data.users || {};
+                        users[userId] = true;
+                        doc.ref.update({ count: (data.count || 0) + 1, users });
+                    } else {
+                        db.collection('stationLikes').doc(stationId).set({ count: 1, users: { [userId]: true } });
+                    }
+                });
+            }
+            
+            function removeLike(stationId, userId) {
+                db.collection('stationLikes').doc(stationId).get().then(doc => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        const users = data.users || {};
+                        delete users[userId];
+                        const newCount = Math.max(0, (data.count || 0) - 1);
+                        if (newCount === 0) doc.ref.delete();
+                        else doc.ref.update({ count: newCount, users });
+                    }
+                });
+            }
+            
+            function updateLikesUI() {
+                document.querySelectorAll('.station-list li').forEach(item => {
+                    const sid = item.getAttribute('data-station');
+                    const likesDiv = item.querySelector('.station-likes');
+                    if (likesDiv) {
+                        const span = likesDiv.querySelector('.likes-count');
+                        if (span) span.textContent = stationLikes[sid] ? stationLikes[sid].count || 0 : 0;
+                        if (userLikedStations.has(sid)) {
+                            likesDiv.classList.add('liked');
+                        } else {
+                            likesDiv.classList.remove('liked');
+                        }
+                    }
+                });
+                const liked = userLikedStations.has(currentStation);
+                likeButton.classList.toggle('active', liked);
+                likeButton.querySelector('i').className = liked ? 'fas fa-heart' : 'far fa-heart';
+                likesCountBottom.textContent = stationLikes[currentStation] ? stationLikes[currentStation].count || 0 : 0;
+            }
+            
+            function updateAuthUI(user) {
+                const authSection = document.getElementById('auth-section');
+                if (user) {
+                    const name = userNickname || user.displayName || 'Пользователь';
+                    const letter = name.charAt(0).toUpperCase();
+                    authSection.innerHTML = `<div class="user-profile" id="user-profile"><div class="user-avatar">${letter}</div><div class="user-name">${name.substring(0,15)}</div><button class="edit-nickname-btn"><i class="fas fa-pencil-alt"></i></button><div class="user-dropdown" id="user-dropdown"><div class="dropdown-item" id="edit-nickname-dropdown"><i class="fas fa-user-edit"></i> Сменить ник</div><div class="dropdown-item" id="sign-out-btn"><i class="fas fa-sign-out-alt"></i> Выйти</div></div></div>`;
+                    document.querySelector('.edit-nickname-btn').onclick = (e) => { e.stopPropagation(); nicknameInput.value = userNickname || user.displayName || ''; nicknameModal.style.display = 'block'; };
+                    document.getElementById('edit-nickname-dropdown').onclick = () => { nicknameInput.value = userNickname || user.displayName || ''; nicknameModal.style.display = 'block'; };
+                    document.getElementById('sign-out-btn').onclick = () => auth.signOut();
+                    document.getElementById('user-profile').onclick = (e) => { e.stopPropagation(); document.getElementById('user-dropdown').classList.toggle('show'); };
+                    document.addEventListener('click', () => document.getElementById('user-dropdown')?.classList.remove('show'));
+                    loadChatHistory();
+                } else {
+                    authSection.innerHTML = '<button class="google-login-btn" id="googleLoginBtn"><i class="fab fa-google"></i> Войти через Google</button>';
+                    document.getElementById('googleLoginBtn').onclick = () => { const provider = new firebase.auth.GoogleAuthProvider(); auth.signInWithPopup(provider).catch(e => showNotification('Ошибка входа', 'error')); };
+                    loadChatHistory();
+                }
+            }
+            
+            function saveNickname() {
+                const newName = nicknameInput.value.trim();
+                if (!newName) { showNotification('Введите никнейм', 'error'); return; }
+                userNickname = newName;
+                localStorage.setItem('userNickname', userNickname);
+                nicknameModal.style.display = 'none';
+                updateAuthUI(auth.currentUser);
+                showNotification('Никнейм сохранен!', 'success');
+            }
+            
+            function loadChatHistory() {
+                if (chatUnsubscribe) chatUnsubscribe();
+                chatUnsubscribe = db.collection('chat').orderBy('timestamp', 'desc').limit(50).onSnapshot(snapshot => {
+                    chatMessages.innerHTML = '';
+                    if (snapshot.empty) { chatMessages.innerHTML = '<div class="message">Чат пуст</div>'; return; }
+                    const msgs = [];
+                    snapshot.forEach(doc => msgs.push({ id: doc.id, ...doc.data() }));
+                    msgs.sort((a,b) => (a.timestamp?.toDate?.() || 0) - (b.timestamp?.toDate?.() || 0));
+                    msgs.forEach(m => addMessageToChat(m));
+                    setTimeout(() => chatMessages.scrollTop = chatMessages.scrollHeight, 100);
+                });
+            }
+            
+            function addMessageToChat(msg) {
+                const div = document.createElement('div');
+                div.className = 'message';
+                if (msg.isRadioShare) div.classList.add('share-radio-message');
+                div.setAttribute('data-message-id', msg.id);
+                let time = 'только что';
+                if (msg.timestamp) {
+                    const t = msg.timestamp.toDate ? msg.timestamp.toDate() : new Date(msg.timestamp);
+                    time = t.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                }
+                let content = '';
+                if (msg.replyTo) content += `<div class="reply-indicator">Ответ на: <strong>${msg.replyTo.userName || msg.replyTo.user}</strong>: ${(msg.replyTo.text || '').substring(0,30)}${(msg.replyTo.text||'').length>30?'...':''}</div>`;
+                if (msg.gif) {
+                    content += `<span class="message-user">${msg.userName || 'Аноним'}:</span> <img src="${msg.gif}" class="message-gif" alt="GIF"><span class="message-time">${time}</span>`;
+                } else if (msg.isRadioShare && msg.radioStation) {
+                    content += `<span class="share-radio-icon"><i class="fas fa-radio"></i></span> <span class="message-user">${msg.userName || 'Аноним'}</span> поделился: <strong>${msg.radioStation.name}</strong><span class="message-time">${time}</span>`;
+                } else {
+                    let text = (msg.text || '').replace(/(https?:\/\/[^\s]+\.(?:gif|jpg|jpeg|png|webp))/gi, '<img src="$1" class="message-gif" alt="image">');
+                    text = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+                    content += `<span class="message-user">${msg.userName || 'Аноним'}:</span> ${text}<span class="message-time">${time}</span>`;
+                }
+                let reactions = '';
+                if (msg.reactions && Object.keys(msg.reactions).length) {
+                    reactions = '<div class="message-reactions">';
+                    Object.entries(msg.reactions).forEach(([emoji, users]) => {
+                        if (Object.keys(users).length) reactions += `<div class="reaction" data-emoji="${emoji}" data-message-id="${msg.id}"><span>${emoji}</span><span class="reaction-count">${Object.keys(users).length}</span></div>`;
+                    });
+                    reactions += '</div>';
+                }
+                div.innerHTML = `${content}${reactions}<button class="reply-btn" data-message-id="${msg.id}"><i class="fas fa-reply"></i></button><button class="reaction-btn" data-message-id="${msg.id}"><i class="far fa-smile"></i></button><div class="reaction-picker" id="reaction-picker-${msg.id}"><span class="reaction-emoji" data-emoji="👍">👍</span><span class="reaction-emoji" data-emoji="❤️">❤️</span><span class="reaction-emoji" data-emoji="😂">😂</span><span class="reaction-emoji" data-emoji="😮">😮</span><span class="reaction-emoji" data-emoji="😢">😢</span><span class="reaction-emoji" data-emoji="🎵">🎵</span><span class="more-reactions-btn" data-message-id="${msg.id}">⋯</span></div>`;
+                chatMessages.appendChild(div);
+                
+                div.querySelector('.reply-btn').onclick = (e) => { e.stopPropagation(); startReply(msg); };
+                div.querySelectorAll('.reaction').forEach(r => r.onclick = (e) => { e.stopPropagation(); addReactionToMessage(msg.id, r.getAttribute('data-emoji')); });
+                div.querySelector('.reaction-btn').onclick = (e) => { e.stopPropagation(); const p = div.querySelector('.reaction-picker'); document.querySelectorAll('.reaction-picker').forEach(pk => pk.classList.remove('show')); p.classList.toggle('show'); };
+                div.querySelectorAll('.reaction-emoji').forEach(e => e.onclick = (ev) => { ev.stopPropagation(); addReactionToMessage(msg.id, e.getAttribute('data-emoji')); e.parentElement.classList.remove('show'); });
+                div.querySelector('.more-reactions-btn').onclick = (e) => { e.stopPropagation(); currentMessageForReaction = msg.id; reactionsModal.style.display = 'block'; e.target.parentElement.classList.remove('show'); };
+                if (msg.isRadioShare && msg.radioStation) div.onclick = () => playSharedRadio(msg.radioStation);
+            }
+            
+            function startReply(msg) {
+                replyingToMessage = msg;
+                const existing = document.querySelector('.reply-indicator:not(.message .reply-indicator)');
+                if (existing) existing.remove();
+                const ind = document.createElement('div');
+                ind.className = 'reply-indicator';
+                ind.innerHTML = `Ответ на: <strong>${msg.userName || msg.user}</strong>: ${(msg.text || '').substring(0,30)}${(msg.text||'').length>30?'...':''}<button class="cancel-reply">✕</button>`;
+                document.getElementById('chat-input-container').parentNode.insertBefore(ind, document.getElementById('chat-input-container'));
+                ind.querySelector('.cancel-reply').onclick = () => { replyingToMessage = null; ind.remove(); };
+                chatInput.focus();
+            }
+            
+            function addReactionToMessage(msgId, emoji) {
+                const user = auth.currentUser;
+                const uid = user ? user.uid : 'anonymous';
+                db.collection('chat').doc(msgId).get().then(doc => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        const reactions = data.reactions || {};
+                        const ur = reactions[emoji] || {};
+                        if (ur[uid]) delete ur[uid];
+                        else ur[uid] = true;
+                        if (Object.keys(ur).length === 0) delete reactions[emoji];
+                        else reactions[emoji] = ur;
+                        db.collection('chat').doc(msgId).update({ reactions });
+                    }
+                });
+            }
+            
+            function sendMessage() {
+                const user = auth.currentUser;
+                const text = chatInput.value.trim();
+                if (!text) return;
+                const name = userNickname || (user?.displayName || 'Аноним');
+                const msg = { text, userName: name, userId: user?.uid || 'anonymous', timestamp: new Date(), reactions: {} };
+                if (replyingToMessage) msg.replyTo = { userName: replyingToMessage.userName || replyingToMessage.user, text: replyingToMessage.text, messageId: replyingToMessage.id };
+                chatSendBtn.disabled = true;
+                chatSendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                db.collection('chat').add(msg).finally(() => {
+                    chatInput.value = '';
+                    chatSendBtn.disabled = false;
+                    chatSendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                    const ind = document.querySelector('.reply-indicator:not(.message .reply-indicator)');
+                    if (ind) ind.remove();
+                    replyingToMessage = null;
+                });
+            }
+            
+            function playSharedRadio(radioStation) {
+                const key = Object.keys(radioStations).find(k => radioStations[k].name === radioStation.name);
+                if (key) {
+                    currentStationIndex = stationIds.indexOf(key);
+                    currentStation = key;
+                    isPlaying = true;
+                    playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                    document.getElementById('player-icon').classList.add('playing');
+                    changeStation();
+                    showNotification(`Включена: ${radioStation.name}`, 'success');
+                } else showNotification('Станция не найдена', 'error');
+            }
+            
+            function shareRadioInChat() {
+                const user = auth.currentUser;
+                if (!user) { showNotification('Войдите в систему', 'error'); return; }
+                const name = userNickname || user.displayName || 'Пользователь';
+                const station = radioStations[currentStation];
+                db.collection('chat').add({ userName: name, userId: user.uid, isRadioShare: true, radioStation: station, timestamp: new Date(), reactions: {} }).then(() => {
+                    shareModal.style.display = 'none';
+                    showNotification('Радио отправлено в чат!', 'success');
+                }).catch(() => showNotification('Ошибка', 'error'));
+            }
+            
+            function changeGif() {
+                let gifList;
+                if (currentStation === 'taylorswift') {
+                    gifList = taylorGifs;
+                } else if (currentStation === 'minecraft') {
+                    gifList = minecraftGifs;
+                } else {
+                    gifList = gifs;
+                }
+                let gif = gifList[Math.floor(Math.random() * gifList.length)];
+                mainGif.classList.add('gif-transition');
+                setTimeout(() => {
+                    mainGif.style.backgroundImage = `url('${gif}')`;
+                    setTimeout(() => mainGif.classList.remove('gif-transition'), 600);
+                }, 300);
+            }
+            
+            function sortStationsByLikes() {
+                return [...stationIds].sort((a,b) => (stationLikes[b]?.count||0) - (stationLikes[a]?.count||0));
+            }
+            
+            function displayTopStations() {
+                const sorted = sortStationsByLikes();
+                stationList.innerHTML = '';
+                const title = document.createElement('div');
+                title.className = 'category-title';
+                title.textContent = '🏆 Лучшие по лайкам';
+                stationList.appendChild(title);
+                sorted.forEach(id => {
+                    const st = radioStations[id];
+                    if (!st) return;
+                    const li = document.createElement('li');
+                    li.setAttribute('data-station', id);
+                    if (id === currentStation) li.classList.add('active');
+                    if (st.isChristmas) li.classList.add('christmas');
+                    if (st.isHalloween) li.classList.add('halloween');
+                    const isLiked = userLikedStations.has(id);
+                    li.innerHTML = `<div><span class="station-icon"><i class="${st.icon}"></i></span> ${st.name}</div><div class="station-likes ${isLiked ? 'liked' : ''}" data-station="${id}"><span class="likes-count">${stationLikes[id]?.count||0}</span> <i class="fas fa-heart"></i></div>`;
+                    
+                    const likesDiv = li.querySelector('.station-likes');
+                    likesDiv.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const stationId = this.getAttribute('data-station');
+                        const userId = auth.currentUser ? auth.currentUser.uid : 'anonymous';
+                        if (userLikedStations.has(stationId)) {
+                            removeLike(stationId, userId);
+                            showBrokenHeart();
+                            this.classList.remove('liked');
+                        } else {
+                            addLike(stationId, userId);
+                            showHeartEffect();
+                            this.classList.add('liked');
+                        }
+                        const countSpan = this.querySelector('.likes-count');
+                        const currentCount = stationLikes[stationId] ? stationLikes[stationId].count || 0 : 0;
+                        const newCount = userLikedStations.has(stationId) ? currentCount + 1 : Math.max(0, currentCount - 1);
+                        countSpan.textContent = newCount;
+                        if (stationId === currentStation) {
+                            likesCountBottom.textContent = newCount;
+                            likeButton.classList.toggle('active', userLikedStations.has(stationId));
+                            likeButton.querySelector('i').className = userLikedStations.has(stationId) ? 'fas fa-heart' : 'far fa-heart';
+                        }
+                    });
+                    
+                    li.addEventListener('click', function(e) {
+                        if (e.target.closest('.station-likes')) return;
+                        currentStationIndex = stationIds.indexOf(id);
+                        isPlaying = true;
+                        playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                        document.getElementById('player-icon').classList.add('playing');
+                        changeStation();
+                    });
+                    stationList.appendChild(li);
+                });
+            }
+            
+            function filterStationsByCategory(category) {
+                if (category === 'top') { displayTopStations(); return; }
+                loadStationList();
+                updateLikesUI();
+                document.querySelectorAll('.station-list li').forEach(item => {
+                    const id = item.getAttribute('data-station');
+                    const st = radioStations[id];
+                    if (!st) return;
+                    let show = category === 'all';
+                    if (!show && category === 'lofi' && st.category === 'lofi') show = true;
+                    if (!show && category === 'thematic' && st.category === 'thematic') show = true;
+                    if (!show && category === 'no-copyright' && st.category === 'no-copyright') show = true;
+                    if (!show && category === 'dark' && st.category === 'dark') show = true;
+                    if (!show && category === 'anime' && st.category === 'anime') show = true;
+                    if (!show && category === 'classic' && st.category === 'classic') show = true;
+                    if (!show && category === 'country' && st.category === 'country') show = true;
+                    item.style.display = show ? 'flex' : 'none';
+                });
+                document.querySelectorAll('.category-title').forEach(title => {
+                    let has = false;
+                    let sib = title.nextElementSibling;
+                    while (sib && !sib.classList.contains('category-title')) {
+                        if (sib.style.display !== 'none') { has = true; break; }
+                        sib = sib.nextElementSibling;
+                    }
+                    title.style.display = has ? 'block' : 'none';
+                });
+            }
+            
             chatInput.oninput = () => chatSendBtn.disabled = chatInput.value.trim() === '';
             chatInput.onkeypress = (e) => { if (e.key === 'Enter' && !chatSendBtn.disabled) sendMessage(); };
             chatSendBtn.onclick = sendMessage;
@@ -3683,84 +3891,16 @@
             document.onclick = () => { emojiPicker.classList.remove('show'); gifPicker.classList.remove('show'); document.querySelectorAll('.reaction-picker').forEach(p => p.classList.remove('show')); };
             emojiPicker.onclick = (e) => e.stopPropagation();
             gifPicker.onclick = (e) => e.stopPropagation();
-            categoryBtns.forEach(btn => btn.onclick = () => { 
-                categoryBtns.forEach(b => b.classList.remove('active')); 
-                btn.classList.add('active'); 
-                filterStationsByCategory(btn.dataset.category); 
-            });
+            categoryBtns.forEach(btn => btn.onclick = () => { categoryBtns.forEach(b => b.classList.remove('active')); btn.classList.add('active'); filterStationsByCategory(btn.dataset.category); });
             auth.onAuthStateChanged(updateAuthUI);
             likeButton.onclick = toggleLike;
-            
-            function createAudioWithRetry(url, retry = true) {
-                const newAudio = new Audio();
-                newAudio.volume = volumeSlider.value / 100;
-                
-                const clearLoading = () => {
-                    if (loadingTimeout) clearTimeout(loadingTimeout);
-                    hideBufferIndicator();
-                };
-                
-                newAudio.addEventListener('loadstart', () => {
-                    showBufferIndicator();
-                    loadingTimeout = setTimeout(() => {
-                        if (retry && retryCount < 3) {
-                            retryCount++;
-                            showNotification('Поток загружается дольше обычного...', 'info');
-                        }
-                    }, 5000);
-                });
-                
-                newAudio.addEventListener('canplay', () => {
-                    clearLoading();
-                    retryCount = 0;
-                });
-                
-                newAudio.addEventListener('error', (e) => {
-                    clearLoading();
-                    if (retry && retryCount < 3) {
-                        retryCount++;
-                        showNotification(`Ошибка подключения, попытка ${retryCount}/3...`, 'error');
-                        setTimeout(() => {
-                            if (audio === newAudio && isPlaying) {
-                                const newSrc = url + (url.includes('?') ? '&' : '?') + 'retry=' + Date.now();
-                                newAudio.src = newSrc;
-                                newAudio.load();
-                                newAudio.play().catch(() => {});
-                            }
-                        }, 2000);
-                    } else if (retryCount >= 3) {
-                        showNotification('Не удалось подключиться к станции', 'error');
-                        retryCount = 0;
-                        if (isPlaying) {
-                            isPlaying = false;
-                            playButton.innerHTML = '<i class="fas fa-play"></i>';
-                            document.getElementById('player-icon').classList.remove('playing');
-                            playbackIndicator.style.opacity = '0';
-                            stopVisualization();
-                        }
-                    }
-                });
-                
-                newAudio.src = url;
-                return newAudio;
-            }
-            
             playButton.onclick = function() {
                 isPlaying = !isPlaying;
                 if (isPlaying) {
                     playButton.innerHTML = '<i class="fas fa-pause"></i>';
                     document.getElementById('player-icon').classList.add('playing');
-                    const station = radioStations[currentStation];
-                    if (!station.isYouTube) {
-                        if (!audio) {
-                            audio = createAudioWithRetry(radioStations[currentStation].url);
-                        } else {
-                            audio.play().catch(() => {
-                                audio = createAudioWithRetry(radioStations[currentStation].url);
-                                audio.play();
-                            });
-                        }
-                    }
+                    if (!audio) { audio = new Audio(radioStations[currentStation].url); audio.volume = volumeSlider.value / 100; }
+                    audio.play().catch(e => { isPlaying = false; playButton.innerHTML = '<i class="fas fa-play"></i>'; document.getElementById('player-icon').classList.remove('playing'); });
                     playbackIndicator.style.opacity = '1';
                     startVisualization();
                 } else {
@@ -3771,95 +3911,46 @@
                     stopVisualization();
                 }
             };
-            
-            randomStationBtn.onclick = () => { 
-                currentStationIndex = Math.floor(Math.random() * stationIds.length); 
-                isPlaying = true; 
-                playButton.innerHTML = '<i class="fas fa-pause"></i>'; 
-                document.getElementById('player-icon').classList.add('playing'); 
-                changeStation(); 
-            };
-            prevButton.onclick = () => { 
-                currentStationIndex = (currentStationIndex - 1 + stationIds.length) % stationIds.length; 
-                isPlaying = true; 
-                playButton.innerHTML = '<i class="fas fa-pause"></i>'; 
-                document.getElementById('player-icon').classList.add('playing'); 
-                changeStation(); 
-            };
-            nextButton.onclick = () => { 
-                currentStationIndex = (currentStationIndex + 1) % stationIds.length; 
-                isPlaying = true; 
-                playButton.innerHTML = '<i class="fas fa-pause"></i>'; 
-                document.getElementById('player-icon').classList.add('playing'); 
-                changeStation(); 
-            };
+            randomStationBtn.onclick = () => { currentStationIndex = Math.floor(Math.random() * stationIds.length); isPlaying = true; playButton.innerHTML = '<i class="fas fa-pause"></i>'; document.getElementById('player-icon').classList.add('playing'); changeStation(); };
+            prevButton.onclick = () => { currentStationIndex = (currentStationIndex - 1 + stationIds.length) % stationIds.length; isPlaying = true; playButton.innerHTML = '<i class="fas fa-pause"></i>'; document.getElementById('player-icon').classList.add('playing'); changeStation(); };
+            nextButton.onclick = () => { currentStationIndex = (currentStationIndex + 1) % stationIds.length; isPlaying = true; playButton.innerHTML = '<i class="fas fa-pause"></i>'; document.getElementById('player-icon').classList.add('playing'); changeStation(); };
             refreshButton.onclick = function() {
                 this.classList.add('reload-animation');
                 setTimeout(() => this.classList.remove('reload-animation'), 500);
+                showReloadAnimation();
                 if (audio) {
                     const was = !audio.paused;
                     audio.pause();
-                    audio = createAudioWithRetry(radioStations[currentStation].url + '?nocache=' + Date.now());
-                    if (was) { 
-                        isPlaying = true; 
-                        playButton.innerHTML = '<i class="fas fa-pause"></i>'; 
-                        document.getElementById('player-icon').classList.add('playing'); 
-                        audio.play().catch(console.warn); 
-                    } else { 
-                        isPlaying = false; 
-                        playButton.innerHTML = '<i class="fas fa-play"></i>'; 
-                        document.getElementById('player-icon').classList.remove('playing'); 
-                    }
+                    audio = new Audio(radioStations[currentStation].url + '?nocache=' + Date.now());
+                    audio.volume = volumeSlider.value / 100;
+                    if (was) { isPlaying = true; playButton.innerHTML = '<i class="fas fa-pause"></i>'; document.getElementById('player-icon').classList.add('playing'); audio.play().catch(console.warn); }
+                    else { isPlaying = false; playButton.innerHTML = '<i class="fas fa-play"></i>'; document.getElementById('player-icon').classList.remove('playing'); }
                     changeGif();
-                    showNotification('Станция перезагружена', 'success');
                 }
             };
             
             function changeStation() {
-                if (audio) {
-                    audio.pause();
-                    audio = null;
-                }
-                
                 currentStation = stationIds[currentStationIndex];
-                const station = radioStations[currentStation];
-                
-                if (station.isYouTube) {
-                    setupYouTubeMode();
-                } else {
-                    removeYouTubeMode();
-                }
-                
                 updateStationInfo();
                 document.querySelectorAll('.station-list li').forEach(item => {
                     item.classList.remove('active');
                     if (item.getAttribute('data-station') === currentStation) item.classList.add('active');
                 });
-                
                 if (currentStation === 'minecraft') minecraftLoading.style.display = 'block';
                 else minecraftLoading.style.display = 'none';
-                
-                if (isPlaying && !station.isYouTube) {
-                    audio = createAudioWithRetry(radioStations[currentStation].url);
-                    audio.play().then(() => {
-                        minecraftLoading.style.display = 'none';
-                    }).catch(e => { 
-                        if (currentStation === 'minecraft') minecraftLoading.style.display = 'block';
-                    });
+                if (isPlaying) {
+                    if (audio) audio.pause();
+                    audio = new Audio(radioStations[currentStation].url);
+                    audio.volume = volumeSlider.value / 100;
+                    audio.play().then(() => minecraftLoading.style.display = 'none').catch(e => { if (currentStation === 'minecraft') minecraftLoading.style.display = 'block'; });
                     playbackIndicator.style.opacity = '1';
                     startVisualization();
-                } else if (station.isYouTube && isPlaying) {
-                    playbackIndicator.style.opacity = '1';
-                    startVisualization();
-                } else if (!isPlaying) {
-                    playbackIndicator.style.opacity = '0';
-                    stopVisualization();
                 }
-                
-                if (!station.isYouTube) {
-                    changeGif();
-                }
+                changeGif();
                 updateLikesUI();
+                if (currentStation === 'taylorswift') {
+                    fetchTaylorSwiftTrack();
+                }
             }
             
             function updateStationInfo() {
@@ -3885,8 +3976,7 @@
                 bars.forEach(bar => bar.style.height = '2px');
             }
             
-            // Реальный счетчик слушателей (имитация с использованием Firestore)
-            let userActivityRef;
+            // Счетчик слушателей (реальный через Firestore)
             function initListenersCounter() {
                 const userRef = db.collection('activeListeners').doc('counter');
                 const updateUserActivity = () => {
@@ -3902,46 +3992,13 @@
                         }, { merge: true });
                     }
                 };
-                
                 updateUserActivity();
                 setInterval(updateUserActivity, 30000);
-                
                 db.collection('activeListeners').where('lastSeen', '>', new Date(Date.now() - 60000)).onSnapshot(snapshot => {
-                    listenersCountSpan.textContent = snapshot.size;
+                    document.getElementById('listenersCountValue').textContent = snapshot.size;
                 });
             }
             initListenersCounter();
-            
-            function initPWA() {
-                if (window.matchMedia('(display-mode: standalone)').matches) isAppInstalled = true;
-                window.addEventListener('beforeinstallprompt', (e) => {
-                    e.preventDefault();
-                    deferredPrompt = e;
-                    const lastDismissed = localStorage.getItem('pwaDismissed');
-                    if (lastDismissed !== new Date().toDateString() && !isAppInstalled) {
-                        setTimeout(() => showPWAInstallPrompt(), 3000);
-                    }
-                });
-                window.addEventListener('appinstalled', () => { isAppInstalled = true; deferredPrompt = null; hidePWAInstallPrompt(); showNotification('Приложение установлено!', 'success'); });
-                if (window.navigator.standalone === true) isAppInstalled = true;
-            }
-            
-            function showPWAInstallPrompt() { if (deferredPrompt && !isAppInstalled) pwaInstallPrompt.style.display = 'block'; }
-            function hidePWAInstallPrompt() { pwaInstallPrompt.style.display = 'none'; }
-            function installPWA() { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { deferredPrompt = null; hidePWAInstallPrompt(); }); } }
-            
-            pwaInstallBtn.addEventListener('click', function() { installPWA(); });
-            pwaDismissBtn.addEventListener('click', function() { hidePWAInstallPrompt(); localStorage.setItem('pwaDismissed', new Date().toDateString()); });
-            
-            initPWA();
-            initFeedbackSystem();
-            initReactionsModal();
-            loadEmojis();
-            loadTrendingGifs();
-            loadLikes();
-            loadStationList();
-            updateStationInfo();
-            changeGif();
             
             document.addEventListener('click', () => document.getElementById('user-dropdown')?.classList.remove('show'));
         }

@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deynik Radio</title>
     
     <link rel="manifest" href="/manifest.json">
@@ -40,7 +40,6 @@
             flex-direction: column;
             padding: 12px;
             overflow: hidden;
-            transition: background-color 0.5s ease, color 0.5s ease;
         }
         
         .loading-screen {
@@ -162,8 +161,8 @@
             background: rgba(40, 40, 40, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
+            padding: 5px 10px;
+            border-radius: 15px;
             cursor: pointer;
             font-size: 0.8rem;
             transition: all 0.3s ease;
@@ -184,7 +183,7 @@
             background: rgba(40, 40, 40, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 5px 12px;
-            border-radius: 20px;
+            border-radius: 15px;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
@@ -282,14 +281,14 @@
             background: rgba(40, 40, 40, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 5px 10px;
+            border-radius: 15px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
             text-decoration: none;
         }
         
@@ -319,7 +318,6 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             min-width: 180px;
             overflow: hidden;
-            transition: all 0.3s ease;
         }
         
         .left-panel {
@@ -337,8 +335,8 @@
         
         .categories-container {
             display: flex;
-            gap: 6px;
-            margin-bottom: 12px;
+            gap: 10px;
+            margin-bottom: 15px;
             flex-wrap: wrap;
         }
         
@@ -346,10 +344,10 @@
             background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
             border: 1px solid rgba(29, 185, 84, 0.3);
             color: #B3B3B3;
-            padding: 5px 10px;
-            border-radius: 20px;
+            padding: 8px 16px;
+            border-radius: 25px;
             cursor: pointer;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             font-weight: bold;
             transition: all 0.3s ease;
             white-space: nowrap;
@@ -359,7 +357,7 @@
         .category-btn:hover {
             background: linear-gradient(135deg, #1DB954 0%, #157a3a 100%);
             color: white;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(29,185,84,0.3);
         }
         
@@ -396,14 +394,14 @@
         }
         
         .station-list li {
-            padding: 8px 10px;
-            margin: 3px 0;
+            padding: 10px 12px;
+            margin: 4px 0;
             background: rgba(40, 40, 40, 0.8);
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             border-left: 3px solid #1DB954;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -422,45 +420,21 @@
         
         .station-list li.christmas {
             border-left: 3px solid #FF0000;
-            position: relative;
-        }
-        
-        .station-list li.christmas::before {
-            content: "🎄";
-            position: absolute;
-            left: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.8rem;
         }
         
         .station-list li.halloween {
             border-left: 3px solid #FF6600;
-            position: relative;
-        }
-        
-        .station-list li.halloween::before {
-            content: "🎃";
-            position: absolute;
-            left: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.8rem;
-        }
-        
-        .station-list li.christmas.active, .station-list li.halloween.active {
-            box-shadow: 0 0 10px rgba(255, 102, 0, 0.3);
         }
         
         .station-likes {
             display: flex;
             align-items: center;
-            gap: 4px;
-            font-size: 0.7rem;
+            gap: 5px;
+            font-size: 0.8rem;
             color: #B3B3B3;
             cursor: pointer;
-            padding: 2px 5px;
-            border-radius: 12px;
+            padding: 3px 6px;
+            border-radius: 15px;
             transition: all 0.2s ease;
         }
         
@@ -469,7 +443,7 @@
         }
         
         .station-likes .likes-count {
-            min-width: 18px;
+            min-width: 20px;
             text-align: center;
         }
         
@@ -481,7 +455,6 @@
             color: #1DB954;
         }
         
-        /* Анимация разбитого сердца - белое как и сердечко */
         .broken-heart-effect {
             position: fixed;
             top: 50%;
@@ -523,9 +496,9 @@
         }
         
         .station-icon {
-            margin-right: 8px;
-            font-size: 0.8rem;
-            width: 18px;
+            margin-right: 10px;
+            font-size: 1rem;
+            width: 20px;
             text-align: center;
         }
         
@@ -533,18 +506,18 @@
             background: rgba(29, 185, 84, 0.2);
             border: 1px solid rgba(29, 185, 84, 0.5);
             color: #1DB954;
-            padding: 8px;
+            padding: 10px;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-align: center;
             margin-top: 5px;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            height: 32px;
+            gap: 8px;
+            height: 36px;
         }
         
         .random-station-btn:hover {
@@ -564,7 +537,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             position: relative;
-            transition: all 0.3s ease;
         }
         
         .gif-placeholder {
@@ -574,7 +546,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: all 0.5s ease;
         }
         
         .youtube-embed {
@@ -605,7 +576,6 @@
             pointer-events: none;
             z-index: 5;
             opacity: 0;
-            transition: opacity 0.5s ease;
             animation: softPulse 3s infinite ease-in-out;
         }
         
@@ -655,13 +625,13 @@
         }
         
         .now-playing h3 {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #1DB954;
             margin-bottom: 5px;
         }
         
         .now-playing p {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: #B3B3B3;
         }
         
@@ -747,7 +717,7 @@
             width: 48px;
             height: 48px;
             background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
-            border-radius: 12px;
+            border-radius: 50%;
             margin-right: 15px;
             display: flex;
             justify-content: center;
@@ -804,7 +774,7 @@
             color: white;
             width: 42px;
             height: 42px;
-            border-radius: 12px;
+            border-radius: 50%;
             font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -858,7 +828,7 @@
             color: white;
             width: 42px;
             height: 42px;
-            border-radius: 12px;
+            border-radius: 50%;
             font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -985,7 +955,7 @@
             background: rgba(29, 185, 84, 0.2);
             padding: 2px 8px;
             border-radius: 20px;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             color: #1DB954;
             display: flex;
             align-items: center;
@@ -1209,7 +1179,7 @@
             background: rgba(40, 40, 40, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 8px 10px 8px 70px;
+            padding: 8px 10px 8px 80px;
             border-radius: 15px;
             font-size: 0.8rem;
             outline: none;
@@ -1475,11 +1445,11 @@
         }
         
         .category-title {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             color: #1DB954;
-            margin-top: 8px;
-            margin-bottom: 4px;
-            padding-bottom: 2px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            padding-bottom: 3px;
             border-bottom: 1px solid rgba(29, 185, 84, 0.3);
         }
         
@@ -1701,35 +1671,13 @@
             display: none;
         }
         
-        .buffer-indicator {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.85);
-            padding: 12px 20px;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 20;
-            font-size: 0.9rem;
-            color: #1DB954;
-            border: 1px solid #1DB954;
-            box-shadow: 0 0 15px rgba(29, 185, 84, 0.3);
-        }
-        
-        .buffer-indicator i {
-            animation: spin 1s linear infinite;
+        .reload-animation {
+            animation: spin 0.5s linear;
         }
         
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-        
-        .reload-animation {
-            animation: spin 0.5s linear;
         }
         
         .reply-btn {
@@ -2078,16 +2026,15 @@
             transform: translate(-50%, -50%);
             background: rgba(0, 0, 0, 0.9);
             color: #1DB954;
-            padding: 20px 30px;
-            border-radius: 16px;
+            padding: 15px 25px;
+            border-radius: 10px;
             text-align: center;
             z-index: 10000;
             border: 2px solid #1DB954;
-            box-shadow: 0 0 30px rgba(29, 185, 84, 0.5);
+            box-shadow: 0 0 20px rgba(29, 185, 84, 0.5);
             display: none;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: bold;
-            backdrop-filter: blur(10px);
             letter-spacing: 1px;
         }
         
@@ -2429,11 +2376,6 @@
         <div id="volumeDisplayText"><i class="fas fa-volume-up"></i> 70%</div>
     </div>
     
-    <div class="buffer-indicator" id="bufferIndicator" style="display: none;">
-        <i class="fas fa-circle-notch"></i>
-        <span>Буферизация...</span>
-    </div>
-    
     <div class="container" id="mainContainer">
         <header>
             <div class="header-left">
@@ -2626,7 +2568,6 @@
         
         updateProgress(30, 'Firebase готов...');
         
-        // Радиостанции с обновлёнными ссылками
         const radioStations = {
             kissint: {
                 name: "KISS FM",
@@ -2762,7 +2703,7 @@
             },
             halloweenlofi: {
                 name: "Halloween LoFi",
-                url: "https://www.youtube.com/embed/3GQY80jyysQ?autoplay=1&mute=1&loop=1&playlist=3GQY80jyysQ",
+                url: "https://www.youtube.com/embed/3GQY80jyysQ?autoplay=1&mute=0&loop=1&playlist=3GQY80jyysQ",
                 description: "Стрим Halloween LoFi (Lo-Fi хоррор миксы)",
                 currentTrack: "Halloween LoFi Mix",
                 currentArtist: "YouTube Live",
@@ -2875,16 +2816,13 @@
             }
         };
         
-        // Гифки для Taylor Swift
         const taylorGifs = [
             'https://i.pinimg.com/originals/79/80/3b/79803b3ac8921977acae46b7ac15c111.gif',
             'https://i.pinimg.com/originals/ac/f9/a1/acf9a142488486f67b5232b38350a3a7.gif',
             'https://i.gifer.com/ZajA.gif',
             'https://i.pinimg.com/originals/b0/4a/14/b04a142d91051b21705dafd27c6cae5a.gif',
             'https://media1.tenor.com/m/-fAW9eIDzsUAAAAC/willow-taylor-swift.gif',
-            'https://media1.tenor.com/m/6QDe6RCa2pkAAAAC/taylor-swift-taylor.gif',
-            'https://i.gifer.com/WXoO.gif',
-            'https://i.pinimg.com/originals/69/87/81/698781048f6079f9b291bfa685fd236b.gif'
+            'https://media1.tenor.com/m/6QDe6RCa2pkAAAAC/taylor-swift-taylor.gif'
         ];
         
         const gifs = [
@@ -2937,7 +2875,6 @@
             const visualization = document.getElementById('visualization');
             const bars = visualization.querySelectorAll('.bar');
             const mainGif = document.getElementById('mainGif');
-            const gifContainer = document.getElementById('gifContainer');
             const playbackIndicator = document.getElementById('playback-indicator');
             const shareBtn = document.getElementById('share-btn');
             const chatInput = document.getElementById('chat-input');
@@ -2972,7 +2909,6 @@
             const likesCountBottom = document.getElementById('likes-count-bottom');
             const googleLoginBtn = document.getElementById('googleLoginBtn');
             const stationList = document.getElementById('station-list');
-            const bufferIndicator = document.getElementById('bufferIndicator');
             const listenersCountSpan = document.getElementById('listenersCountValue');
             
             const feedbackBtn = document.getElementById('feedbackBtn');
@@ -3017,13 +2953,12 @@
             let volumeDisplayTimeout = null;
             let retryCount = 0;
             let isYouTubeMode = false;
-            let currentYouTubePlayer = null;
+            let loadingTimeout = null;
             
             let currentRating = 0;
             let deferredPrompt = null;
             let isAppInstalled = false;
             
-            // Загрузка сохраненной громкости
             const savedVolume = localStorage.getItem('radioVolume');
             if (savedVolume !== null) {
                 volumeSlider.value = savedVolume;
@@ -3031,11 +2966,11 @@
             }
             
             function showBufferIndicator() {
-                bufferIndicator.style.display = 'flex';
+                // Не показываем надпись буферизации
             }
             
             function hideBufferIndicator() {
-                bufferIndicator.style.display = 'none';
+                // Не показываем надпись буферизации
             }
             
             function showBrokenHeart() {
@@ -3525,6 +3460,8 @@
                 }
             }
             
+            let volumeHideTimeout;
+            
             function updateVolume(value) {
                 if (value < 0) value = 0;
                 if (value > 100) value = 100;
@@ -3534,10 +3471,11 @@
                 updateVolumeIcon();
                 let volumeIcon = value == 0 ? 'fa-volume-mute' : value < 50 ? 'fa-volume-down' : 'fa-volume-up';
                 volumeDisplayText.innerHTML = `<i class="fas ${volumeIcon}"></i> ${Math.round(value)}%`;
-                if (volumeDisplayTimeout) clearTimeout(volumeDisplayTimeout);
+                
+                if (volumeHideTimeout) clearTimeout(volumeHideTimeout);
                 volumeDisplay.style.display = 'block';
                 volumeDisplay.classList.add('show');
-                volumeDisplayTimeout = setTimeout(() => {
+                volumeHideTimeout = setTimeout(() => {
                     volumeDisplay.classList.remove('show');
                     setTimeout(() => volumeDisplay.style.display = 'none', 300);
                 }, 2000);
@@ -3756,8 +3694,6 @@
                 const newAudio = new Audio();
                 newAudio.volume = volumeSlider.value / 100;
                 
-                let loadingTimeout;
-                
                 const clearLoading = () => {
                     if (loadingTimeout) clearTimeout(loadingTimeout);
                     hideBufferIndicator();
@@ -3770,7 +3706,7 @@
                             retryCount++;
                             showNotification('Поток загружается дольше обычного...', 'info');
                         }
-                    }, 3000);
+                    }, 5000);
                 });
                 
                 newAudio.addEventListener('canplay', () => {
@@ -3813,13 +3749,16 @@
                 if (isPlaying) {
                     playButton.innerHTML = '<i class="fas fa-pause"></i>';
                     document.getElementById('player-icon').classList.add('playing');
-                    if (!audio) {
-                        audio = createAudioWithRetry(radioStations[currentStation].url);
-                    } else {
-                        audio.play().catch(() => {
+                    const station = radioStations[currentStation];
+                    if (!station.isYouTube) {
+                        if (!audio) {
                             audio = createAudioWithRetry(radioStations[currentStation].url);
-                            audio.play();
-                        });
+                        } else {
+                            audio.play().catch(() => {
+                                audio = createAudioWithRetry(radioStations[currentStation].url);
+                                audio.play();
+                            });
+                        }
                     }
                     playbackIndicator.style.opacity = '1';
                     startVisualization();
@@ -3945,18 +3884,32 @@
                 bars.forEach(bar => bar.style.height = '2px');
             }
             
-            // Счетчик слушателей (имитация)
-            let listenerInterval;
-            function startListenersCounter() {
-                if (listenerInterval) clearInterval(listenerInterval);
-                listenerInterval = setInterval(() => {
-                    const base = 15;
-                    const variation = Math.floor(Math.random() * 10);
-                    listenersCountSpan.textContent = base + variation;
-                }, 30000);
-                listenersCountSpan.textContent = 18;
+            // Реальный счетчик слушателей (имитация с использованием Firestore)
+            let userActivityRef;
+            function initListenersCounter() {
+                const userRef = db.collection('activeListeners').doc('counter');
+                const updateUserActivity = () => {
+                    if (auth.currentUser) {
+                        userRef.set({ 
+                            lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                            userId: auth.currentUser.uid 
+                        }, { merge: true });
+                    } else {
+                        userRef.set({ 
+                            lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                            userId: 'anonymous_' + Math.random().toString(36).substr(2, 9)
+                        }, { merge: true });
+                    }
+                };
+                
+                updateUserActivity();
+                setInterval(updateUserActivity, 30000);
+                
+                db.collection('activeListeners').where('lastSeen', '>', new Date(Date.now() - 60000)).onSnapshot(snapshot => {
+                    listenersCountSpan.textContent = snapshot.size;
+                });
             }
-            startListenersCounter();
+            initListenersCounter();
             
             function initPWA() {
                 if (window.matchMedia('(display-mode: standalone)').matches) isAppInstalled = true;

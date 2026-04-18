@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deynik Radio</title>
     
     <link rel="manifest" href="/manifest.json">
@@ -55,15 +55,12 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.5s ease;
         }
         
         .loading-gif {
             width: 200px;
             height: 200px;
             background: url('https://i.pinimg.com/originals/3b/06/ee/3b06ee2cc6a317ccdc098b4ab36a8388.gif') center/cover no-repeat;
-            border-radius: 50%;
-            animation: pulse 1.5s ease-in-out infinite;
         }
         
         .loading-text {
@@ -73,6 +70,7 @@
             font-weight: 700;
             color: #1DB954;
             text-shadow: 0 0 10px rgba(29, 185, 84, 0.7);
+            letter-spacing: 1px;
             animation: flicker 1.5s infinite alternate;
         }
         
@@ -99,13 +97,22 @@
         }
         
         @keyframes flicker {
-            0%, 100% { opacity: 1; text-shadow: 0 0 10px rgba(29,185,84,0.7); }
-            50% { opacity: 0.7; text-shadow: 0 0 20px rgba(29,185,84,0.5); }
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(29,185,84,0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(29,185,84,0); }
+            0%, 19%, 21%, 23%, 25%, 27%, 29%, 31%, 33%, 35%, 37%, 39%, 80%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 10px rgba(29, 185, 84, 0.7), 0 0 20px rgba(29, 185, 84, 0.5);
+            }
+            20%, 22%, 24%, 26%, 28%, 30%, 32%, 34%, 36%, 38%, 40%, 60% {
+                opacity: 0.6;
+                text-shadow: 0 0 5px rgba(29, 185, 84, 0.5);
+            }
+            65%, 70%, 75% {
+                opacity: 0.9;
+                text-shadow: 0 0 15px rgba(29, 185, 84, 0.6), 0 0 25px rgba(29, 185, 84, 0.4);
+            }
+            85%, 90%, 95% {
+                opacity: 0.7;
+                text-shadow: 0 0 8px rgba(29, 185, 84, 0.6);
+            }
         }
         
         .container {
@@ -127,8 +134,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
         }
         
         .header-left {
@@ -137,7 +142,6 @@
             gap: 10px;
             flex: 1;
             justify-content: flex-start;
-            flex-wrap: wrap;
         }
         
         .header-center {
@@ -152,7 +156,6 @@
             gap: 10px;
             flex: 1;
             justify-content: flex-end;
-            flex-wrap: wrap;
         }
         
         .google-login-btn {
@@ -2335,7 +2338,7 @@
             <div class="pwa-install-icon"><i class="fas fa-download"></i></div>
             <div class="pwa-install-text">
                 <h4>Установить Deynik Radio</h4>
-                <p>Добавьте приложение на главный экран</p>
+                <p>Добавьте приложение на главный экран для быстрого доступа</p>
             </div>
             <div class="pwa-install-buttons">
                 <button class="pwa-install-btn" id="pwaInstallBtn">Установить</button>
@@ -2353,6 +2356,7 @@
                 <div class="share-info">
                     <h4>Deynik Radio</h4>
                     <p>Слушайте лучшие радиостанции</p>
+                    <p style="font-size: 0.8rem; color: #888;">https://deyniik.github.io/DeynikRadio/</p>
                 </div>
             </div>
             <div class="share-buttons-simple">
@@ -2386,10 +2390,12 @@
         <div class="feedback-modal-content">
             <span class="close" id="closeFeedbackModal">&times;</span>
             <h3 style="text-align: center; margin-bottom: 20px;">Отзывы о Deynik Radio</h3>
+            
             <div class="feedback-tabs">
                 <div class="feedback-tab active" data-tab="write-feedback">Оставить отзыв</div>
                 <div class="feedback-tab" data-tab="view-feedback">Посмотреть отзывы</div>
             </div>
+            
             <div class="feedback-tab-content active" id="write-feedback">
                 <div class="rating-stars" id="ratingStars">
                     <div class="star" data-rating="1"></div>
@@ -2398,12 +2404,17 @@
                     <div class="star" data-rating="4"></div>
                     <div class="star" data-rating="5"></div>
                 </div>
-                <textarea class="feedback-textarea" id="feedbackText" placeholder="Расскажите о вашем опыте..." maxlength="500"></textarea>
+                <textarea class="feedback-textarea" id="feedbackText" placeholder="Расскажите о вашем опыте использования радио..." maxlength="500"></textarea>
                 <button class="submit-feedback" id="submitFeedbackBtn">Отправить отзыв</button>
             </div>
+            
             <div class="feedback-tab-content" id="view-feedback">
-                <div class="average-rating">Средняя оценка: <span id="averageRatingValue">0</span>/5</div>
-                <div class="reviews-list" id="reviewsList"><div class="no-reviews">Пока нет отзывов</div></div>
+                <div class="average-rating" id="averageRating">
+                    Средняя оценка: <span id="averageRatingValue">0</span>/5
+                </div>
+                <div class="reviews-list" id="reviewsList">
+                    <div class="no-reviews">Пока нет отзывов. Будьте первым!</div>
+                </div>
             </div>
         </div>
     </div>
@@ -2412,22 +2423,46 @@
         <div class="modal-content">
             <span class="close" id="closeSupportModal">&times;</span>
             <h3 style="text-align: center;">Поддержать проект</h3>
+            <p style="margin: 15px 0; text-align: center;">Если вам нравится наше радио, вы можете поддержать его развитие:</p>
+            
             <div class="support-options">
                 <a href="https://www.donationalerts.com/r/deynikk" target="_blank" class="support-option">
                     <div class="support-icon"><i class="fas fa-donate"></i></div>
-                    <div class="support-info"><h4>Donation Alerts</h4><p>Быстрые пожертвования</p></div>
+                    <div class="support-info">
+                        <h4>Donation Alerts</h4>
+                        <p>Быстрые и безопасные пожертвования</p>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color: #B3B3B3;"></i>
                 </a>
+                
+                <a href="https://dalink.to/deynikk" target="_blank" class="support-option">
+                    <div class="support-icon"><i class="fas fa-link"></i></div>
+                    <div class="support-info">
+                        <h4>Dalink</h4>
+                        <p>Альтернативный способ поддержки</p>
+                    </div>
+                    <i class="fas fa-external-link-alt" style="color: #B3B3B3;"></i>
+                </a>
+                
                 <div class="support-option" style="cursor: default;">
                     <div class="support-icon"><i class="fas fa-credit-card"></i></div>
-                    <div class="support-info"><h4>Банковская карта</h4><div class="card-info">4081 7810 5059 7275 0268</div></div>
+                    <div class="support-info">
+                        <h4>Банковская карта (Альфа Банк)</h4>
+                        <p>Прямой перевод на карту</p>
+                        <div class="card-info">4081 7810 5059 7275 0268</div>
+                    </div>
                 </div>
+            </div>
+            
+            <div class="share-buttons-simple" style="margin-top: 20px;">
+                <button class="share-option" id="closeSupportBtn"><i class="fas fa-times"></i> Закрыть</button>
             </div>
         </div>
     </div>
     
     <div class="minecraft-loading" id="minecraftLoading">
         <h3>Minecraft Lo-Fi</h3>
-        <p>Загрузка станции, подождите...</p>
+        <p>Эта станция загружается дольше обычного. Пожалуйста, подождите немного...</p>
     </div>
     
     <div class="volume-display" id="volumeDisplay">
@@ -2458,7 +2493,11 @@
         
         <div class="content">
             <div class="side-panel left-panel crt-effect">
-                <div class="stations-header"><h2>Радиостанции</h2><span class="station-count">11</span></div>
+                <div class="stations-header">
+                    <h2>Радиостанции</h2>
+                    <span class="station-count">12</span>
+                </div>
+                
                 <div class="categories-container">
                     <button class="category-btn active" data-category="all">Все</button>
                     <button class="category-btn" data-category="lofi">Lo-Fi</button>
@@ -2466,8 +2505,12 @@
                     <button class="category-btn" data-category="no-copyright">Без АП</button>
                     <button class="category-btn" data-category="top">Лучшие</button>
                 </div>
+                
                 <ul class="station-list" id="station-list"></ul>
-                <div class="random-station-btn" id="random-station-btn"><i class="fas fa-random"></i> Случайное радио</div>
+                
+                <div class="random-station-btn" id="random-station-btn">
+                    <i class="fas fa-random"></i> Случайное радио
+                </div>
             </div>
             
             <div class="gif-container crt-effect">
@@ -2492,11 +2535,24 @@
                     <p>Текущий трек: <span style="color: #1DB954;" id="current-track-info">"Coffee Break"</span></p>
                     <p>Исполнитель: <span style="color: #1DB954;" id="current-artist-info">Beatsmith</span></p>
                 </div>
-                <div style="margin-top: 20px;"><h3>Качество</h3><p id="quality">128 kbps</p></div>
+                
+                <div style="margin-top: 20px;">
+                    <h3>Качество</h3>
+                    <p id="quality">128 kbps</p>
+                </div>
                 
                 <div class="chat-container">
-                    <div class="chat-header"><i class="fas fa-comments"></i><h3>Чат</h3></div>
-                    <div class="chat-messages" id="chat-messages"></div>
+                    <div class="chat-header">
+                        <i class="fas fa-comments"></i>
+                        <h3>Чат</h3>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="message">
+                            <span class="message-user">Система:</span>
+                            Добро пожаловать в чат Deynik Radio!
+                            <span class="message-time">только что</span>
+                        </div>
+                    </div>
                     <div class="chat-input-container" id="chat-input-container">
                         <button class="emoji-btn" id="emoji-btn"><i class="far fa-smile"></i></button>
                         <button class="gif-btn" id="gif-btn">GIF</button>
@@ -2537,11 +2593,13 @@
                         <p id="player-description">Лучшие мировые хиты в отличном качестве</p>
                     </div>
                 </div>
+                
                 <div class="player-center">
                     <button class="btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
                     <button class="btn btn-play" id="play-btn"><i class="fas fa-play"></i></button>
                     <button class="btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
                 </div>
+                
                 <div class="player-buttons">
                     <div class="btn-like-container">
                         <span class="likes-count-bottom" id="likes-count-bottom">0</span>
@@ -2551,6 +2609,7 @@
                     <button class="btn" id="share-btn" title="Поделиться"><i class="fas fa-share-alt"></i></button>
                 </div>
             </div>
+            
             <div class="player-bottom">
                 <div class="volume-control">
                     <span class="volume-icon"><i class="fas fa-volume-down"></i></span>
@@ -2568,149 +2627,1917 @@
         <div class="heart-text">Нравится!</div>
     </div>
 
-    <div class="notification" id="notification"></div>
+    <div class="notification" id="notification">Текст уведомления</div>
 
     <script>
-        (function() {
-            // Обновление прогресса
-            const progressBar = document.getElementById('loadingProgress');
-            const loadingStatus = document.getElementById('loadingStatus');
-            
-            function updateProgress(percent, status) {
-                if (progressBar) progressBar.style.width = Math.min(percent, 100) + '%';
-                if (loadingStatus && status) loadingStatus.textContent = status;
+        // Обновление прогресса загрузки
+        const progressBar = document.getElementById('loadingProgress');
+        const loadingStatus = document.getElementById('loadingStatus');
+        let progress = 0;
+        
+        function updateProgress(percent, status) {
+            progress = Math.min(percent, 100);
+            if (progressBar) progressBar.style.width = progress + '%';
+            if (loadingStatus && status) loadingStatus.textContent = status;
+        }
+        
+        updateProgress(5, 'Загрузка конфигурации...');
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyBk4nxZ1ldNQUCxsbgaeYTkm9stq0o9o2Q",
+            authDomain: "deygram-e4814.firebaseapp.com",
+            projectId: "deygram-e4814",
+            storageBucket: "deygram-e4814.firebasestorage.app",
+            messagingSenderId: "591207353726",
+            appId: "1:591207353726:web:d20f5e648d3daf86fcb72f"
+        };
+
+        updateProgress(15, 'Подключение к Firebase...');
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        updateProgress(30, 'Firebase готов...');
+        
+        // Радиостанции
+        const radioStations = {
+            kissint: {
+                name: "KISS FM",
+                url: "https://cloud.revma.ihrhls.com/zc185?rj-org=n3bb-e2&rj-ttl=5&rj-tok=AAABmoBxYDMAAxQEnNjentV4ug",
+                description: "Лучшие мировые хиты в отличном качестве",
+                currentTrack: "Популярные хиты",
+                currentArtist: "KISS FM",
+                quality: "128kbps",
+                icon: "fas fa-heart",
+                category: "international"
+            },
+            gaga: {
+                name: "Lady Gaga Radio",
+                url: "https://2.mystreaming.net/er/ladygagahits/icecast.audio",
+                description: "Всем молчать! Играет мать!",
+                currentTrack: "Lady Gaga Hits",
+                currentArtist: "Lady Gaga",
+                quality: "128kbps",
+                icon: "fas fa-paw",
+                category: "international"
+            },
+            rp: {
+                name: "Radio Paradise",
+                url: "https://stream.radioparadise.com/flac",
+                description: "Аудиофильский микс рока и электроники без авторских прав",
+                currentTrack: "Eclectic Mix",
+                currentArtist: "Radio Paradise",
+                quality: "FLAC 900+kbps",
+                icon: "fas fa-music",
+                category: "no-copyright"
+            },
+            lofi: {
+                name: "LoFi Girl",
+                url: "https://play.streamafrica.net/lofiradio",
+                description: "Легендарный лоу-фай стрим без авторских прав",
+                currentTrack: "Chill Beats",
+                currentArtist: "LoFi Artist",
+                quality: "192kbps",
+                icon: "fas fa-moon",
+                category: "lofi"
+            },
+            z100: {
+                name: "Z100 New York",
+                url: "https://stream.revma.ihrhls.com/zc1477",
+                description: "Поп-хиты от iHeartRadio",
+                currentTrack: "Top 40 Hit",
+                currentArtist: "Popular Artist",
+                quality: "128kbps",
+                icon: "fas fa-broadcast-tower",
+                category: "international"
+            },
+            jazz: {
+                name: "Jazz24",
+                url: "https://knkx-live-a.edge.audiocdn.com/6285_128k?aw_0_1st.playerid=jazz24.org&uuid=s9a9vs32",
+                description: "Лучшие джазовые композиции",
+                currentTrack: "Smooth Jazz",
+                currentArtist: "Jazz Master",
+                quality: "192kbps",
+                icon: "fas fa-music",
+                category: "international"
+            },
+            chillhop: {
+                name: "Chillhop Radio",
+                url: "https://stream-178.zeno.fm/f3wvbbqmdg8uv",
+                description: "Расслабляющие биты для работы и отдыха без авторских прав",
+                currentTrack: "Chill Beats",
+                currentArtist: "Chillhop Music",
+                quality: "128kbps",
+                icon: "fas fa-moon",
+                category: "lofi"
+            },
+            lofihiphop: {
+                name: "LoFi Hip Hop",
+                url: "https://stream-158.zeno.fm/0r0xa792kwzuv",
+                description: "Лучшие хип-хоп биты без авторских прав",
+                currentTrack: "Hip Hop Beats",
+                currentArtist: "LoFi Artist",
+                quality: "128kbps",
+                icon: "fas fa-headphones",
+                category: "lofi"
+            },
+            minecraft: {
+                name: "MINECRAFT Lo Fi",
+                url: "https://stream-173.zeno.fm/kp41ftw3zehvv",
+                description: "Уютные Minecraft саундтреки в Lo-Fi аранжировке",
+                currentTrack: "Minecraft Ambience",
+                currentArtist: "C418 Lo-Fi Remix",
+                quality: "128kbps",
+                icon: "fas fa-cube",
+                category: "no-copyright"
+            },
+            halloween: {
+                name: "Halloween Radio",
+                url: "https://radio1.streamserver.link:8000/hrm-aac",
+                description: "Музыка для Хэллоуина и ужастиков",
+                currentTrack: "Spooky Sounds",
+                currentArtist: "Halloween FM",
+                quality: "128kbps",
+                icon: "fas fa-ghost",
+                category: "thematic"
+            },
+            christmas: {
+                name: "Christmas Radio",
+                url: "https://1000christmashits.stream.laut.fm/1000christmashits",
+                description: "Новогодние и рождественские хиты",
+                currentTrack: "Christmas Songs",
+                currentArtist: "Various Artists",
+                quality: "128kbps",
+                icon: "fas fa-tree",
+                category: "thematic",
+                isChristmas: true
             }
+        };
+
+        const gifs = [
+            'https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif',
+            'https://i.pinimg.com/originals/20/c8/3d/20c83d1cb257a6c4e5f68960ef0c3046.gif',
+            'https://i.pinimg.com/originals/9a/99/a1/9a99a10635e27f336c2cd6bec02b2aae.gif',
+            'https://i.pinimg.com/originals/13/45/50/13455040862ac9b8e465185878838cf1.gif',
+            'https://i.pinimg.com/originals/93/08/1e/93081e266f7f0b20778d2736978b2e84.gif',
+            'https://i.gifer.com/YMm7.gif',
+            'https://i.pinimg.com/originals/51/7d/50/517d50010dfe6e71d17548cae0f6f0dc.gif',
+            'https://i.pinimg.com/originals/43/1c/e5/431ce5d15aab86f66a91ec9a07c9114f.gif',
+            'https://i.pinimg.com/originals/61/af/12/61af12d5fb3c469039dbdf63d783c95d.gif',
+            'https://i.pinimg.com/originals/2f/10/ce/2f10ce69b96c0611989308b0abc68e70.gif',
+            'https://i.pinimg.com/originals/6a/d2/ee/6ad2ee191d434a996766b500a1eb197e.gif',
+            'https://markiled.github.io/Images/Art/Commissions/Commission-2020-Mar-Raul.gif',
+            'https://i.pinimg.com/originals/6e/fb/de/6efbde2becc91166553e90ca975aaf07.gif',
+            'https://i.pinimg.com/originals/dc/9c/38/dc9c38d59ade3c7e307f64d52b3eba32.gif',
+            'https://i.pinimg.com/originals/0e/85/86/0e8586ecd90850bf236dd7efdf5fa594.gif',
+            'https://steamuserimages-a.akamaihd.net/ugc/9667873298027977/D91C419D674235E03A5ED1DD814E2C7B2A3AFEB5/',
+            'https://i.pinimg.com/originals/36/e2/3a/36e23aa11a22646e9c5f611d3b7c56f7.gif',
+            'https://i.pinimg.com/originals/e4/c3/9a/e4c39a73c1d9f9d32ca69f9ea0783c66.gif',
+            'https://i.pinimg.com/originals/0b/49/e3/0b49e3c7cdf6f64da625dd7b2ed94312.gif',
+            'https://i.pinimg.com/originals/5d/1b/b3/5d1bb3546868cf3791880fa5720da7a2.gif',
+            'https://i.pinimg.com/originals/c4/67/13/c4671376fad5ff9cc8a83c3f2174fd73.gif',
+            'https://media1.tenor.com/m/znpkuJKdqGkAAAAd/the-simpsons-lisa-simpson.gif',
+            'https://i.pinimg.com/originals/22/1e/a5/221ea5d2720d805681eea3b689160671.gif',
+            'https://media1.tenor.com/m/joAGLtB1n8IAAAAd/the-simpsons-bart.gif',
+            'https://i.gifer.com/KGXA.gif',
+            'https://avatars.dzeninfra.ru/get-zen_doc/2907131/pub_5f6762b8b142594c536fda3a_5f6770b4c833846a1ddf46ac/orig',
+            'https://i.pinimg.com/originals/c2/5c/ae/c25cae326dcdc03ce3ced251d45a34b6.gif',
+            'https://i.pinimg.com/originals/e4/25/d3/e425d3861a7d09173b6f31faefd4460a.gif',
+            'https://i.pinimg.com/originals/74/1b/06/741b066eff82e56aaab12962512ba741.gif'
+        ];
+
+        const minecraftGifs = [
+            'https://i.pinimg.com/originals/44/f2/f6/44f2f6325aa9bf8c93ed6c3d6e8f8d57.gif',
+            'https://i.pinimg.com/originals/05/cf/1b/05cf1b97379bb751d2bf03b55ee16c5e.gif',
+            'https://i.pinimg.com/originals/da/85/43/da8543494a3baaec4fc61c2b952f8de0.gif',
+            'https://i.pinimg.com/originals/d9/04/03/d9040300483e5e5465e56ddb713eeb1b.gif',
+            'https://i.pinimg.com/originals/ac/25/3e/ac253eae753d0442a50f061051956cef.gif',
+            'https://i.pinimg.com/originals/2a/af/bf/2aafbff9c75012c41c2c9abd92d5de35.gif',
+            'https://i.pinimg.com/originals/a3/b4/55/a3b4558c0f0963b7a6135cc4a63b0d15.gif',
+            'https://i.pinimg.com/originals/8a/34/3e/8a343ea387b21d843715d0a3a86059ed.gif'
+        ];
+
+        const stationIds = Object.keys(radioStations);
+        
+        const emojiCategories = {
+            all: ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🤩", "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🤭", "🤫", "🤥", "😶", "😐", "😑", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "🥱", "😴", "🤤", "😪", "😵", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👹", "👺", "🤡", "💩", "👻", "💀", "☠️", "👽", "👾", "🤖", "🎃"],
+            smileys: ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🤩", "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🤭", "🤫", "🤥", "😶", "😐", "😑", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "🥱", "😴", "🤤", "😪", "😵", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👹", "👺", "🤡", "💩", "👻", "💀", "☠️", "👽", "👾", "🤖", "🎃"],
+            hearts: ["❤️", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍", "🤎", "💔", "❣️", "💕", "💞", "💓", "💗", "💖", "💘", "💝", "💟"],
+            objects: ["🔔", "🎵", "🎶", "🎼", "🎧", "🎤", "🎷", "🎸", "🎹", "🎺", "🎻", "🥁", "📻", "📱", "💻", "🖥️", "🖨️", "🎥", "📹", "📼", "🔍", "🔎", "💡", "📔", "📒", "📕", "📗", "📘", "📙", "📚", "📖", "🔖", "🎯", "🧩", "🚀", "⭐", "🌟", "🎁", "🎉", "🎊", "🎈", "🎂", "🍰", "🧁", "🥧", "🍦", "🍨", "🍩", "🍪", "🎀", "🎗️", "🎟️", "🎫", "🏆", "🏅", "🥇", "🥈", "🥉", "⚽", "🏀", "🏈", "⚾", "🥎", "🎾", "🏐", "🏉", "🥏", "🎱", "🪀", "🏓", "🏸", "🏒", "🏑", "🥍", "🏏", "🎿", "⛷️", "🏂", "🪂", "🏋️", "🤼", "🤸", "⛹️", "🤾", "🏌️", "🏇", "🧘"]
+        };
+        
+        updateProgress(50, 'Загрузка интерфейса...');
+        
+        window.onload = function() {
+            updateProgress(70, 'Запуск приложения...');
+            setTimeout(function() {
+                updateProgress(100, 'Готово!');
+                setTimeout(function() {
+                    document.getElementById('loadingScreen').style.display = 'none';
+                    document.getElementById('mainContainer').style.display = 'flex';
+                    initApp();
+                }, 300);
+            }, 500);
+        };
+
+        function initApp() {
+            const playButton = document.getElementById('play-btn');
+            const prevButton = document.getElementById('prev-btn');
+            const nextButton = document.getElementById('next-btn');
+            const refreshButton = document.getElementById('refresh-btn');
+            const likeButton = document.getElementById('like-btn');
+            const randomStationBtn = document.getElementById('random-station-btn');
+            const volumeSlider = document.getElementById('volume-slider');
+            const visualization = document.getElementById('visualization');
+            const bars = visualization.querySelectorAll('.bar');
+            const mainGif = document.getElementById('mainGif');
+            const playbackIndicator = document.getElementById('playback-indicator');
+            const shareBtn = document.getElementById('share-btn');
+            const chatInput = document.getElementById('chat-input');
+            const chatSendBtn = document.getElementById('chat-send-btn');
+            const chatMessages = document.getElementById('chat-messages');
+            const shareModal = document.getElementById('shareModal');
+            const closeShareModal = document.getElementById('closeShareModal');
+            const copyLinkBtn = document.getElementById('copyLinkBtn');
+            const shareInChatBtn = document.getElementById('shareInChatBtn');
+            const minecraftLoading = document.getElementById('minecraftLoading');
+            const notification = document.getElementById('notification');
+            const emojiBtn = document.getElementById('emoji-btn');
+            const gifBtn = document.getElementById('gif-btn');
+            const emojiPicker = document.getElementById('emoji-picker');
+            const gifPicker = document.getElementById('gif-picker');
+            const emojiSearch = document.getElementById('emoji-search');
+            const gifSearch = document.getElementById('gif-search');
+            const emojiGrid = document.getElementById('emoji-grid');
+            const gifResults = document.getElementById('gif-results');
+            const emojiCategoryBtns = document.querySelectorAll('.emoji-category');
+            const gifTrendingBtns = document.querySelectorAll('.gif-trending-btn');
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            const reactionsModal = document.getElementById('reactionsModal');
+            const closeReactionsModal = document.getElementById('closeReactionsModal');
+            const reactionsGrid = document.getElementById('reactionsGrid');
+            const nicknameModal = document.getElementById('nicknameModal');
+            const closeNicknameModal = document.getElementById('closeNicknameModal');
+            const cancelNicknameBtn = document.getElementById('cancelNicknameBtn');
+            const saveNicknameBtn = document.getElementById('saveNicknameBtn');
+            const nicknameInput = document.getElementById('nickname-input');
+            const heartEffect = document.getElementById('heartEffect');
+            const likesCountBottom = document.getElementById('likes-count-bottom');
+            const googleLoginBtn = document.getElementById('googleLoginBtn');
+            const stationList = document.getElementById('station-list');
             
-            updateProgress(5, 'Загрузка...');
+            const feedbackBtn = document.getElementById('feedbackBtn');
+            const feedbackModal = document.getElementById('feedbackModal');
+            const closeFeedbackModal = document.getElementById('closeFeedbackModal');
+            const ratingStars = document.getElementById('ratingStars');
+            const feedbackText = document.getElementById('feedbackText');
+            const submitFeedbackBtn = document.getElementById('submitFeedbackBtn');
+            const feedbackTabs = document.querySelectorAll('.feedback-tab');
+            const feedbackTabContents = document.querySelectorAll('.feedback-tab-content');
+            const reviewsList = document.getElementById('reviewsList');
+            const averageRatingValue = document.getElementById('averageRatingValue');
             
-            // Firebase конфиг
-            const firebaseConfig = {
-                apiKey: "AIzaSyBk4nxZ1ldNQUCxsbgaeYTkm9stq0o9o2Q",
-                authDomain: "deygram-e4814.firebaseapp.com",
-                projectId: "deygram-e4814",
-                storageBucket: "deygram-e4814.firebasestorage.app",
-                messagingSenderId: "591207353726",
-                appId: "1:591207353726:web:d20f5e648d3daf86fcb72f"
-            };
+            const supportBtn = document.getElementById('supportBtn');
+            const supportModal = document.getElementById('supportModal');
+            const closeSupportModal = document.getElementById('closeSupportModal');
+            const closeSupportBtn = document.getElementById('closeSupportBtn');
             
-            updateProgress(15, 'Подключение к серверу...');
+            const mentionsList = document.getElementById('mentionsList');
             
-            let firebaseReady = false;
-            try {
-                firebase.initializeApp(firebaseConfig);
-                firebaseReady = true;
-                updateProgress(30, 'Firebase готов...');
-            } catch(e) {
-                console.warn('Firebase init error:', e);
-                updateProgress(30, 'Локальный режим...');
-            }
+            const volumeDisplay = document.getElementById('volumeDisplay');
+            const volumeDisplayText = document.getElementById('volumeDisplayText');
             
-            const auth = firebaseReady ? firebase.auth() : null;
-            const db = firebaseReady ? firebase.firestore() : null;
+            const liteToggle = document.getElementById('liteToggle');
             
-            // Радиостанции
-            const radioStations = {
-                kissint: { name: "KISS FM", url: "https://cloud.revma.ihrhls.com/zc185", description: "Лучшие мировые хиты", currentTrack: "Популярные хиты", currentArtist: "KISS FM", quality: "128kbps", icon: "fas fa-heart", category: "international" },
-                gaga: { name: "Lady Gaga Radio", url: "https://2.mystreaming.net/er/ladygagahits/icecast.audio", description: "Всем молчать! Играет мать!", currentTrack: "Lady Gaga Hits", currentArtist: "Lady Gaga", quality: "128kbps", icon: "fas fa-paw", category: "international" },
-                rp: { name: "Radio Paradise", url: "https://stream.radioparadise.com/mp3-192", description: "Аудиофильский микс", currentTrack: "Eclectic Mix", currentArtist: "Radio Paradise", quality: "192kbps", icon: "fas fa-music", category: "no-copyright" },
-                lofi: { name: "LoFi Girl", url: "https://play.streamafrica.net/lofiradio", description: "Легендарный лоу-фай", currentTrack: "Chill Beats", currentArtist: "LoFi Artist", quality: "128kbps", icon: "fas fa-moon", category: "lofi" },
-                z100: { name: "Z100 New York", url: "https://stream.revma.ihrhls.com/zc1477", description: "Поп-хиты от iHeartRadio", currentTrack: "Top 40 Hit", currentArtist: "Popular Artist", quality: "128kbps", icon: "fas fa-broadcast-tower", category: "international" },
-                jazz: { name: "Jazz24", url: "https://playerservices.streamtheworld.com/api/livestream-redirect/KNKX_FM.mp3", description: "Лучшие джазовые композиции", currentTrack: "Smooth Jazz", currentArtist: "Jazz Master", quality: "128kbps", icon: "fas fa-music", category: "international" },
-                chillhop: { name: "Chillhop Radio", url: "https://streams.radiocorp.nl/web10_mp3", description: "Расслабляющие биты", currentTrack: "Chill Beats", currentArtist: "Chillhop Music", quality: "128kbps", icon: "fas fa-moon", category: "lofi" },
-                lofihiphop: { name: "LoFi Hip Hop", url: "https://stream-158.zeno.fm/0r0xa792kwzuv", description: "Хип-хоп биты", currentTrack: "Hip Hop Beats", currentArtist: "LoFi Artist", quality: "128kbps", icon: "fas fa-headphones", category: "lofi" },
-                minecraft: { name: "MINECRAFT Lo Fi", url: "https://stream-173.zeno.fm/kp41ftw3zehvv", description: "Minecraft саундтреки", currentTrack: "Minecraft Ambience", currentArtist: "C418 Lo-Fi", quality: "128kbps", icon: "fas fa-cube", category: "lofi" },
-                halloween: { name: "Halloween Radio", url: "https://radio1.streamserver.link:8000/hrm-aac", description: "Музыка для Хэллоуина", currentTrack: "Spooky Sounds", currentArtist: "Halloween FM", quality: "128kbps", icon: "fas fa-ghost", category: "thematic" },
-                christmas: { name: "Christmas Radio", url: "https://1000christmashits.stream.laut.fm/1000christmashits", description: "Новогодние хиты", currentTrack: "Christmas Songs", currentArtist: "Various Artists", quality: "128kbps", icon: "fas fa-tree", category: "thematic", isChristmas: true }
-            };
+            const downloadAppBtn = document.getElementById('downloadAppBtn');
+            const pwaInstallPrompt = document.getElementById('pwaInstallPrompt');
+            const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+            const pwaDismissBtn = document.getElementById('pwaDismissBtn');
             
-            // GIFs
-            const gifs = [
-                'https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif',
-                'https://i.pinimg.com/originals/20/c8/3d/20c83d1cb257a6c4e5f68960ef0c3046.gif',
-                'https://i.pinimg.com/originals/9a/99/a1/9a99a10635e27f336c2cd6bec02b2aae.gif',
-                'https://i.pinimg.com/originals/13/45/50/13455040862ac9b8e465185878838cf1.gif',
-                'https://i.pinimg.com/originals/93/08/1e/93081e266f7f0b20778d2736978b2e84.gif',
-                'https://i.gifer.com/YMm7.gif',
-                'https://i.pinimg.com/originals/51/7d/50/517d50010dfe6e71d17548cae0f6f0dc.gif',
-                'https://i.pinimg.com/originals/43/1c/e5/431ce5d15aab86f66a91ec9a07c9114f.gif'
-            ];
-            
-            const minecraftGifs = [
-                'https://i.pinimg.com/originals/44/f2/f6/44f2f6325aa9bf8c93ed6c3d6e8f8d57.gif',
-                'https://i.pinimg.com/originals/da/85/43/da8543494a3baaec4fc61c2b952f8de0.gif',
-                'https://i.pinimg.com/originals/d9/04/03/d9040300483e5e5465e56ddb713eeb1b.gif'
-            ];
-            
-            const emojiCategories = {
-                all: ["😀","😃","😄","😁","😆","😅","😂","🤣","😊","😇","🙂","🙃","😉","😌","😍","🥰","😘","😗","😙","😚","😋","😛","😝","😜","🤪","🤨","🧐","🤓","😎","🤩","🥳","😏","😒","😞","😔","😟","😕","🙁","☹️","😣","😖","😫","😩","🥺","😢","😭","😤","😠","😡","🤬","🤯","😳","🥵","🥶","😱","😨","😰","😥","😓","🤗","🤔","🤭","🤫","🤥","😶","😐","😑","😬","🙄","😯","😦","😧","😮","😲","🥱","😴","🤤","😪","😵","🤐","🥴","🤢","🤮","🤧","😷","🤒","🤕","🤑","🤠","😈","👿","👹","👺","🤡","💩","👻","💀","☠️","👽","👾","🤖","🎃","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❣️","💕","💞","💓","💗","💖","💘","💝","💟","👍","👎","👌","✌️","🤞","🤟","🤘","👈","👉","👆","👇","☝️","✋","🤚","🖐️","🖖","👋","🤙","💪","👂","👃","👀","👅","👄","💋"],
-                smileys: ["😀","😃","😄","😁","😆","😅","😂","🤣","😊","😇","🙂","🙃","😉","😌","😍","🥰","😘","😗","😙","😚","😋","😛","😝","😜","🤪","🤨","🧐","🤓","😎","🤩","🥳","😏","😒","😞","😔","😟","😕","🙁","☹️","😣","😖","😫","😩","🥺","😢","😭","😤","😠","😡","🤬","🤯","😳","🥵","🥶","😱","😨","😰","😥","😓","🤗","🤔","🤭","🤫","🤥","😶","😐","😑","😬","🙄","😯","😦","😧","😮","😲","🥱","😴","🤤","😪","😵","🤐","🥴","🤢","🤮","🤧","😷","🤒","🤕","🤑","🤠","😈","👿","👹","👺","🤡","💩","👻","💀","☠️","👽","👾","🤖","🎃"],
-                hearts: ["❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❣️","💕","💞","💓","💗","💖","💘","💝","💟"],
-                objects: ["🔔","🎵","🎶","🎼","🎧","🎤","🎷","🎸","🎹","🎺","🎻","🥁","📻","📱","💻","🖥️","🎥","📹","💡","📔","📚","🎁","🎉","🎊","🎈","🎂","🍰","🍦","🍩","🍪","🎀","🏆","🏅","⚽","🏀","🎾","🎱","🏓","🎿","🏂"]
-            };
-            
-            const stationIds = Object.keys(radioStations);
-            
-            updateProgress(50, 'Загрузка интерфейса...');
-            
-            // DOM элементы и переменные
             let isPlaying = false;
             let audio = null;
             let currentStationIndex = 0;
-            let currentStation = stationIds[0];
+            let currentStation = stationIds[currentStationIndex];
             let visualizationInterval = null;
             let chatUnsubscribe = null;
             let likesUnsubscribe = null;
             let stationLikes = {};
             let userLikedStations = new Set();
+            let currentMessageForReaction = null;
             let userNickname = localStorage.getItem('userNickname') || '';
             let replyingToMessage = null;
+            let onlineUsers = {};
+            let currentMentionIndex = -1;
+            let volumeDisplayTimeout = null;
+            
             let currentRating = 0;
             let deferredPrompt = null;
             let isAppInstalled = false;
             
-            updateProgress(70, 'Настройка плеера...');
+            loadStationList();
+            loadLikes();
+            updateStationInfo();
+            changeGif();
+            initReactionsModal();
+            loadEmojis();
+            loadTrendingGifs();
+            initFeedbackSystem();
+            initPWA();
             
-            // Функции
+            liteToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    window.location.href = 'https://deyniik.github.io/DeynikRadio/lite';
+                }
+            });
             
-            function showNotification(message, type = 'info') {
-                const notif = document.getElementById('notification');
-                notif.textContent = message;
-                notif.style.background = type === 'error' ? '#FF5722' : type === 'success' ? '#1DB954' : '#2196F3';
-                notif.classList.add('show');
-                setTimeout(() => notif.classList.remove('show'), 3000);
+            downloadAppBtn.addEventListener('click', function() {
+                showPWAInstallPrompt();
+            });
+            
+            pwaInstallBtn.addEventListener('click', function() {
+                installPWA();
+            });
+            
+            pwaDismissBtn.addEventListener('click', function() {
+                hidePWAInstallPrompt();
+                localStorage.setItem('pwaDismissed', new Date().toDateString());
+            });
+            
+            function initPWA() {
+                if (window.matchMedia('(display-mode: standalone)').matches) {
+                    isAppInstalled = true;
+                }
+                
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    const lastDismissed = localStorage.getItem('pwaDismissed');
+                    const today = new Date().toDateString();
+                    
+                    if (lastDismissed !== today && !isAppInstalled) {
+                        setTimeout(() => {
+                            showPWAInstallPrompt();
+                        }, 3000);
+                    }
+                });
+                
+                window.addEventListener('appinstalled', () => {
+                    isAppInstalled = true;
+                    deferredPrompt = null;
+                    hidePWAInstallPrompt();
+                    showNotification('Приложение успешно установлено!', 'success');
+                });
+                
+                if (window.navigator.standalone === true) {
+                    isAppInstalled = true;
+                }
             }
             
+            function showPWAInstallPrompt() {
+                if (deferredPrompt && !isAppInstalled) {
+                    pwaInstallPrompt.style.display = 'block';
+                } else if (isAppInstalled) {
+                    showNotification('Приложение уже установлено на вашем устройстве', 'info');
+                } else {
+                    showNotification('Установка приложения доступна только в современных браузерах', 'info');
+                }
+            }
+            
+            function hidePWAInstallPrompt() {
+                pwaInstallPrompt.style.display = 'none';
+            }
+            
+            function installPWA() {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            isAppInstalled = true;
+                        } else {
+                            localStorage.setItem('pwaDismissed', new Date().toDateString());
+                        }
+                        deferredPrompt = null;
+                        hidePWAInstallPrompt();
+                    });
+                }
+            }
+            
+            function loadStationList() {
+                stationList.innerHTML = '';
+                
+                const allStations = [
+                    { id: 'kissint', category: 'international', title: 'Международные' },
+                    { id: 'gaga', category: 'international' },
+                    { id: 'rp', category: 'no-copyright' },
+                    { id: 'lofi', category: 'lofi' },
+                    { id: 'z100', category: 'international' },
+                    { id: 'jazz', category: 'international' },
+                    { id: 'chillhop', category: 'lofi', title: 'Lo-Fi' },
+                    { id: 'lofihiphop', category: 'lofi' },
+                    { id: 'minecraft', category: 'lofi' },
+                    { id: 'halloween', category: 'thematic', title: 'Тематические' },
+                    { id: 'christmas', category: 'thematic' }
+                ];
+                
+                let lastCategory = '';
+                
+                allStations.forEach(station => {
+                    const stationData = radioStations[station.id];
+                    
+                    if (station.title && station.title !== lastCategory) {
+                        const categoryTitle = document.createElement('div');
+                        categoryTitle.className = 'category-title';
+                        categoryTitle.textContent = station.title;
+                        stationList.appendChild(categoryTitle);
+                        lastCategory = station.title;
+                    }
+                    
+                    const stationItem = document.createElement('li');
+                    stationItem.setAttribute('data-station', station.id);
+                    
+                    if (stationData.isChristmas) {
+                        stationItem.className = 'christmas-garland';
+                    } else {
+                        stationItem.className = stationData.isChristmas ? 'christmas' : '';
+                    }
+                    
+                    if (station.id === currentStation) {
+                        stationItem.classList.add('active');
+                    }
+                    
+                    stationItem.innerHTML = `
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="${stationData.icon}"></i></span> ${stationData.name}
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">0</span> <i class="fas fa-heart"></i>
+                        </div>
+                    `;
+                    
+                    stationItem.addEventListener('click', function() {
+                        const stationId = this.getAttribute('data-station');
+                        currentStationIndex = stationIds.indexOf(stationId);
+                        isPlaying = true;
+                        playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                        document.getElementById('player-icon').classList.add('playing');
+                        changeStation();
+                    });
+                    
+                    stationList.appendChild(stationItem);
+                });
+            }
+            
+            function updateVolume(value) {
+                if (value < 0) value = 0;
+                if (value > 100) value = 100;
+                
+                volumeSlider.value = value;
+                if (audio) {
+                    audio.volume = value / 100;
+                }
+                updateVolumeIcon();
+                
+                let volumeIcon = 'fa-volume-up';
+                if (value == 0) volumeIcon = 'fa-volume-mute';
+                else if (value < 50) volumeIcon = 'fa-volume-down';
+                
+                volumeDisplayText.innerHTML = `<i class="fas ${volumeIcon}"></i> ${Math.round(value)}%`;
+                
+                if (volumeDisplayTimeout) {
+                    clearTimeout(volumeDisplayTimeout);
+                }
+                
+                volumeDisplay.style.display = 'block';
+                volumeDisplay.style.opacity = '1';
+                
+                volumeDisplayTimeout = setTimeout(() => {
+                    volumeDisplay.style.opacity = '0';
+                    setTimeout(() => {
+                        volumeDisplay.style.display = 'none';
+                    }, 300);
+                }, 2000);
+            }
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.target !== chatInput) {
+                    if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        const currentVolume = parseFloat(volumeSlider.value);
+                        updateVolume(currentVolume + 5);
+                    } else if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        const currentVolume = parseFloat(volumeSlider.value);
+                        updateVolume(currentVolume - 5);
+                    }
+                }
+            });
+            
+            volumeSlider.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? -5 : 5;
+                const currentVolume = parseFloat(volumeSlider.value);
+                updateVolume(currentVolume + delta);
+            });
+
+            volumeSlider.addEventListener('input', function() {
+                updateVolume(this.value);
+            });
+
+            function initFeedbackSystem() {
+                displayReviews();
+                
+                const stars = ratingStars.querySelectorAll('.star');
+                stars.forEach(star => {
+                    star.addEventListener('click', function() {
+                        const rating = parseInt(this.getAttribute('data-rating'));
+                        setRating(rating);
+                    });
+                    
+                    star.addEventListener('mouseover', function() {
+                        const rating = parseInt(this.getAttribute('data-rating'));
+                        highlightStars(rating);
+                    });
+                });
+                
+                ratingStars.addEventListener('mouseleave', function() {
+                    highlightStars(currentRating);
+                });
+                
+                submitFeedbackBtn.addEventListener('click', submitReview);
+                
+                feedbackTabs.forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        const tabId = this.getAttribute('data-tab');
+                        
+                        feedbackTabs.forEach(t => t.classList.remove('active'));
+                        feedbackTabContents.forEach(c => c.classList.remove('active'));
+                        
+                        this.classList.add('active');
+                        document.getElementById(tabId).classList.add('active');
+                    });
+                });
+            }
+            
+            function setRating(rating) {
+                currentRating = rating;
+                highlightStars(rating);
+            }
+            
+            function highlightStars(rating) {
+                const stars = ratingStars.querySelectorAll('.star');
+                stars.forEach((star, index) => {
+                    if (index < rating) {
+                        star.classList.add('active');
+                    } else {
+                        star.classList.remove('active');
+                    }
+                });
+            }
+            
+            function submitReview() {
+                if (currentRating === 0) {
+                    showNotification('Пожалуйста, выберите оценку', 'error');
+                    return;
+                }
+                
+                const reviewText = feedbackText.value.trim();
+                if (reviewText === '') {
+                    showNotification('Пожалуйста, напишите отзыв', 'error');
+                    return;
+                }
+                
+                const user = auth.currentUser;
+                if (!user) {
+                    showNotification('Войдите в систему, чтобы оставить отзыв', 'error');
+                    return;
+                }
+                
+                const userName = userNickname || (user.displayName || 'Аноним');
+                const userId = user.uid;
+                
+                const review = {
+                    id: Date.now().toString(),
+                    user: userName,
+                    userId: userId,
+                    rating: currentRating,
+                    text: reviewText,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                db.collection('reviews').add(review)
+                    .then(() => {
+                        feedbackText.value = '';
+                        setRating(0);
+                        displayReviews();
+                        feedbackTabs.forEach(t => t.classList.remove('active'));
+                        feedbackTabContents.forEach(c => c.classList.remove('active'));
+                        document.querySelector('[data-tab="view-feedback"]').classList.add('active');
+                        document.getElementById('view-feedback').classList.add('active');
+                        showNotification('Спасибо за ваш отзыв!', 'success');
+                    })
+                    .catch(error => {
+                        console.error('Ошибка сохранения отзыва:', error);
+                        showNotification('Ошибка при отправке отзыва', 'error');
+                    });
+            }
+            
+            function displayReviews() {
+                reviewsList.innerHTML = '';
+                
+                db.collection('reviews')
+                    .orderBy('timestamp', 'desc')
+                    .limit(50)
+                    .get()
+                    .then((snapshot) => {
+                        if (snapshot.empty) {
+                            reviewsList.innerHTML = '<div class="no-reviews">Пока нет отзывов. Будьте первым!</div>';
+                            averageRatingValue.textContent = '0';
+                            return;
+                        }
+                        
+                        let totalRating = 0;
+                        let reviewCount = 0;
+                        
+                        snapshot.forEach(doc => {
+                            const review = doc.data();
+                            totalRating += review.rating;
+                            reviewCount++;
+                            
+                            const reviewItem = document.createElement('div');
+                            reviewItem.className = 'review-item';
+                            
+                            let starsHtml = '';
+                            for (let i = 1; i <= 5; i++) {
+                                if (i <= review.rating) {
+                                    starsHtml += '<div class="review-star filled"></div>';
+                                } else {
+                                    starsHtml += '<div class="review-star empty"></div>';
+                                }
+                            }
+                            
+                            const date = review.timestamp ? review.timestamp.toDate().toLocaleDateString('ru-RU') : 'недавно';
+                            
+                            reviewItem.innerHTML = `
+                                <div class="review-header">
+                                    <div class="review-user">${review.user}</div>
+                                    <div class="review-rating">${starsHtml}</div>
+                                </div>
+                                <div class="review-text">${review.text}</div>
+                                <div style="font-size: 0.7rem; color: #888; margin-top: 8px;">${date}</div>
+                            `;
+                            
+                            reviewsList.appendChild(reviewItem);
+                        });
+                        
+                        const averageRating = reviewCount > 0 ? (totalRating / reviewCount).toFixed(1) : '0';
+                        averageRatingValue.textContent = averageRating;
+                    })
+                    .catch(error => {
+                        console.error('Ошибка загрузки отзывов:', error);
+                        reviewsList.innerHTML = '<div class="no-reviews">Ошибка загрузки отзывов</div>';
+                        averageRatingValue.textContent = '0';
+                    });
+            }
+
+            function initReactionsModal() {
+                const reactions = [
+                    '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇', 
+                    '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚',
+                    '😋', '😛', '😝', '😜', '🤪', '🤨', '🧐', '🤓', '😎', '🤩',
+                    '🥳', '😏', '😒', '😞', '😔', '😟', '😕', '🙁', '☹️', '😣',
+                    '😖', '😫', '😩', '🥺', '😢', '😭', '😤', '😠', '😡', '🤬',
+                    '🤯', '😳', '🥵', '🥶', '😱', '😨', '😰', '😥', '😓', '🤗',
+                    '🤔', '🤭', '🤫', '🤥', '😶', '😐', '😑', '😬', '🙄', '😯',
+                    '😦', '😧', '😮', '😲', '🥱', '😴', '🤤', '😪', '😵', '🤐',
+                    '🥴', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈',
+                    '👿', '👹', '👺', '🤡', '💩', '👻', '💀', '☠️', '👽', '👾',
+                    '🤖', '🎃', '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍',
+                    '🤎', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝',
+                    '💟', '👍', '👎', '👌', '🤏', '✌️', '🤞', '🤟', '🤘', '👈',
+                    '👉', '👆', '🖕', '👇', '☝️', '✋', '🤚', '🖐️', '🖖', '👋',
+                    '🤙', '💪', '🦾', '🦿', '🦵', '🦶', '👂', '🦻', '👃', '🧠',
+                    '🫀', '🫁', '🦷', '🦴', '👀', '👁️', '👅', '👄', '💋', '🩸'
+                ];
+                
+                reactionsGrid.innerHTML = '';
+                reactions.forEach(reaction => {
+                    const emojiElement = document.createElement('div');
+                    emojiElement.className = 'reaction-emoji-large';
+                    emojiElement.textContent = reaction;
+                    emojiElement.addEventListener('click', function() {
+                        if (currentMessageForReaction) {
+                            addReactionToMessage(currentMessageForReaction, reaction);
+                            reactionsModal.style.display = 'none';
+                        }
+                    });
+                    reactionsGrid.appendChild(emojiElement);
+                });
+            }
+
+            function loadEmojis() {
+                emojiGrid.innerHTML = '';
+                emojiCategories.all.forEach(emoji => {
+                    const emojiElement = document.createElement('div');
+                    emojiElement.className = 'emoji-item';
+                    emojiElement.textContent = emoji;
+                    emojiElement.addEventListener('click', function() {
+                        insertEmoji(emoji);
+                        emojiPicker.classList.remove('show');
+                    });
+                    emojiGrid.appendChild(emojiElement);
+                });
+            }
+
+            function filterEmojisByCategory(category) {
+                emojiGrid.innerHTML = '';
+                const emojis = category === 'all' ? emojiCategories.all : emojiCategories[category];
+                
+                emojis.forEach(emoji => {
+                    const emojiElement = document.createElement('div');
+                    emojiElement.className = 'emoji-item';
+                    emojiElement.textContent = emoji;
+                    emojiElement.addEventListener('click', function() {
+                        insertEmoji(emoji);
+                        emojiPicker.classList.remove('show');
+                    });
+                    emojiGrid.appendChild(emojiElement);
+                });
+            }
+
+            function filterEmojis() {
+                const searchTerm = emojiSearch.value.toLowerCase();
+                const currentCategory = document.querySelector('.emoji-category.active').dataset.category;
+                const emojis = currentCategory === 'all' ? emojiCategories.all : emojiCategories[currentCategory];
+                
+                emojiGrid.innerHTML = '';
+                
+                emojis.forEach(emoji => {
+                    if (searchTerm === '' || emoji.toLowerCase().includes(searchTerm)) {
+                        const emojiElement = document.createElement('div');
+                        emojiElement.className = 'emoji-item';
+                        emojiElement.textContent = emoji;
+                        emojiElement.addEventListener('click', function() {
+                            insertEmoji(emoji);
+                            emojiPicker.classList.remove('show');
+                        });
+                        emojiGrid.appendChild(emojiElement);
+                    }
+                });
+            }
+
+            function insertEmoji(emoji) {
+                chatInput.value += emoji;
+                chatInput.focus();
+            }
+
+            function loadTrendingGifs() {
+                const trendingGifs = [
+                    'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif',
+                    'https://media.giphy.com/media/3o7aD2d7hy9ktXNDP2/giphy.gif',
+                    'https://media.giphy.com/media/3o72FfM5HJydzafgUE/giphy.gif',
+                    'https://media.giphy.com/media/l0MYEqEzwMWFCg8rm/giphy.gif',
+                    'https://media.giphy.com/media/3o7abGQa0aRsohveX6/giphy.gif',
+                    'https://media.giphy.com/media/3o7TKM1Fa6k5g2qsxq/giphy.gif'
+                ];
+                
+                gifResults.innerHTML = '';
+                trendingGifs.forEach(gifUrl => {
+                    const gifElement = document.createElement('img');
+                    gifElement.className = 'gif-item';
+                    gifElement.src = gifUrl;
+                    gifElement.addEventListener('click', function() {
+                        sendGifMessage(gifUrl);
+                        gifPicker.classList.remove('show');
+                    });
+                    gifResults.appendChild(gifElement);
+                });
+            }
+
+            async function searchGifs(term = null) {
+                const searchTerm = term || gifSearch.value;
+                if (!searchTerm) {
+                    loadTrendingGifs();
+                    return;
+                }
+                
+                const apiKey = 'LIVDSRZULELA';
+                const limit = 20;
+                
+                try {
+                    const response = await fetch(`https://g.tenor.com/v1/search?q=${encodeURIComponent(searchTerm)}&key=${apiKey}&limit=${limit}`);
+                    const data = await response.json();
+                    
+                    gifResults.innerHTML = '';
+                    
+                    if (data.results) {
+                        data.results.forEach(result => {
+                            const gifUrl = result.media[0].gif.url;
+                            const gifElement = document.createElement('img');
+                            gifElement.className = 'gif-item';
+                            gifElement.src = gifUrl;
+                            gifElement.addEventListener('click', function() {
+                                sendGifMessage(gifUrl);
+                                gifPicker.classList.remove('show');
+                            });
+                            gifResults.appendChild(gifElement);
+                        });
+                    }
+                } catch (error) {
+                    console.error('Ошибка поиска GIF:', error);
+                    loadTrendingGifs();
+                }
+            }
+
+            function sendGifMessage(gifUrl) {
+                const user = auth.currentUser;
+                if (!user) {
+                    showNotification('Войдите в систему, чтобы отправлять сообщения', 'error');
+                    return;
+                }
+                
+                const displayName = userNickname || (user.displayName || 'Пользователь');
+                
+                const message = {
+                    gif: gifUrl,
+                    userName: displayName,
+                    userId: user.uid,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    reactions: {}
+                };
+                
+                chatSendBtn.disabled = true;
+                chatSendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                
+                db.collection('chat').add(message)
+                    .then(() => {})
+                    .finally(() => {
+                        chatSendBtn.disabled = false;
+                        chatSendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                    });
+            }
+
             function showHeartEffect() {
-                const heart = document.getElementById('heartEffect');
-                heart.style.display = 'flex';
-                heart.style.animation = 'heartPop 1.5s ease-out forwards';
-                const heartText = heart.querySelector('.heart-text');
+                heartEffect.style.display = 'flex';
+                heartEffect.style.opacity = '1';
+                
+                heartEffect.style.animation = 'none';
+                void heartEffect.offsetWidth;
+                
+                heartEffect.style.animation = 'heartPop 1.5s ease-out forwards';
+                
+                const heartText = heartEffect.querySelector('.heart-text');
                 heartText.style.animation = 'textFade 1.5s ease-out 0.3s forwards';
-                setTimeout(() => heart.style.display = 'none', 1500);
+                
+                setTimeout(() => {
+                    heartEffect.style.display = 'none';
+                }, 1500);
+            }
+
+            function updateVolumeIcon() {
+                const volume = volumeSlider.value;
+                const volumeIcons = document.querySelectorAll('.volume-icon i');
+                let volumeIcon;
+                if (volume == 0) volumeIcon = 'fa-volume-mute';
+                else if (volume < 50) volumeIcon = 'fa-volume-down';
+                else volumeIcon = 'fa-volume-up';
+                volumeIcons.forEach(icon => {
+                    icon.className = `fas ${volumeIcon}`;
+                });
+            }
+            
+            updateVolumeIcon();
+            
+            function showNotification(message, type = 'info') {
+                notification.textContent = message;
+                notification.className = 'notification';
+                
+                if (type === 'success') {
+                    notification.style.background = '#1DB954';
+                } else if (type === 'error') {
+                    notification.style.background = '#FF5722';
+                } else {
+                    notification.style.background = '#2196F3';
+                }
+                
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            function loadLikes() {
+                if (likesUnsubscribe) likesUnsubscribe();
+                
+                likesUnsubscribe = db.collection('stationLikes')
+                    .onSnapshot((snapshot) => {
+                        stationLikes = {};
+                        userLikedStations = new Set();
+                        
+                        snapshot.forEach((doc) => {
+                            const data = doc.data();
+                            stationLikes[doc.id] = data;
+                        });
+                        
+                        const user = auth.currentUser;
+                        const userId = user ? user.uid : 'anonymous';
+                        
+                        Object.keys(stationLikes).forEach(stationId => {
+                            if (stationLikes[stationId].users && stationLikes[stationId].users[userId]) {
+                                userLikedStations.add(stationId);
+                            }
+                        });
+                        
+                        updateLikesUI();
+                    });
+            }
+            
+            function toggleLike() {
+                const user = auth.currentUser;
+                const userId = user ? user.uid : 'anonymous';
+                const stationId = currentStation;
+                
+                if (userLikedStations.has(stationId)) {
+                    removeLike(stationId, userId);
+                } else {
+                    addLike(stationId, userId);
+                    showHeartEffect();
+                }
+                
+                likeButton.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    likeButton.style.transform = 'scale(1)';
+                }, 200);
+            }
+            
+            function addLike(stationId, userId) {
+                const stationRef = db.collection('stationLikes').doc(stationId);
+                
+                stationRef.get().then((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        const newCount = (data.count || 0) + 1;
+                        const users = data.users || {};
+                        users[userId] = true;
+                        
+                        stationRef.update({
+                            count: newCount,
+                            users: users
+                        });
+                    } else {
+                        stationRef.set({
+                            count: 1,
+                            users: {
+                                [userId]: true
+                            }
+                        });
+                    }
+                });
+            }
+            
+            function removeLike(stationId, userId) {
+                const stationRef = db.collection('stationLikes').doc(stationId);
+                
+                stationRef.get().then((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        const newCount = Math.max(0, (data.count || 0) - 1);
+                        const users = data.users || {};
+                        delete users[userId];
+                        
+                        if (newCount === 0) {
+                            stationRef.delete();
+                        } else {
+                            stationRef.update({
+                                count: newCount,
+                                users: users
+                            });
+                        }
+                    }
+                });
+            }
+            
+            function updateLikesUI() {
+                const stationItems = document.querySelectorAll('.station-list li');
+                stationItems.forEach(item => {
+                    const stationId = item.getAttribute('data-station');
+                    const likesCount = item.querySelector('.likes-count');
+                    if (likesCount) {
+                        const count = stationLikes[stationId] ? stationLikes[stationId].count || 0 : 0;
+                        likesCount.textContent = count;
+                    }
+                });
+                
+                const isLiked = userLikedStations.has(currentStation);
+                likeButton.classList.toggle('active', isLiked);
+                likeButton.querySelector('i').className = isLiked ? 'fas fa-heart' : 'far fa-heart';
+                
+                const currentCount = stationLikes[currentStation] ? stationLikes[currentStation].count || 0 : 0;
+                likesCountBottom.textContent = currentCount;
+            }
+            
+            function updateAuthUI(user) {
+                const authSection = document.getElementById('auth-section');
+                
+                if (user) {
+                    const displayName = userNickname || user.displayName || 'Пользователь';
+                    const firstLetter = displayName.charAt(0).toUpperCase();
+                    
+                    authSection.innerHTML = `
+                        <div class="user-profile" id="user-profile">
+                            <div class="user-avatar">${firstLetter}</div>
+                            <div class="user-name">${displayName}</div>
+                            <button class="edit-nickname-btn" title="Сменить ник">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                            <div class="user-dropdown" id="user-dropdown">
+                                <div class="dropdown-item" id="edit-nickname-dropdown">
+                                    <i class="fas fa-user-edit"></i> Сменить ник
+                                </div>
+                                <div class="dropdown-item" id="sign-out-btn">
+                                    <i class="fas fa-sign-out-alt"></i> Выйти
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    loadChatHistory();
+                    
+                    const userProfile = document.getElementById('user-profile');
+                    const userDropdown = document.getElementById('user-dropdown');
+                    const editNicknameDropdown = document.getElementById('edit-nickname-dropdown');
+                    const signOutBtn = document.getElementById('sign-out-btn');
+                    
+                    userProfile.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        userDropdown.classList.toggle('show');
+                    });
+                    
+                    editNicknameDropdown.addEventListener('click', function() {
+                        nicknameInput.value = userNickname || user.displayName || '';
+                        nicknameModal.style.display = 'block';
+                        userDropdown.classList.remove('show');
+                    });
+                    
+                    document.querySelector('.edit-nickname-btn').addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        nicknameInput.value = userNickname || user.displayName || '';
+                        nicknameModal.style.display = 'block';
+                    });
+                    
+                    signOutBtn.addEventListener('click', function() {
+                        auth.signOut();
+                    });
+                    
+                } else {
+                    authSection.innerHTML = `
+                        <button class="google-login-btn" id="googleLoginBtn">
+                            <i class="fab fa-google"></i> Войти через Google
+                        </button>
+                    `;
+                    
+                    loadChatHistory();
+                    
+                    document.getElementById('googleLoginBtn').addEventListener('click', signInWithGoogle);
+                }
+            }
+            
+            function saveNickname() {
+                const newNickname = nicknameInput.value.trim();
+                if (newNickname === '') {
+                    showNotification('Введите никнейм', 'error');
+                    return;
+                }
+                
+                userNickname = newNickname;
+                localStorage.setItem('userNickname', userNickname);
+                nicknameModal.style.display = 'none';
+                updateAuthUI(auth.currentUser);
+                showNotification('Никнейм сохранен!', 'success');
+            }
+            
+            function signInWithGoogle() {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                
+                provider.addScope('profile');
+                provider.addScope('email');
+                
+                provider.setCustomParameters({
+                    prompt: 'select_account'
+                });
+                
+                auth.signInWithPopup(provider)
+                    .then((result) => {
+                        const user = result.user;
+                        showNotification(`Добро пожаловать, ${user.displayName || 'Пользователь'}!`, 'success');
+                    })
+                    .catch((error) => {
+                        console.error('Ошибка входа:', error);
+                        
+                        let errorMessage = 'Неизвестная ошибка';
+                        
+                        switch(error.code) {
+                            case 'auth/popup-blocked':
+                                errorMessage = 'Всплывающее окно было заблокировано браузером. Разрешите всплывающие окна для этого сайта.';
+                                break;
+                            case 'auth/popup-closed-by-user':
+                                errorMessage = 'Окно входа было закрыто до завершения аутентификации.';
+                                break;
+                            case 'auth/cancelled-popup-request':
+                                errorMessage = 'Аутентификация была отменена.';
+                                break;
+                            case 'auth/unauthorized-domain':
+                                errorMessage = 'Домен не авторизован для OAuth аутентификации. Проверьте настройки в Firebase Console.';
+                                break;
+                            default:
+                                errorMessage = error.message || 'Произошла ошибка при входе';
+                        }
+                        
+                        showNotification('Ошибка входа: ' + errorMessage, 'error');
+                    });
+            }
+
+            function loadChatHistory() {
+                if (chatUnsubscribe) chatUnsubscribe();
+                
+                chatUnsubscribe = db.collection('chat')
+                    .orderBy('timestamp', 'desc')
+                    .limit(50)
+                    .onSnapshot((snapshot) => {
+                        chatMessages.innerHTML = '';
+                        
+                        if (snapshot.empty) {
+                            chatMessages.innerHTML = '<div class="message">Чат пуст. Будьте первым!</div>';
+                            scrollChatToBottom();
+                            return;
+                        }
+                        
+                        const messages = [];
+                        snapshot.forEach((doc) => {
+                            messages.push({ id: doc.id, ...doc.data() });
+                        });
+                        
+                        messages.sort((a, b) => {
+                            const timeA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
+                            const timeB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(b.timestamp);
+                            return timeA - timeB;
+                        });
+                        
+                        messages.forEach((message) => {
+                            addMessageToChat(message);
+                        });
+                        
+                        scrollChatToBottom();
+                    });
+            }
+
+            function scrollChatToBottom() {
+                setTimeout(() => {
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 100);
+            }
+
+            function addMessageToChat(message) {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message';
+                messageElement.setAttribute('data-message-id', message.id);
+                
+                if (message.isRadioShare) {
+                    messageElement.classList.add('share-radio-message');
+                }
+                
+                let timeString = 'только что';
+                if (message.timestamp) {
+                    const time = message.timestamp.toDate ? message.timestamp.toDate() : new Date(message.timestamp);
+                    timeString = time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                }
+                
+                let messageContent = '';
+                
+                if (message.replyTo) {
+                    messageContent += `
+                        <div class="reply-indicator">
+                            Ответ на: <strong>${message.replyTo.userName || message.replyTo.user}</strong>: ${message.replyTo.text ? message.replyTo.text.substring(0, 30) + (message.replyTo.text.length > 30 ? '...' : '') : ''}
+                        </div>
+                    `;
+                }
+                
+                if (message.gif) {
+                    messageContent += `
+                        <span class="message-user">${message.userName || 'Аноним'}:</span>
+                        <img src="${message.gif}" style="max-width: 200px; border-radius: 8px; margin-top: 5px;" alt="GIF">
+                        <span class="message-time">${timeString}</span>
+                    `;
+                } else if (message.isRadioShare && message.radioStation) {
+                    messageContent += `
+                        <span class="share-radio-icon"><i class="fas fa-radio"></i></span>
+                        <span class="message-user">${message.userName || 'Аноним'}</span>
+                        поделился радиостанцией:
+                        <strong>${message.radioStation.name}</strong>
+                        <span class="message-time">${timeString}</span>
+                    `;
+                } else {
+                    const processedText = formatMessageText(message.text || '');
+                    messageContent += `
+                        <span class="message-user">${message.userName || 'Аноним'}:</span>
+                        ${processedText}
+                        <span class="message-time">${timeString}</span>
+                    `;
+                }
+                
+                let reactionsHTML = '';
+                if (message.reactions && Object.keys(message.reactions).length > 0) {
+                    reactionsHTML = '<div class="message-reactions">';
+                    Object.entries(message.reactions).forEach(([emoji, users]) => {
+                        const userCount = Object.keys(users).length;
+                        if (userCount > 0) {
+                            reactionsHTML += `
+                                <div class="reaction" data-emoji="${emoji}" data-message-id="${message.id}">
+                                    <span>${emoji}</span>
+                                    <span class="reaction-count">${userCount}</span>
+                                </div>
+                            `;
+                        }
+                    });
+                    reactionsHTML += '</div>';
+                }
+                
+                messageElement.innerHTML = `
+                    ${messageContent}
+                    ${reactionsHTML}
+                    <button class="reply-btn" data-message-id="${message.id}">
+                        <i class="fas fa-reply"></i>
+                    </button>
+                    <button class="reaction-btn" data-message-id="${message.id}">
+                        <i class="far fa-smile"></i>
+                    </button>
+                    <div class="reaction-picker" id="reaction-picker-${message.id}">
+                        <span class="reaction-emoji" data-emoji="👍">👍</span>
+                        <span class="reaction-emoji" data-emoji="❤️">❤️</span>
+                        <span class="reaction-emoji" data-emoji="😂">😂</span>
+                        <span class="reaction-emoji" data-emoji="😮">😮</span>
+                        <span class="reaction-emoji" data-emoji="😢">😢</span>
+                        <span class="reaction-emoji" data-emoji="🎵">🎵</span>
+                        <span class="more-reactions-btn" data-message-id="${message.id}">⋯</span>
+                    </div>
+                `;
+                
+                chatMessages.appendChild(messageElement);
+                
+                const replyBtn = messageElement.querySelector('.reply-btn');
+                replyBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    startReply(message);
+                });
+                
+                const reactionElements = messageElement.querySelectorAll('.reaction');
+                reactionElements.forEach(reaction => {
+                    reaction.addEventListener('click', handleReactionClick);
+                });
+                
+                const reactionBtn = messageElement.querySelector('.reaction-btn');
+                reactionBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const picker = this.parentElement.querySelector('.reaction-picker');
+                    if (picker) {
+                        document.querySelectorAll('.reaction-picker').forEach(p => {
+                            if (p !== picker) p.classList.remove('show');
+                        });
+                        picker.classList.toggle('show');
+                    }
+                });
+                
+                const emojiElements = messageElement.querySelectorAll('.reaction-emoji');
+                emojiElements.forEach(emoji => {
+                    emoji.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        addReactionToMessage(message.id, this.getAttribute('data-emoji'));
+                        this.parentElement.classList.remove('show');
+                    });
+                });
+                
+                const moreReactionsBtn = messageElement.querySelector('.more-reactions-btn');
+                moreReactionsBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    currentMessageForReaction = message.id;
+                    reactionsModal.style.display = 'block';
+                    this.parentElement.classList.remove('show');
+                });
+                
+                if (message.isRadioShare && message.radioStation) {
+                    messageElement.addEventListener('click', function() {
+                        playSharedRadio(message.radioStation);
+                    });
+                }
+                
+                messageElement.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    const picker = this.querySelector('.reaction-picker');
+                    if (picker) {
+                        document.querySelectorAll('.reaction-picker').forEach(p => {
+                            if (p !== picker) p.classList.remove('show');
+                        });
+                        picker.classList.toggle('show');
+                    }
+                });
+            }
+            
+            function formatMessageText(text) {
+                if (!text) return '';
+                
+                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                
+                return text.replace(urlRegex, function(url) {
+                    return '<a href="' + url + '" target="_blank">' + url + '</a>';
+                });
+            }
+            
+            function startReply(message) {
+                replyingToMessage = message;
+                
+                const replyIndicator = document.createElement('div');
+                replyIndicator.className = 'reply-indicator';
+                replyIndicator.innerHTML = `
+                    Ответ на: <strong>${message.userName || message.user}</strong>: ${message.text ? message.text.substring(0, 30) + (message.text.length > 30 ? '...' : '') : ''}
+                    <button class="cancel-reply">✕</button>
+                `;
+                
+                const existingIndicator = document.querySelector('.reply-indicator:not(.message .reply-indicator)');
+                if (existingIndicator) {
+                    existingIndicator.remove();
+                }
+                
+                const chatInputContainer = document.getElementById('chat-input-container');
+                chatInputContainer.parentNode.insertBefore(replyIndicator, chatInputContainer);
+                
+                const cancelBtn = replyIndicator.querySelector('.cancel-reply');
+                cancelBtn.addEventListener('click', cancelReply);
+                
+                chatInput.focus();
+            }
+            
+            function cancelReply() {
+                replyingToMessage = null;
+                const replyIndicator = document.querySelector('.reply-indicator:not(.message .reply-indicator)');
+                if (replyIndicator) {
+                    replyIndicator.remove();
+                }
+            }
+            
+            function handleReactionClick(e) {
+                e.stopPropagation();
+                const messageId = this.getAttribute('data-message-id');
+                const emoji = this.getAttribute('data-emoji');
+                addReactionToMessage(messageId, emoji);
+            }
+            
+            function addReactionToMessage(messageId, emoji) {
+                const user = auth.currentUser;
+                const userId = user ? user.uid : 'anonymous';
+                
+                db.collection('chat').doc(messageId).get().then(doc => {
+                    if (doc.exists) {
+                        const message = doc.data();
+                        const reactions = message.reactions || {};
+                        const userReactions = reactions[emoji] || {};
+                        
+                        if (userReactions[userId]) {
+                            delete userReactions[userId];
+                            if (Object.keys(userReactions).length === 0) {
+                                delete reactions[emoji];
+                            } else {
+                                reactions[emoji] = userReactions;
+                            }
+                        } else {
+                            userReactions[userId] = true;
+                            reactions[emoji] = userReactions;
+                        }
+                        
+                        db.collection('chat').doc(messageId).update({
+                            reactions: reactions
+                        });
+                    }
+                });
+            }
+
+            function sendMessage() {
+                const user = auth.currentUser;
+                const messageText = chatInput.value.trim();
+                if (messageText === '') return;
+                
+                const displayName = userNickname || (user ? (user.displayName || 'Пользователь') : 'Аноним');
+                
+                const message = {
+                    text: messageText,
+                    userName: displayName,
+                    userId: user ? user.uid : 'anonymous',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    reactions: {}
+                };
+                
+                if (replyingToMessage) {
+                    message.replyTo = {
+                        userName: replyingToMessage.userName || replyingToMessage.user,
+                        text: replyingToMessage.text,
+                        messageId: replyingToMessage.id
+                    };
+                }
+                
+                chatSendBtn.disabled = true;
+                chatSendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                
+                db.collection('chat').add(message)
+                    .then(() => {
+                        chatInput.value = '';
+                        cancelReply();
+                    })
+                    .finally(() => {
+                        chatSendBtn.disabled = false;
+                        chatSendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                    });
+            }
+            
+            function playSharedRadio(radioStation) {
+                const stationKey = Object.keys(radioStations).find(key => 
+                    radioStations[key].name === radioStation.name
+                );
+                
+                if (stationKey) {
+                    const stationIndex = stationIds.indexOf(stationKey);
+                    if (stationIndex !== -1) {
+                        currentStationIndex = stationIndex;
+                        currentStation = stationKey;
+                        isPlaying = true;
+                        playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                        document.getElementById('player-icon').classList.add('playing');
+                        changeStation();
+                        showNotification(`Включена станция: ${radioStation.name}`, 'success');
+                    }
+                } else {
+                    showNotification('Станция не найдена в списке', 'error');
+                }
+            }
+            
+            function shareRadioInChat() {
+                const user = auth.currentUser;
+                if (!user) {
+                    showNotification('Войдите в систему, чтобы делиться радио в чат', 'error');
+                    shareModal.style.display = 'none';
+                    return;
+                }
+                
+                if (!currentStation) {
+                    showNotification('Сначала выберите радиостанцию', 'error');
+                    shareModal.style.display = 'none';
+                    return;
+                }
+                
+                const displayName = userNickname || (user.displayName || 'Пользователь');
+                const station = radioStations[currentStation];
+                
+                const message = {
+                    userName: displayName,
+                    userId: user.uid,
+                    isRadioShare: true,
+                    radioStation: station,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    reactions: {}
+                };
+                
+                db.collection('chat').add(message)
+                    .then(() => {
+                        shareModal.style.display = 'none';
+                        showNotification('Радиостанция отправлена в чат!', 'success');
+                    })
+                    .catch(error => {
+                        console.error('Ошибка отправки радио в чат:', error);
+                        showNotification('Ошибка отправки', 'error');
+                    });
             }
             
             function changeGif() {
-                const mainGif = document.getElementById('mainGif');
-                let gifList = currentStation === 'minecraft' ? minecraftGifs : gifs;
-                let randomGif = gifList[Math.floor(Math.random() * gifList.length)];
+                let randomGif;
+                if (currentStation === 'minecraft') {
+                    randomGif = minecraftGifs[Math.floor(Math.random() * minecraftGifs.length)];
+                } else {
+                    randomGif = gifs[Math.floor(Math.random() * gifs.length)];
+                }
+                
                 mainGif.classList.add('gif-transition');
+                
                 setTimeout(() => {
                     mainGif.style.backgroundImage = `url('${randomGif}')`;
-                    setTimeout(() => mainGif.classList.remove('gif-transition'), 600);
+                    
+                    setTimeout(() => {
+                        mainGif.classList.remove('gif-transition');
+                    }, 600);
                 }, 300);
             }
             
-            function startVisualization() {
-                if (visualizationInterval) clearInterval(visualizationInterval);
-                const bars = document.querySelectorAll('#visualization .bar');
-                visualizationInterval = setInterval(() => {
-                    bars.forEach(bar => bar.style.height = `${Math.floor(Math.random() * 28) + 2}px`);
-                }, 100);
+            function sortStationsByLikes() {
+                const allStations = Object.keys(radioStations);
+                const sortedStations = [...allStations].sort((a, b) => {
+                    const likesA = stationLikes[a] ? stationLikes[a].count || 0 : 0;
+                    const likesB = stationLikes[b] ? stationLikes[b].count || 0 : 0;
+                    return likesB - likesA;
+                });
+                
+                return sortedStations;
             }
             
-            function stopVisualization() {
-                if (visualizationInterval) clearInterval(visualizationInterval);
-                document.querySelectorAll('#visualization .bar').forEach(bar => bar.style.height = '2px');
+            function displayTopStations() {
+                const sortedStations = sortStationsByLikes();
+                
+                stationList.innerHTML = '';
+                
+                const topTitle = document.createElement('div');
+                topTitle.className = 'category-title';
+                topTitle.textContent = 'Лучшие по лайкам';
+                stationList.appendChild(topTitle);
+                
+                sortedStations.forEach(stationId => {
+                    const stationData = radioStations[stationId];
+                    const stationItem = document.createElement('li');
+                    stationItem.setAttribute('data-station', stationId);
+                    
+                    if (stationData.isChristmas) {
+                        stationItem.className = 'christmas-garland';
+                    } else {
+                        stationItem.className = stationData.isChristmas ? 'christmas' : '';
+                    }
+                    
+                    if (stationId === currentStation) {
+                        stationItem.classList.add('active');
+                    }
+                    
+                    const likesCount = stationLikes[stationId] ? stationLikes[stationId].count || 0 : 0;
+                    
+                    stationItem.innerHTML = `
+                        <div style="display: flex; align-items: center;">
+                            <span class="station-icon"><i class="${stationData.icon}"></i></span> ${stationData.name}
+                        </div>
+                        <div class="station-likes">
+                            <span class="likes-count">${likesCount}</span> <i class="fas fa-heart"></i>
+                        </div>
+                    `;
+                    
+                    stationItem.addEventListener('click', function() {
+                        const stationId = this.getAttribute('data-station');
+                        currentStationIndex = stationIds.indexOf(stationId);
+                        isPlaying = true;
+                        playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                        document.getElementById('player-icon').classList.add('playing');
+                        changeStation();
+                    });
+                    
+                    stationList.appendChild(stationItem);
+                });
+            }
+            
+            function restoreOriginalStationOrder() {
+                loadStationList();
+                updateLikesUI();
+                
+                const stationItems = document.querySelectorAll('.station-list li');
+                stationItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('data-station') === currentStation) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+            
+            function filterStationsByCategory(category) {
+                if (category === 'top') {
+                    displayTopStations();
+                    return;
+                } else {
+                    restoreOriginalStationOrder();
+                }
+                
+                const stationItems = document.querySelectorAll('.station-list li');
+                stationItems.forEach(item => {
+                    const stationId = item.getAttribute('data-station');
+                    const station = radioStations[stationId];
+                    
+                    if (category === 'all' || 
+                        (category === 'lofi' && station.category === 'lofi') ||
+                        (category === 'thematic' && station.category === 'thematic') ||
+                        (category === 'no-copyright' && station.category === 'no-copyright')) {
+                        item.style.display = 'flex';
+                        if (item.previousElementSibling && item.previousElementSibling.classList.contains('category-title')) {
+                            item.previousElementSibling.style.display = 'block';
+                        }
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                document.querySelectorAll('.category-title').forEach(title => {
+                    const nextSibling = title.nextElementSibling;
+                    if (!nextSibling || nextSibling.style.display === 'none') {
+                        let hasVisible = false;
+                        let sibling = title.nextElementSibling;
+                        while (sibling && !sibling.classList.contains('category-title')) {
+                            if (sibling.style.display !== 'none') {
+                                hasVisible = true;
+                                break;
+                            }
+                            sibling = sibling.nextElementSibling;
+                        }
+                        if (!hasVisible) {
+                            title.style.display = 'none';
+                        } else {
+                            title.style.display = 'block';
+                        }
+                    }
+                });
+            }
+            
+            chatInput.addEventListener('input', function() {
+                chatSendBtn.disabled = this.value.trim() === '';
+            });
+            
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !chatSendBtn.disabled) {
+                    sendMessage();
+                }
+            });
+            
+            chatSendBtn.addEventListener('click', function() {
+                sendMessage();
+            });
+            
+            shareBtn.addEventListener('click', function() {
+                shareModal.style.display = 'block';
+            });
+            
+            closeShareModal.addEventListener('click', function() {
+                shareModal.style.display = 'none';
+            });
+            
+            copyLinkBtn.addEventListener('click', function() {
+                navigator.clipboard.writeText('https://deyniik.github.io/DeynikRadio/')
+                    .then(() => {
+                        showNotification('Ссылка скопирована в буфер обмена!', 'success');
+                        shareModal.style.display = 'none';
+                    })
+                    .catch(() => {
+                        showNotification('Не удалось скопировать ссылку', 'error');
+                    });
+            });
+            
+            shareInChatBtn.addEventListener('click', shareRadioInChat);
+            
+            supportBtn.addEventListener('click', function() {
+                supportModal.style.display = 'block';
+            });
+            
+            closeSupportModal.addEventListener('click', function() {
+                supportModal.style.display = 'none';
+            });
+            
+            closeSupportBtn.addEventListener('click', function() {
+                supportModal.style.display = 'none';
+            });
+            
+            closeReactionsModal.addEventListener('click', function() {
+                reactionsModal.style.display = 'none';
+            });
+            
+            closeNicknameModal.addEventListener('click', function() {
+                nicknameModal.style.display = 'none';
+            });
+            
+            cancelNicknameBtn.addEventListener('click', function() {
+                nicknameModal.style.display = 'none';
+            });
+            
+            saveNicknameBtn.addEventListener('click', saveNickname);
+            
+            nicknameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') saveNickname();
+            });
+            
+            feedbackBtn.addEventListener('click', function() {
+                feedbackModal.style.display = 'block';
+            });
+            
+            closeFeedbackModal.addEventListener('click', function() {
+                feedbackModal.style.display = 'none';
+            });
+            
+            window.addEventListener('click', function(event) {
+                if (event.target === shareModal) {
+                    shareModal.style.display = 'none';
+                }
+                if (event.target === reactionsModal) {
+                    reactionsModal.style.display = 'none';
+                }
+                if (event.target === nicknameModal) {
+                    nicknameModal.style.display = 'none';
+                }
+                if (event.target === feedbackModal) {
+                    feedbackModal.style.display = 'none';
+                }
+                if (event.target === supportModal) {
+                    supportModal.style.display = 'none';
+                }
+                if (event.target === pwaInstallPrompt) {
+                    hidePWAInstallPrompt();
+                }
+            });
+            
+            emojiBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                emojiPicker.classList.toggle('show');
+                gifPicker.classList.remove('show');
+            });
+            
+            gifBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                gifPicker.classList.toggle('show');
+                emojiPicker.classList.remove('show');
+            });
+            
+            emojiSearch.addEventListener('input', function(e) {
+                e.stopPropagation();
+                filterEmojis();
+            });
+            
+            emojiCategoryBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    emojiCategoryBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    filterEmojisByCategory(this.dataset.category);
+                });
+            });
+            
+            gifSearch.addEventListener('input', function(e) {
+                e.stopPropagation();
+                searchGifs();
+            });
+            
+            gifTrendingBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    searchGifs(this.dataset.term);
+                });
+            });
+            
+            document.addEventListener('click', function() {
+                emojiPicker.classList.remove('show');
+                gifPicker.classList.remove('show');
+                document.querySelectorAll('.reaction-picker').forEach(picker => {
+                    picker.classList.remove('show');
+                });
+            });
+            
+            emojiPicker.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            gifPicker.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    const category = btn.dataset.category;
+                    filterStationsByCategory(category);
+                });
+            });
+            
+            auth.onAuthStateChanged(updateAuthUI);
+            
+            likeButton.addEventListener('click', toggleLike);
+            
+            playButton.addEventListener('click', function() {
+                isPlaying = !isPlaying;
+                
+                if (isPlaying) {
+                    playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                    document.getElementById('player-icon').classList.add('playing');
+                    if (!audio) {
+                        audio = new Audio(radioStations[currentStation].url);
+                        audio.volume = volumeSlider.value / 100;
+                    }
+                    audio.play().catch(error => {
+                        console.error('Ошибка воспроизведения:', error);
+                        isPlaying = false;
+                        playButton.innerHTML = '<i class="fas fa-play"></i>';
+                        document.getElementById('player-icon').classList.remove('playing');
+                    });
+                    playbackIndicator.style.opacity = '1';
+                    startVisualization();
+                } else {
+                    playButton.innerHTML = '<i class="fas fa-play"></i>';
+                    document.getElementById('player-icon').classList.remove('playing');
+                    if (audio) audio.pause();
+                    playbackIndicator.style.opacity = '0';
+                    stopVisualization();
+                }
+            });
+            
+            randomStationBtn.addEventListener('click', function() {
+                currentStationIndex = Math.floor(Math.random() * stationIds.length);
+                isPlaying = true;
+                playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                document.getElementById('player-icon').classList.add('playing');
+                changeStation();
+            });
+            
+            prevButton.addEventListener('click', function() {
+                currentStationIndex = (currentStationIndex - 1 + stationIds.length) % stationIds.length;
+                isPlaying = true;
+                playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                document.getElementById('player-icon').classList.add('playing');
+                changeStation();
+            });
+            
+            nextButton.addEventListener('click', function() {
+                currentStationIndex = (currentStationIndex + 1) % stationIds.length;
+                isPlaying = true;
+                playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                document.getElementById('player-icon').classList.add('playing');
+                changeStation();
+            });
+            
+            refreshButton.addEventListener('click', function() {
+                this.classList.add('reload-animation');
+                setTimeout(() => {
+                    this.classList.remove('reload-animation');
+                }, 500);
+                
+                if (audio) {
+                    const wasPlaying = !audio.paused;
+                    audio.pause();
+                    audio = new Audio(radioStations[currentStation].url + '?nocache=' + new Date().getTime());
+                    audio.volume = volumeSlider.value / 100;
+                    
+                    if (wasPlaying) {
+                        isPlaying = true;
+                        playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                        document.getElementById('player-icon').classList.add('playing');
+                        
+                        audio.play().catch(error => {
+                            console.error('Ошибка воспроизведения:', error);
+                            isPlaying = false;
+                            playButton.innerHTML = '<i class="fas fa-play"></i>';
+                            document.getElementById('player-icon').classList.remove('playing');
+                        });
+                    } else {
+                        isPlaying = false;
+                        playButton.innerHTML = '<i class="fas fa-play"></i>';
+                        document.getElementById('player-icon').classList.remove('playing');
+                    }
+                    
+                    changeGif();
+                    showNotification('Станция перезагружена', 'success');
+                }
+            });
+            
+            function changeStation() {
+                currentStation = stationIds[currentStationIndex];
+                updateStationInfo();
+                
+                const stationItems = document.querySelectorAll('.station-list li');
+                stationItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('data-station') === currentStation) {
+                        item.classList.add('active');
+                    }
+                });
+                
+                if (currentStation === 'minecraft') {
+                    minecraftLoading.style.display = 'block';
+                } else {
+                    minecraftLoading.style.display = 'none';
+                }
+                
+                if (isPlaying) {
+                    if (audio) audio.pause();
+                    audio = new Audio(radioStations[currentStation].url);
+                    audio.volume = volumeSlider.value / 100;
+                    audio.play().then(() => {
+                        minecraftLoading.style.display = 'none';
+                    }).catch(error => {
+                        console.error('Ошибка воспроизведения:', error);
+                        if (currentStation === 'minecraft') {
+                            minecraftLoading.style.display = 'block';
+                        }
+                    });
+                    playbackIndicator.style.opacity = '1';
+                    startVisualization();
+                }
+                
+                changeGif();
+                updateLikesUI();
             }
             
             function updateStationInfo() {
@@ -2726,466 +4553,25 @@
                 document.getElementById('current-artist').textContent = station.currentArtist;
             }
             
-            function updateLikesUI() {
-                const stationItems = document.querySelectorAll('.station-list li');
-                stationItems.forEach(item => {
-                    const stationId = item.getAttribute('data-station');
-                    const likesSpan = item.querySelector('.likes-count');
-                    if (likesSpan) likesSpan.textContent = stationLikes[stationId] || 0;
-                });
-                const isLiked = userLikedStations.has(currentStation);
-                const likeBtn = document.getElementById('like-btn');
-                likeBtn.classList.toggle('active', isLiked);
-                likeBtn.querySelector('i').className = isLiked ? 'fas fa-heart' : 'far fa-heart';
-                document.getElementById('likes-count-bottom').textContent = stationLikes[currentStation] || 0;
-            }
-            
-            function loadStationList() {
-                const list = document.getElementById('station-list');
-                list.innerHTML = '';
-                let lastCategory = '';
-                const allStations = [
-                    { id: 'kissint', category: 'international', title: 'Международные' },
-                    { id: 'gaga', category: 'international' }, { id: 'rp', category: 'no-copyright' },
-                    { id: 'lofi', category: 'lofi', title: 'Lo-Fi' }, { id: 'z100', category: 'international' },
-                    { id: 'jazz', category: 'international' }, { id: 'chillhop', category: 'lofi' },
-                    { id: 'lofihiphop', category: 'lofi' }, { id: 'minecraft', category: 'lofi' },
-                    { id: 'halloween', category: 'thematic', title: 'Тематические' }, { id: 'christmas', category: 'thematic' }
-                ];
-                
-                allStations.forEach(station => {
-                    const stationData = radioStations[station.id];
-                    if (station.title && station.title !== lastCategory) {
-                        const catTitle = document.createElement('div');
-                        catTitle.className = 'category-title';
-                        catTitle.textContent = station.title;
-                        list.appendChild(catTitle);
-                        lastCategory = station.title;
-                    }
-                    const li = document.createElement('li');
-                    li.setAttribute('data-station', station.id);
-                    if (stationData.isChristmas) li.className = 'christmas-garland';
-                    if (station.id === currentStation) li.classList.add('active');
-                    li.innerHTML = `<div><span class="station-icon"><i class="${stationData.icon}"></i></span> ${stationData.name}</div><div class="station-likes"><span class="likes-count">0</span> <i class="fas fa-heart"></i></div>`;
-                    li.onclick = () => {
-                        currentStationIndex = stationIds.indexOf(station.id);
-                        currentStation = station.id;
-                        isPlaying = true;
-                        document.getElementById('play-btn').innerHTML = '<i class="fas fa-pause"></i>';
-                        document.getElementById('player-icon').classList.add('playing');
-                        changeStation();
-                    };
-                    list.appendChild(li);
-                });
-                updateLikesUI();
-            }
-            
-            function changeStation() {
-                currentStation = stationIds[currentStationIndex];
-                updateStationInfo();
-                document.querySelectorAll('.station-list li').forEach(item => {
-                    item.classList.remove('active');
-                    if (item.getAttribute('data-station') === currentStation) item.classList.add('active');
-                });
-                const minecraftLoading = document.getElementById('minecraftLoading');
-                if (currentStation === 'minecraft') minecraftLoading.style.display = 'block';
-                else minecraftLoading.style.display = 'none';
-                
-                if (isPlaying) {
-                    if (audio) audio.pause();
-                    const station = radioStations[currentStation];
-                    audio = new Audio(station.url);
-                    audio.volume = document.getElementById('volume-slider').value / 100;
-                    audio.play().then(() => {
-                        if (currentStation === 'minecraft') minecraftLoading.style.display = 'none';
-                    }).catch(e => console.warn('Play error:', e));
-                    document.getElementById('playback-indicator').style.opacity = '1';
-                    startVisualization();
-                }
-                changeGif();
-                updateLikesUI();
-            }
-            
-            function togglePlay() {
-                isPlaying = !isPlaying;
-                const playBtn = document.getElementById('play-btn');
-                const icon = document.getElementById('player-icon');
-                const indicator = document.getElementById('playback-indicator');
-                if (isPlaying) {
-                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                    icon.classList.add('playing');
-                    if (!audio) {
-                        audio = new Audio(radioStations[currentStation].url);
-                        audio.volume = document.getElementById('volume-slider').value / 100;
-                    }
-                    audio.play().catch(e => { isPlaying = false; playBtn.innerHTML = '<i class="fas fa-play"></i>'; icon.classList.remove('playing'); });
-                    indicator.style.opacity = '1';
-                    startVisualization();
-                } else {
-                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                    icon.classList.remove('playing');
-                    if (audio) audio.pause();
-                    indicator.style.opacity = '0';
-                    stopVisualization();
-                }
-            }
-            
-            function filterStationsByCategory(category) {
-                if (category === 'top') {
-                    const sorted = [...stationIds].sort((a,b) => (stationLikes[b]||0) - (stationLikes[a]||0));
-                    const list = document.getElementById('station-list');
-                    list.innerHTML = '';
-                    const topTitle = document.createElement('div');
-                    topTitle.className = 'category-title';
-                    topTitle.textContent = 'Лучшие по лайкам';
-                    list.appendChild(topTitle);
-                    sorted.forEach(id => {
-                        const station = radioStations[id];
-                        const li = document.createElement('li');
-                        li.setAttribute('data-station', id);
-                        li.innerHTML = `<div><span class="station-icon"><i class="${station.icon}"></i></span> ${station.name}</div><div class="station-likes"><span class="likes-count">${stationLikes[id]||0}</span> <i class="fas fa-heart"></i></div>`;
-                        li.onclick = () => { currentStationIndex = stationIds.indexOf(id); currentStation = id; isPlaying = true; document.getElementById('play-btn').innerHTML = '<i class="fas fa-pause"></i>'; document.getElementById('player-icon').classList.add('playing'); changeStation(); };
-                        list.appendChild(li);
+            function startVisualization() {
+                if (visualizationInterval) clearInterval(visualizationInterval);
+                visualizationInterval = setInterval(() => {
+                    bars.forEach(bar => {
+                        bar.style.height = `${Math.floor(Math.random() * 30) + 1}px`;
                     });
-                    return;
-                }
-                const items = document.querySelectorAll('.station-list li');
-                items.forEach(item => {
-                    const id = item.getAttribute('data-station');
-                    const station = radioStations[id];
-                    let show = category === 'all';
-                    if (!show && category === 'lofi' && station.category === 'lofi') show = true;
-                    if (!show && category === 'thematic' && station.category === 'thematic') show = true;
-                    if (!show && category === 'no-copyright' && station.category === 'no-copyright') show = true;
-                    item.style.display = show ? 'flex' : 'none';
-                });
-                document.querySelectorAll('.category-title').forEach(title => {
-                    let hasVisible = false;
-                    let sibling = title.nextElementSibling;
-                    while (sibling && !sibling.classList.contains('category-title')) {
-                        if (sibling.style.display !== 'none') { hasVisible = true; break; }
-                        sibling = sibling.nextElementSibling;
-                    }
-                    title.style.display = hasVisible ? 'block' : 'none';
-                });
+                }, 100);
             }
             
-            // Загрузка лайков
-            if (db) {
-                likesUnsubscribe = db.collection('stationLikes').onSnapshot(snapshot => {
-                    stationLikes = {};
-                    userLikedStations.clear();
-                    snapshot.forEach(doc => { stationLikes[doc.id] = doc.data().count || 0; });
-                    const user = auth?.currentUser;
-                    if (user) {
-                        snapshot.forEach(doc => {
-                            const data = doc.data();
-                            if (data.users && data.users[user.uid]) userLikedStations.add(doc.id);
-                        });
-                    }
-                    updateLikesUI();
-                }, err => console.warn);
+            function stopVisualization() {
+                if (visualizationInterval) clearInterval(visualizationInterval);
+                bars.forEach(bar => bar.style.height = '2px');
             }
             
-            // Чат
-            function loadChatHistory() {
-                if (!db) return;
-                if (chatUnsubscribe) chatUnsubscribe();
-                chatUnsubscribe = db.collection('chat').orderBy('timestamp', 'desc').limit(50).onSnapshot(snapshot => {
-                    const messagesDiv = document.getElementById('chat-messages');
-                    messagesDiv.innerHTML = '';
-                    if (snapshot.empty) { messagesDiv.innerHTML = '<div class="message">Чат пуст. Будьте первым!</div>'; return; }
-                    const messages = [];
-                    snapshot.forEach(doc => messages.push({ id: doc.id, ...doc.data() }));
-                    messages.sort((a,b) => (a.timestamp?.toDate?.() || 0) - (b.timestamp?.toDate?.() || 0));
-                    messages.forEach(msg => addMessageToChat(msg));
-                    setTimeout(() => messagesDiv.scrollTop = messagesDiv.scrollHeight, 100);
-                });
-            }
-            
-            function addMessageToChat(message) {
-                const messagesDiv = document.getElementById('chat-messages');
-                const msgDiv = document.createElement('div');
-                msgDiv.className = 'message';
-                if (message.isRadioShare) msgDiv.classList.add('share-radio-message');
-                msgDiv.setAttribute('data-message-id', message.id);
-                let timeString = 'только что';
-                if (message.timestamp) {
-                    const time = message.timestamp.toDate?.() || new Date(message.timestamp);
-                    timeString = time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-                }
-                let content = '';
-                if (message.replyTo) {
-                    content += `<div class="reply-indicator">Ответ на: <strong>${message.replyTo.userName || message.replyTo.user}</strong>: ${(message.replyTo.text || '').substring(0,30)}${(message.replyTo.text||'').length>30?'...':''}</div>`;
-                }
-                if (message.gif) {
-                    content += `<span class="message-user">${message.userName || 'Аноним'}:</span> <img src="${message.gif}" style="max-width:150px; border-radius:8px; margin-top:5px;"><span class="message-time">${timeString}</span>`;
-                } else if (message.isRadioShare && message.radioStation) {
-                    content += `<span class="share-radio-icon"><i class="fas fa-radio"></i></span> <span class="message-user">${message.userName || 'Аноним'}</span> поделился: <strong>${message.radioStation.name}</strong><span class="message-time">${timeString}</span>`;
-                } else {
-                    let text = (message.text || '').replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
-                    content += `<span class="message-user">${message.userName || 'Аноним'}:</span> ${text}<span class="message-time">${timeString}</span>`;
-                }
-                let reactionsHTML = '';
-                if (message.reactions && Object.keys(message.reactions).length > 0) {
-                    reactionsHTML = '<div class="message-reactions">';
-                    Object.entries(message.reactions).forEach(([emoji, users]) => {
-                        if (Object.keys(users).length > 0) {
-                            reactionsHTML += `<div class="reaction" data-emoji="${emoji}" data-message-id="${message.id}"><span>${emoji}</span><span class="reaction-count">${Object.keys(users).length}</span></div>`;
-                        }
-                    });
-                    reactionsHTML += '</div>';
-                }
-                msgDiv.innerHTML = `${content}${reactionsHTML}<button class="reply-btn" data-message-id="${message.id}"><i class="fas fa-reply"></i></button><button class="reaction-btn" data-message-id="${message.id}"><i class="far fa-smile"></i></button><div class="reaction-picker" id="reaction-picker-${message.id}"><span class="reaction-emoji" data-emoji="👍">👍</span><span class="reaction-emoji" data-emoji="❤️">❤️</span><span class="reaction-emoji" data-emoji="😂">😂</span><span class="reaction-emoji" data-emoji="😮">😮</span><span class="reaction-emoji" data-emoji="😢">😢</span><span class="reaction-emoji" data-emoji="🎵">🎵</span><span class="more-reactions-btn" data-message-id="${message.id}">⋯</span></div>`;
-                messagesDiv.appendChild(msgDiv);
-                
-                msgDiv.querySelector('.reply-btn').onclick = (e) => { e.stopPropagation(); startReply(message); };
-                msgDiv.querySelectorAll('.reaction').forEach(r => r.onclick = (e) => { e.stopPropagation(); addReactionToMessage(message.id, r.getAttribute('data-emoji')); });
-                msgDiv.querySelector('.reaction-btn').onclick = (e) => { e.stopPropagation(); const picker = msgDiv.querySelector('.reaction-picker'); document.querySelectorAll('.reaction-picker').forEach(p => p.classList.remove('show')); picker.classList.toggle('show'); };
-                msgDiv.querySelectorAll('.reaction-emoji').forEach(e => e.onclick = (ev) => { ev.stopPropagation(); addReactionToMessage(message.id, e.getAttribute('data-emoji')); e.parentElement.classList.remove('show'); });
-                msgDiv.querySelector('.more-reactions-btn').onclick = (e) => { e.stopPropagation(); currentMessageForReaction = message.id; document.getElementById('reactionsModal').style.display = 'block'; e.target.parentElement.classList.remove('show'); };
-                if (message.isRadioShare && message.radioStation) msgDiv.onclick = () => playSharedRadio(message.radioStation);
-            }
-            
-            function startReply(message) {
-                replyingToMessage = message;
-                const existing = document.querySelector('.reply-indicator:not(.message .reply-indicator)');
-                if (existing) existing.remove();
-                const indicator = document.createElement('div');
-                indicator.className = 'reply-indicator';
-                indicator.innerHTML = `Ответ на: <strong>${message.userName || message.user}</strong>: ${(message.text || '').substring(0,30)}${(message.text||'').length>30?'...':''}<button class="cancel-reply">✕</button>`;
-                const container = document.getElementById('chat-input-container');
-                container.parentNode.insertBefore(indicator, container);
-                indicator.querySelector('.cancel-reply').onclick = () => { replyingToMessage = null; indicator.remove(); };
-                document.getElementById('chat-input').focus();
-            }
-            
-            function addReactionToMessage(messageId, emoji) {
-                if (!db) return;
-                const user = auth?.currentUser;
-                const userId = user ? user.uid : 'anonymous';
-                db.collection('chat').doc(messageId).get().then(doc => {
-                    if (doc.exists) {
-                        const data = doc.data();
-                        const reactions = data.reactions || {};
-                        const userReactions = reactions[emoji] || {};
-                        if (userReactions[userId]) delete userReactions[userId];
-                        else userReactions[userId] = true;
-                        if (Object.keys(userReactions).length === 0) delete reactions[emoji];
-                        else reactions[emoji] = userReactions;
-                        db.collection('chat').doc(messageId).update({ reactions });
-                    }
-                }).catch(e => console.warn);
-            }
-            
-            function sendMessage() {
-                const input = document.getElementById('chat-input');
-                const text = input.value.trim();
-                if (!text) return;
-                const user = auth?.currentUser;
-                const name = userNickname || (user?.displayName || 'Аноним');
-                const message = { text, userName: name, userId: user?.uid || 'anonymous', timestamp: new Date(), reactions: {} };
-                if (replyingToMessage) message.replyTo = { userName: replyingToMessage.userName || replyingToMessage.user, text: replyingToMessage.text, messageId: replyingToMessage.id };
-                const sendBtn = document.getElementById('chat-send-btn');
-                sendBtn.disabled = true;
-                sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                (db ? db.collection('chat').add(message) : Promise.resolve()).finally(() => {
-                    input.value = '';
-                    sendBtn.disabled = false;
-                    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
-                    const indicator = document.querySelector('.reply-indicator:not(.message .reply-indicator)');
-                    if (indicator) indicator.remove();
-                    replyingToMessage = null;
-                });
-            }
-            
-            function playSharedRadio(radioStation) {
-                const key = Object.keys(radioStations).find(k => radioStations[k].name === radioStation.name);
-                if (key) {
-                    currentStationIndex = stationIds.indexOf(key);
-                    currentStation = key;
-                    isPlaying = true;
-                    document.getElementById('play-btn').innerHTML = '<i class="fas fa-pause"></i>';
-                    document.getElementById('player-icon').classList.add('playing');
-                    changeStation();
-                    showNotification(`Включена: ${radioStation.name}`, 'success');
-                } else showNotification('Станция не найдена', 'error');
-            }
-            
-            function shareRadioInChat() {
-                const user = auth?.currentUser;
-                if (!user) { showNotification('Войдите в систему', 'error'); return; }
-                const name = userNickname || user.displayName || 'Пользователь';
-                const station = radioStations[currentStation];
-                db.collection('chat').add({ userName: name, userId: user.uid, isRadioShare: true, radioStation: station, timestamp: new Date(), reactions: {} }).then(() => {
-                    document.getElementById('shareModal').style.display = 'none';
-                    showNotification('Радио отправлено в чат!', 'success');
-                }).catch(e => showNotification('Ошибка', 'error'));
-            }
-            
-            function updateVolume(value) {
-                const slider = document.getElementById('volume-slider');
-                slider.value = value;
-                if (audio) audio.volume = value / 100;
-                const display = document.getElementById('volumeDisplay');
-                const displayText = document.getElementById('volumeDisplayText');
-                let icon = value == 0 ? 'fa-volume-mute' : value < 50 ? 'fa-volume-down' : 'fa-volume-up';
-                displayText.innerHTML = `<i class="fas ${icon}"></i> ${Math.round(value)}%`;
-                display.style.display = 'block';
-                setTimeout(() => { display.style.opacity = '0'; setTimeout(() => display.style.display = 'none', 300); }, 1500);
-            }
-            
-            // Инициализация эмодзи
-            function loadEmojis() {
-                const grid = document.getElementById('emoji-grid');
-                grid.innerHTML = '';
-                emojiCategories.all.forEach(emoji => {
-                    const div = document.createElement('div');
-                    div.className = 'emoji-item';
-                    div.textContent = emoji;
-                    div.onclick = () => { document.getElementById('chat-input').value += emoji; document.getElementById('emoji-picker').classList.remove('show'); };
-                    grid.appendChild(div);
-                });
-            }
-            
-            function initReactionsModal() {
-                const reactions = ["😀","😃","😄","😁","😆","😅","😂","🤣","😊","😇","🙂","🙃","😉","😌","😍","🥰","😘","😗","😙","😚","😋","😛","😝","😜","🤪","🤨","🧐","🤓","😎","🤩","🥳","😏","😒","😞","😔","😟","😕","🙁","☹️","😣","😖","😫","😩","🥺","😢","😭","😤","😠","😡","🤬","🤯","😳","🥵","🥶","😱","😨","😰","😥","😓","🤗","🤔","🤭","🤫","🤥","😶","😐","😑","😬","🙄","😯","😦","😧","😮","😲","🥱","😴","🤤","😪","😵","🤐","🥴","🤢","🤮","🤧","😷","🤒","🤕","🤑","🤠","😈","👿","👹","👺","🤡","💩","👻","💀","☠️","👽","👾","🤖","🎃","❤️","🧡","💛","💚","💙","💜","🖤","🤍","🤎","💔","❣️","💕","💞","💓","💗","💖","💘","💝","💟","👍","👎","👌","✌️","🤞","🤟","🤘","👈","👉","👆","👇","☝️","✋","🤚","🖐️","🖖","👋","🤙","💪","👂","👃","👀","👅","👄","💋"];
-                const grid = document.getElementById('reactionsGrid');
-                grid.innerHTML = '';
-                reactions.forEach(r => {
-                    const div = document.createElement('div');
-                    div.className = 'reaction-emoji-large';
-                    div.textContent = r;
-                    div.onclick = () => { if (currentMessageForReaction) { addReactionToMessage(currentMessageForReaction, r); document.getElementById('reactionsModal').style.display = 'none'; } };
-                    grid.appendChild(div);
-                });
-            }
-            
-            // PWA
-            function initPWA() {
-                if (window.matchMedia('(display-mode: standalone)').matches) isAppInstalled = true;
-                window.addEventListener('beforeinstallprompt', (e) => {
-                    e.preventDefault();
-                    deferredPrompt = e;
-                    const dismissed = localStorage.getItem('pwaDismissed');
-                    if (dismissed !== new Date().toDateString() && !isAppInstalled) setTimeout(() => document.getElementById('pwaInstallPrompt').style.display = 'block', 3000);
-                });
-                window.addEventListener('appinstalled', () => { isAppInstalled = true; deferredPrompt = null; document.getElementById('pwaInstallPrompt').style.display = 'none'; showNotification('Приложение установлено!', 'success'); });
-            }
-            
-            updateProgress(90, 'Финальная настройка...');
-            
-            // Запуск приложения
-            setTimeout(() => {
-                updateProgress(100, 'Готово!');
-                setTimeout(() => {
-                    document.getElementById('loadingScreen').style.display = 'none';
-                    document.getElementById('mainContainer').style.display = 'flex';
-                }, 500);
-            }, 800);
-            
-            document.addEventListener('DOMContentLoaded', () => {
-                loadStationList();
-                updateStationInfo();
-                changeGif();
-                loadEmojis();
-                initReactionsModal();
-                if (db) loadChatHistory();
-                initPWA();
-                
-                // Обработчики
-                document.getElementById('play-btn').onclick = togglePlay;
-                document.getElementById('prev-btn').onclick = () => { currentStationIndex = (currentStationIndex - 1 + stationIds.length) % stationIds.length; isPlaying = true; document.getElementById('play-btn').innerHTML = '<i class="fas fa-pause"></i>'; document.getElementById('player-icon').classList.add('playing'); changeStation(); };
-                document.getElementById('next-btn').onclick = () => { currentStationIndex = (currentStationIndex + 1) % stationIds.length; isPlaying = true; document.getElementById('play-btn').innerHTML = '<i class="fas fa-pause"></i>'; document.getElementById('player-icon').classList.add('playing'); changeStation(); };
-                document.getElementById('random-station-btn').onclick = () => { currentStationIndex = Math.floor(Math.random() * stationIds.length); isPlaying = true; document.getElementById('play-btn').innerHTML = '<i class="fas fa-pause"></i>'; document.getElementById('player-icon').classList.add('playing'); changeStation(); };
-                document.getElementById('refresh-btn').onclick = function() { this.classList.add('reload-animation'); setTimeout(() => this.classList.remove('reload-animation'), 500); if (audio) { const wasPlaying = !audio.paused; audio.pause(); audio = new Audio(radioStations[currentStation].url + '?nocache=' + Date.now()); audio.volume = document.getElementById('volume-slider').value / 100; if (wasPlaying) audio.play(); changeGif(); showNotification('Обновлено', 'success'); } };
-                document.getElementById('like-btn').onclick = () => { showHeartEffect(); if (db) { const userId = auth?.currentUser?.uid || 'anonymous'; const stationId = currentStation; db.collection('stationLikes').doc(stationId).get().then(doc => { const count = (doc.data()?.count || 0) + 1; const users = doc.data()?.users || {}; users[userId] = true; db.collection('stationLikes').doc(stationId).set({ count, users }, { merge: true }); }); } else { stationLikes[currentStation] = (stationLikes[currentStation] || 0) + 1; updateLikesUI(); } };
-                document.getElementById('share-btn').onclick = () => document.getElementById('shareModal').style.display = 'block';
-                document.getElementById('copyLinkBtn').onclick = () => { navigator.clipboard.writeText('https://deyniik.github.io/DeynikRadio/'); showNotification('Ссылка скопирована', 'success'); document.getElementById('shareModal').style.display = 'none'; };
-                document.getElementById('shareInChatBtn').onclick = shareRadioInChat;
-                document.getElementById('volume-slider').oninput = (e) => updateVolume(e.target.value);
-                document.getElementById('chat-send-btn').onclick = sendMessage;
-                document.getElementById('chat-input').oninput = (e) => document.getElementById('chat-send-btn').disabled = e.target.value.trim() === '';
-                document.getElementById('chat-input').onkeypress = (e) => { if (e.key === 'Enter' && !document.getElementById('chat-send-btn').disabled) sendMessage(); };
-                document.getElementById('emoji-btn').onclick = (e) => { e.stopPropagation(); const picker = document.getElementById('emoji-picker'); picker.classList.toggle('show'); document.getElementById('gif-picker').classList.remove('show'); };
-                document.getElementById('gif-btn').onclick = (e) => { e.stopPropagation(); const picker = document.getElementById('gif-picker'); picker.classList.toggle('show'); document.getElementById('emoji-picker').classList.remove('show'); };
-                document.getElementById('emoji-search').oninput = (e) => { const term = e.target.value.toLowerCase(); const items = document.querySelectorAll('#emoji-grid .emoji-item'); items.forEach(item => { item.style.display = item.textContent.includes(term) ? 'block' : 'none'; }); };
-                document.querySelectorAll('.emoji-category').forEach(btn => { btn.onclick = () => { document.querySelectorAll('.emoji-category').forEach(b => b.classList.remove('active')); btn.classList.add('active'); const cat = btn.dataset.category; const emojis = cat === 'all' ? emojiCategories.all : emojiCategories[cat]; const grid = document.getElementById('emoji-grid'); grid.innerHTML = ''; emojis.forEach(e => { const div = document.createElement('div'); div.className = 'emoji-item'; div.textContent = e; div.onclick = () => { document.getElementById('chat-input').value += e; document.getElementById('emoji-picker').classList.remove('show'); }; grid.appendChild(div); }); }; });
-                document.querySelectorAll('.category-btn').forEach(btn => { btn.onclick = () => { document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); filterStationsByCategory(btn.dataset.category); }; });
-                
-                // Модалки
-                const closeModals = () => {
-                    document.getElementById('shareModal').style.display = 'none';
-                    document.getElementById('reactionsModal').style.display = 'none';
-                    document.getElementById('nicknameModal').style.display = 'none';
-                    document.getElementById('feedbackModal').style.display = 'none';
-                    document.getElementById('supportModal').style.display = 'none';
-                };
-                document.querySelectorAll('.modal .close').forEach(c => c.onclick = closeModals);
-                window.onclick = (e) => { if (e.target.classList.contains('modal')) closeModals(); };
-                document.getElementById('feedbackBtn').onclick = () => document.getElementById('feedbackModal').style.display = 'block';
-                document.getElementById('supportBtn').onclick = () => document.getElementById('supportModal').style.display = 'block';
-                document.getElementById('submitFeedbackBtn').onclick = () => { showNotification('Спасибо за отзыв!', 'success'); document.getElementById('feedbackModal').style.display = 'none'; };
-                document.getElementById('closeNicknameModal').onclick = () => document.getElementById('nicknameModal').style.display = 'none';
-                document.getElementById('cancelNicknameBtn').onclick = () => document.getElementById('nicknameModal').style.display = 'none';
-                document.getElementById('saveNicknameBtn').onclick = () => { const val = document.getElementById('nickname-input').value.trim(); if (val) { userNickname = val; localStorage.setItem('userNickname', val); document.getElementById('nicknameModal').style.display = 'none'; updateAuthUI(auth?.currentUser); showNotification('Никнейм сохранен!', 'success'); } };
-                document.getElementById('closeReactionsModal').onclick = () => document.getElementById('reactionsModal').style.display = 'none';
-                document.getElementById('closeSupportModal').onclick = () => document.getElementById('supportModal').style.display = 'none';
-                document.getElementById('closeFeedbackModal').onclick = () => document.getElementById('feedbackModal').style.display = 'none';
-                document.getElementById('closeShareModal').onclick = () => document.getElementById('shareModal').style.display = 'none';
-                
-                // Google вход
-                function updateAuthUI(user) {
-                    const authSection = document.getElementById('auth-section');
-                    if (user) {
-                        const displayName = userNickname || user.displayName || 'Пользователь';
-                        const firstLetter = displayName.charAt(0).toUpperCase();
-                        authSection.innerHTML = `<div class="user-profile" id="user-profile"><div class="user-avatar">${firstLetter}</div><div class="user-name">${displayName.substring(0,15)}</div><button class="edit-nickname-btn"><i class="fas fa-pencil-alt"></i></button><div class="user-dropdown" id="user-dropdown"><div class="dropdown-item" id="edit-nickname-dropdown"><i class="fas fa-user-edit"></i> Сменить ник</div><div class="dropdown-item" id="sign-out-btn"><i class="fas fa-sign-out-alt"></i> Выйти</div></div></div>`;
-                        document.querySelector('.edit-nickname-btn').onclick = (e) => { e.stopPropagation(); document.getElementById('nickname-input').value = userNickname || user.displayName || ''; document.getElementById('nicknameModal').style.display = 'block'; };
-                        document.getElementById('edit-nickname-dropdown').onclick = () => { document.getElementById('nickname-input').value = userNickname || user.displayName || ''; document.getElementById('nicknameModal').style.display = 'block'; };
-                        document.getElementById('sign-out-btn').onclick = () => auth.signOut();
-                        document.getElementById('user-profile').onclick = (e) => { e.stopPropagation(); document.getElementById('user-dropdown').classList.toggle('show'); };
-                        document.addEventListener('click', () => document.getElementById('user-dropdown')?.classList.remove('show'));
-                    } else {
-                        authSection.innerHTML = '<button class="google-login-btn" id="googleLoginBtn"><i class="fab fa-google"></i> Войти через Google</button>';
-                        document.getElementById('googleLoginBtn').onclick = () => { const provider = new firebase.auth.GoogleAuthProvider(); auth.signInWithPopup(provider).catch(e => showNotification('Ошибка входа', 'error')); };
-                    }
-                }
-                if (auth) auth.onAuthStateChanged(updateAuthUI);
-                
-                document.getElementById('downloadAppBtn').onclick = () => { if (deferredPrompt && !isAppInstalled) deferredPrompt.prompt(); else showNotification('Установка доступна в браузере', 'info'); };
-                document.getElementById('pwaInstallBtn').onclick = () => { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { deferredPrompt = null; document.getElementById('pwaInstallPrompt').style.display = 'none'; }); } };
-                document.getElementById('pwaDismissBtn').onclick = () => { document.getElementById('pwaInstallPrompt').style.display = 'none'; localStorage.setItem('pwaDismissed', new Date().toDateString()); };
-                document.getElementById('liteToggle').onchange = (e) => { if (e.target.checked) window.location.href = 'https://deyniik.github.io/DeynikRadio/lite'; };
-                
-                // GIF поиск (упрощенный)
-                async function searchGifs(term) {
-                    const resultsDiv = document.getElementById('gif-results');
-                    if (!term) { resultsDiv.innerHTML = '<div style="text-align:center;color:#888;">Введите запрос</div>'; return; }
-                    try {
-                        const res = await fetch(`https://g.tenor.com/v1/search?q=${encodeURIComponent(term)}&key=LIVDSRZULELA&limit=12`);
-                        const data = await res.json();
-                        resultsDiv.innerHTML = '';
-                        data.results?.forEach(g => {
-                            const img = document.createElement('img');
-                            img.className = 'gif-item';
-                            img.src = g.media[0].gif.url;
-                            img.onclick = () => { sendGifMessage(g.media[0].gif.url); document.getElementById('gif-picker').classList.remove('show'); };
-                            resultsDiv.appendChild(img);
-                        });
-                    } catch(e) { resultsDiv.innerHTML = '<div style="text-align:center;color:#888;">Ошибка загрузки</div>'; }
-                }
-                function sendGifMessage(url) {
-                    const user = auth?.currentUser;
-                    const name = userNickname || (user?.displayName || 'Аноним');
-                    db.collection('chat').add({ gif: url, userName: name, userId: user?.uid || 'anonymous', timestamp: new Date(), reactions: {} }).catch(console.warn);
-                }
-                document.getElementById('gif-search').oninput = (e) => searchGifs(e.target.value);
-                document.querySelectorAll('.gif-trending-btn').forEach(btn => { btn.onclick = () => searchGifs(btn.dataset.term); });
-                
-                document.addEventListener('click', () => { document.getElementById('emoji-picker').classList.remove('show'); document.getElementById('gif-picker').classList.remove('show'); });
+            document.addEventListener('click', function() {
+                const dropdown = document.getElementById('user-dropdown');
+                if (dropdown) dropdown.classList.remove('show');
             });
-        })();
+        }
     </script>
 </body>
 </html>

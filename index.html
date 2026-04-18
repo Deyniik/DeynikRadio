@@ -394,32 +394,37 @@
         
         .categories-container {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             margin-bottom: 15px;
             flex-wrap: wrap;
         }
         
         .category-btn {
-            background: rgba(40, 40, 40, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            border: 1px solid rgba(29, 185, 84, 0.3);
             color: #B3B3B3;
-            padding: 6px 12px;
-            border-radius: 15px;
+            padding: 8px 16px;
+            border-radius: 25px;
             cursor: pointer;
             font-size: 0.8rem;
+            font-weight: bold;
             transition: all 0.3s ease;
             white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         
         .category-btn:hover {
-            background: rgba(29, 185, 84, 0.2);
+            background: linear-gradient(135deg, #1DB954 0%, #157a3a 100%);
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(29,185,84,0.3);
         }
         
         .category-btn.active {
-            background: rgba(29, 185, 84, 0.3);
-            color: #1DB954;
+            background: linear-gradient(135deg, #1DB954 0%, #0e5e2d 100%);
+            color: white;
             border-color: #1DB954;
+            box-shadow: 0 0 10px rgba(29,185,84,0.5);
         }
         
         .station-list {
@@ -472,7 +477,45 @@
             box-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
         }
         
-        /* Стили для лайков в левой панели */
+        /* Новогодняя станция - без радужного переливания */
+        .station-list li.christmas {
+            border-left: 3px solid #FF0000;
+            position: relative;
+        }
+        
+        .station-list li.christmas::before {
+            content: "🎄";
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+        }
+        
+        .station-list li.christmas:hover {
+            background: rgba(255, 0, 0, 0.2);
+            transform: translateX(-3px);
+        }
+        
+        .station-list li.christmas.active {
+            background: rgba(255, 0, 0, 0.3);
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+        }
+
+        /* Убираем радужное переливание */
+        .station-list li.christmas-garland {
+            position: relative;
+        }
+        
+        .station-list li.christmas-garland::before {
+            content: "🎄";
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+        }
+        
         .station-likes {
             display: flex;
             align-items: center;
@@ -487,7 +530,6 @@
         
         .station-likes:hover {
             background: rgba(29, 185, 84, 0.2);
-            transform: scale(1.05);
         }
         
         .station-likes .likes-count {
@@ -501,13 +543,6 @@
         
         .station-likes.liked i {
             color: #1DB954;
-            animation: heartBeat 0.3s ease;
-        }
-        
-        @keyframes heartBeat {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-            100% { transform: scale(1); }
         }
         
         /* Анимация разбитого сердца */
@@ -534,63 +569,12 @@
             }
             60% {
                 opacity: 1;
-                transform: translate(-50%, -70%) scale(1.1);
+                transform: translate(-50%, -70%) scale(1.1) rotate(15deg);
             }
             100% {
                 opacity: 0;
-                transform: translate(-50%, -100%) scale(0.8) rotate(20deg);
+                transform: translate(-50%, -100%) scale(0.8) rotate(30deg);
             }
-        }
-        
-        .station-list li.christmas {
-            border-left: 3px solid #FF0000;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .station-list li.christmas::before {
-            content: "🎄";
-            position: absolute;
-            left: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1rem;
-        }
-        
-        .station-list li.christmas:hover {
-            background: rgba(255, 0, 0, 0.2);
-            transform: translateX(-3px);
-        }
-        
-        .station-list li.christmas.active {
-            background: rgba(255, 0, 0, 0.3);
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
-        }
-
-        .station-list li.christmas-garland {
-            position: relative;
-            overflow: visible;
-        }
-
-        .station-list li.christmas-garland::after {
-            content: "";
-            position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
-            border-radius: 10px;
-            background: linear-gradient(45deg, #ff0000, #ff8000, #ffff00, #00ff00, #0080ff, #0000ff, #8000ff);
-            background-size: 400% 400%;
-            animation: garland 3s linear infinite;
-            z-index: -1;
-            opacity: 0.7;
-        }
-
-        @keyframes garland {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
         
         .station-icon {
@@ -1539,6 +1523,7 @@
             border-bottom: 1px solid rgba(29, 185, 84, 0.3);
         }
         
+        /* Убираем двойной CRT-эффект */
         .crt-effect {
             position: relative;
             overflow: hidden;
@@ -1551,7 +1536,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0.1) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background: linear-gradient(rgba(18, 16, 16, 0.08) 50%, rgba(0, 0, 0, 0.15) 50%);
             background-size: 100% 3px;
             z-index: 2;
             pointer-events: none;
@@ -1563,7 +1548,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0.1) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background: linear-gradient(rgba(18, 16, 16, 0.05) 50%, rgba(0, 0, 0, 0.1) 50%);
             background-size: 100% 4px;
             pointer-events: none;
             z-index: 9999;
@@ -1830,6 +1815,14 @@
 
         .message a:hover {
             color: #1ed760;
+        }
+        
+        /* Стили для GIF в чате */
+        .message-gif {
+            max-width: 200px;
+            border-radius: 8px;
+            margin-top: 5px;
+            cursor: pointer;
         }
 
         .share-radio-message {
@@ -2440,7 +2433,7 @@
                     <div class="star" data-rating="1"></div>
                     <div class="star" data-rating="2"></div>
                     <div class="star" data-rating="3"></div>
-                    <div class="star" data-rating="4"></div>
+                    <div class="star" data-rating="4</div>
                     <div class="star" data-rating="5"></div>
                 </div>
                 <textarea class="feedback-textarea" id="feedbackText" placeholder="Расскажите о вашем опыте использования радио..." maxlength="500"></textarea>
@@ -2533,7 +2526,7 @@
             <div class="side-panel left-panel crt-effect">
                 <div class="stations-header">
                     <h2>Радиостанции</h2>
-                    <span class="station-count">26</span>
+                    <span class="station-count">28</span>
                 </div>
                 
                 <div class="categories-container">
@@ -2701,11 +2694,11 @@
         
         updateProgress(30, 'Firebase готов...');
         
-        // Радиостанции с добавленными новыми категориями и Taylor Swift
+        // Радиостанции с обновлёнными ссылками
         const radioStations = {
             kissint: {
                 name: "KISS FM",
-                url: "https://cloud.revma.ihrhls.com/zc185",
+                url: "https://cloud.revma.ihrhls.com/zc185?rj-org=n28a-e2&rj-ttl=5&rj-tok=AAABnaC_OEwAHsRM0lbAvLrwHQ",
                 description: "Лучшие мировые хиты в отличном качестве",
                 currentTrack: "Популярные хиты",
                 currentArtist: "KISS FM",
@@ -2715,7 +2708,7 @@
             },
             gaga: {
                 name: "Lady Gaga Radio",
-                url: "https://2.mystreaming.net/er/ladygagahits/icecast.audio",
+                url: "https://stream04.pcradio.ru/Lady_GaGa-hi",
                 description: "Всем молчать! Играет мать!",
                 currentTrack: "Lady Gaga Hits",
                 currentArtist: "Lady Gaga",
@@ -2775,11 +2768,11 @@
             },
             lofihiphop: {
                 name: "LoFi Hip Hop",
-                url: "https://stream-158.zeno.fm/0r0xa792kwzuv",
+                url: "https://srv01.gpmradio.ru/stream/pro/aac/64/358?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJrZXkiOiJiZjZkODg1OTQ3ZTY5ZDlhZjUzN2UwY2UwMTlkODUwNCIsIklQIjoiODQuNTMuMjI5LjIyMCIsIlVBIjoiTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzE0NC4wLjAuMCBXaGFsZS80LjM2LjM2OC4xNiBTYWZhcmkvNTM3LjM2IiwiUmVmIjoiaHR0cHM6Ly8xMDEucnUvIiwidWlkX2NoYW5uZWwiOiIzNTgiLCJ0eXBlX2NoYW5uZWwiOiJjaGFubmVsIiwidHlwZURldmljZSI6IlBDIiwiQnJvd3NlciI6IkNocm9tZSIsIkJyb3dzZXJWZXJzaW9uIjoiMTQ0LjAuMC4wIiwiU3lzdGVtIjoiV2luZG93cyAxMCIsImV4cCI6MTc3NjU2MTYzM30.54Wm0JGGvw6RWOACPjFV7ZU8dauMKpd5OI3iMKrxTZ4",
                 description: "Лучшие хип-хоп биты без авторских прав",
                 currentTrack: "Hip Hop Beats",
                 currentArtist: "LoFi Artist",
-                quality: "128kbps",
+                quality: "64kbps AAC",
                 icon: "fas fa-headphones",
                 category: "lofi"
             },
@@ -2805,7 +2798,7 @@
             },
             christmas: {
                 name: "Christmas Radio",
-                url: "http://relay4.181.fm:8124/",
+                url: "https://strm112.1.fm/christmas_mobile_mp3",
                 description: "Новогодние и рождественские хиты",
                 currentTrack: "Christmas Songs",
                 currentArtist: "Various Artists",
@@ -2826,7 +2819,7 @@
             },
             darkhorror: {
                 name: "Dark Horror",
-                url: "https://streams.radiomast.io/7b8d5b9e-2b1f-4f3e-8a2c-1d3e5f7a9b2c",
+                url: "http://79.120.39.202:8002/darkambient",
                 description: "Жуткие саундтреки и атмосфера ужаса",
                 currentTrack: "Horror Soundtrack",
                 currentArtist: "Dark Horror",
@@ -2834,14 +2827,25 @@
                 icon: "fas fa-ghost",
                 category: "dark"
             },
-            darkambient: {
-                name: "Dark Ambient",
-                url: "https://streams.radiomast.io/8c9d6a7f-3c2d-4a5b-9d1e-2f3a4b5c6d7e",
-                description: "Глубокие и медитативные эмбиент композиции",
-                currentTrack: "Ambient Journey",
-                currentArtist: "Dark Ambient",
+            halloweenlofi: {
+                name: "Halloween LoFi",
+                url: "https://www.youtube.com/live/3GQY80jyysQ?si=d4v5grMO0xxjwzfU",
+                description: "Стрим Halloween LoFi с YouTube (только звук)",
+                currentTrack: "Halloween LoFi Mix",
+                currentArtist: "YouTube Live",
+                quality: "Live Stream",
+                icon: "fas fa-pumpkin",
+                category: "dark",
+                isYouTube: true
+            },
+            darkpop: {
+                name: "Dark Pop",
+                url: "https://stream.nightride.fm/darksynth.mp3",
+                description: "Тёмная поп-музыка и синтвейв",
+                currentTrack: "Dark Pop Mix",
+                currentArtist: "Nightride FM",
                 quality: "128kbps",
-                icon: "fas fa-cloud-moon",
+                icon: "fas fa-moon",
                 category: "dark"
             },
             anison: {
@@ -2866,11 +2870,11 @@
             },
             classic: {
                 name: "Radio Classic",
-                url: "https://player.radioclassica.ru/stream",
+                url: "https://srv01.gpmradio.ru/stream/pro/aac/64/98?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJrZXkiOiJiZjZkODg1OTQ3ZTY5ZDlhZjUzN2UwY2UwMTlkODUwNCIsIklQIjoiODQuNTMuMjI5LjIyMCIsIlVBIjoiTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzE0NC4wLjAuMCBXaGFsZS80LjM2LjM2OC4xNiBTYWZhcmkvNTM3LjM2IiwiUmVmIjoiaHR0cHM6Ly8xMDEucnUvIiwidWlkX2NoYW5uZWwiOiI5OCIsInR5cGVfY2hhbm5lbCI6ImNoYW5uZWwiLCJ0eXBlRGV2aWNlIjoiUEMiLCJCcm93c2VyIjoiQ2hyb21lIiwiQnJvd3NlclZlcnNpb24iOiIxNDQuMC4wLjAiLCJTeXN0ZW0iOiJXaW5kb3dzIDEwIiwiZXhwIjoxNzc2NTYzNTcyfQ.jEcZ2H8iHszwbNUdhr0EWU5_WY_1hV8De8BNPfjD9M8",
                 description: "Классическая музыка",
                 currentTrack: "Classical Masterpieces",
                 currentArtist: "Various Artists",
-                quality: "128kbps",
+                quality: "64kbps AAC",
                 icon: "fas fa-music",
                 category: "classic"
             },
@@ -2928,13 +2932,32 @@
                 name: "Taylor Swift Radio",
                 url: "https://srv02.gpmradio.ru:8443/stream/personal/aacp/64/870911",
                 description: "Только Taylor Swift и её лучшие хиты",
-                currentTrack: "Taylor Swift Hits",
+                currentTrack: "Loading...",
                 currentArtist: "Taylor Swift",
                 quality: "64kbps AAC",
                 icon: "fas fa-star",
-                category: "country"
+                category: "country",
+                customGifs: true
             }
         };
+
+        // Гифки для Taylor Swift
+        const taylorGifs = [
+            'https://i.pinimg.com/originals/79/80/3b/79803b3ac8921977acae46b7ac15c111.gif',
+            'https://i.pinimg.com/originals/ac/f9/a1/acf9a142488486f67b5232b38350a3a7.gif',
+            'https://i.gifer.com/ZajA.gif',
+            'https://i.pinimg.com/originals/b0/4a/14/b04a142d91051b21705dafd27c6cae5a.gif',
+            'https://media1.tenor.com/m/-fAW9eIDzsUAAAAC/willow-taylor-swift.gif',
+            'https://media1.tenor.com/m/6QDe6RCa2pkAAAAC/taylor-swift-taylor.gif',
+            'https://i.gifer.com/WXoO.gif',
+            'https://i.pinimg.com/originals/69/87/81/698781048f6079f9b291bfa685fd236b.gif',
+            'https://i.gifer.com/GGc6.gif',
+            'https://i.gifer.com/Xieg.gif',
+            'https://images6.fanpop.com/image/photos/37800000/taylor-swift-taylor-swift-37834750-268-177.gif',
+            'https://i.gifer.com/ZQkk.gif',
+            'https://media1.tenor.com/m/pyZKM8vtTdQAAAAC/folklore-cardigan.gif',
+            'https://media1.tenor.com/m/bj3j5tPyVGsAAAAd/taylor-swift-taylor.gif'
+        ];
 
         const gifs = [
             'https://i.pinimg.com/originals/7d/04/0e/7d040e94931427709008aaeda14db9c8.gif',
@@ -3068,7 +3091,6 @@
             let deferredPrompt = null;
             let isAppInstalled = false;
             
-            // Функция для отображения анимации разбитого сердца
             function showBrokenHeart() {
                 const brokenHeartDiv = document.createElement('div');
                 brokenHeartDiv.className = 'broken-heart';
@@ -3079,6 +3101,51 @@
                 }, 800);
             }
             
+            // Функция для получения информации о треке Taylor Swift с 101.ru
+            async function fetchTaylorSwiftTrack() {
+                try {
+                    const response = await fetch('https://101.ru/radio/user/870911');
+                    const text = await response.text();
+                    const titleMatch = text.match(/<title>(.*?)<\/title>/);
+                    if (titleMatch) {
+                        let title = titleMatch[1];
+                        title = title.replace('TaylorSwiftOnline - радио онлайн. Слушать бесплатно', '').trim();
+                        if (title && title !== '' && title !== 'TaylorSwiftOnline') {
+                            const parts = title.split(' - ');
+                            if (parts.length >= 2) {
+                                document.getElementById('current-track-info').textContent = `"${parts.slice(1).join(' - ')}"`;
+                                document.getElementById('current-artist-info').textContent = parts[0];
+                                document.getElementById('current-track').textContent = `"${parts.slice(1).join(' - ')}"`;
+                                document.getElementById('current-artist').textContent = parts[0];
+                            } else {
+                                document.getElementById('current-track-info').textContent = `"${title}"`;
+                                document.getElementById('current-artist-info').textContent = 'Taylor Swift';
+                                document.getElementById('current-track').textContent = `"${title}"`;
+                                document.getElementById('current-artist').textContent = 'Taylor Swift';
+                            }
+                        } else {
+                            document.getElementById('current-track-info').textContent = '"Taylor Swift Mix"';
+                            document.getElementById('current-artist-info').textContent = 'Taylor Swift';
+                            document.getElementById('current-track').textContent = '"Taylor Swift Mix"';
+                            document.getElementById('current-artist').textContent = 'Taylor Swift';
+                        }
+                    }
+                } catch(e) {
+                    console.log('Не удалось получить трек с 101.ru');
+                    document.getElementById('current-track-info').textContent = '"Taylor Swift Radio"';
+                    document.getElementById('current-artist-info').textContent = 'Taylor Swift';
+                    document.getElementById('current-track').textContent = '"Taylor Swift Radio"';
+                    document.getElementById('current-artist').textContent = 'Taylor Swift';
+                }
+            }
+            
+            // Обновление трека каждые 10 секунд для Taylor Swift
+            setInterval(() => {
+                if (currentStation === 'taylorswift') {
+                    fetchTaylorSwiftTrack();
+                }
+            }, 10000);
+            
             loadStationList();
             loadLikes();
             updateStationInfo();
@@ -3088,53 +3155,6 @@
             loadTrendingGifs();
             initFeedbackSystem();
             initPWA();
-            
-            // Функция для обновления отображения трека из метаданных
-            function updateTrackInfo(artist, title) {
-                if (artist && title) {
-                    document.getElementById('current-track-info').textContent = `"${title}"`;
-                    document.getElementById('current-artist-info').textContent = artist;
-                    document.getElementById('current-track').textContent = `"${title}"`;
-                    document.getElementById('current-artist').textContent = artist;
-                }
-            }
-            
-            // Функция для получения метаданных с 101.ru для Taylor Swift
-            async function fetchTaylorSwiftTrack() {
-                try {
-                    const response = await fetch('https://101.ru/radio/user/870911');
-                    const text = await response.text();
-                    const titleMatch = text.match(/<title>(.*?)<\/title>/);
-                    if (titleMatch) {
-                        let title = titleMatch[1];
-                        title = title.replace('TaylorSwiftOnline - радио онлайн. Слушать бесплатно', '').trim();
-                        if (title && title !== '') {
-                            const parts = title.split(' - ');
-                            if (parts.length >= 2) {
-                                updateTrackInfo(parts[0], parts.slice(1).join(' - '));
-                            } else {
-                                updateTrackInfo('Taylor Swift', title);
-                            }
-                        }
-                    }
-                } catch(e) {
-                    console.log('Не удалось получить трек с 101.ru');
-                }
-            }
-            
-            // Обновление информации о треке каждые 10 секунд для Taylor Swift
-            setInterval(() => {
-                if (currentStation === 'taylorswift') {
-                    fetchTaylorSwiftTrack();
-                } else if (audio && audio.src && !audio.src.includes('taylorswift')) {
-                    // Для других станций пытаемся получить метаданные из потока
-                    try {
-                        if (audio.metadata && audio.metadata.title) {
-                            updateTrackInfo(audio.metadata.artist || radioStations[currentStation].currentArtist, audio.metadata.title);
-                        }
-                    } catch(e) {}
-                }
-            }, 10000);
             
             liteToggle.addEventListener('change', function() {
                 if (this.checked) {
@@ -3184,7 +3204,7 @@
                     { id: 'halloween', category: 'thematic', title: '🎃 Тематические' },
                     { id: 'christmas', category: 'thematic' },
                     { id: 'darkzone', category: 'dark', title: '🌑 Dark' },
-                    { id: 'darkhorror', category: 'dark' }, { id: 'darkambient', category: 'dark' },
+                    { id: 'darkhorror', category: 'dark' }, { id: 'halloweenlofi', category: 'dark' }, { id: 'darkpop', category: 'dark' },
                     { id: 'anison', category: 'anime', title: '🎌 Аниме' },
                     { id: 'hyakuoku', category: 'anime' },
                     { id: 'classic', category: 'classic', title: '🎼 Классика' },
@@ -3210,7 +3230,7 @@
                     
                     const stationItem = document.createElement('li');
                     stationItem.setAttribute('data-station', station.id);
-                    if (stationData.isChristmas) stationItem.className = 'christmas-garland';
+                    if (stationData.isChristmas) stationItem.classList.add('christmas');
                     if (station.id === currentStation) stationItem.classList.add('active');
                     
                     const isLiked = userLikedStations.has(station.id);
@@ -3219,11 +3239,10 @@
                         <div><span class="station-icon"><i class="${stationData.icon}"></i></span> ${stationData.name}</div>
                         <div class="station-likes ${isLiked ? 'liked' : ''}" data-station="${station.id}">
                             <span class="likes-count">${stationLikes[station.id] ? stationLikes[station.id].count || 0 : 0}</span>
-                            <i class="fas ${isLiked ? 'fa-heart' : 'fa-heart'}"></i>
+                            <i class="fas fa-heart"></i>
                         </div>
                     `;
                     
-                    const stationDiv = stationItem.querySelector('.station-text-part') || stationItem;
                     stationItem.addEventListener('click', function(e) {
                         if (e.target.closest('.station-likes')) return;
                         currentStationIndex = stationIds.indexOf(station.id);
@@ -3243,12 +3262,10 @@
                             removeLike(stationId, userId);
                             showBrokenHeart();
                             this.classList.remove('liked');
-                            this.querySelector('i').className = 'fas fa-heart';
                         } else {
                             addLike(stationId, userId);
                             showHeartEffect();
                             this.classList.add('liked');
-                            this.querySelector('i').className = 'fas fa-heart';
                         }
                         
                         const countSpan = this.querySelector('.likes-count');
@@ -3432,10 +3449,19 @@
                 const user = auth.currentUser;
                 if (!user) { showNotification('Войдите в систему', 'error'); return; }
                 const displayName = userNickname || user.displayName || 'Пользователь';
-                db.collection('chat').add({ gif: gifUrl, userName: displayName, userId: user.uid, timestamp: firebase.firestore.FieldValue.serverTimestamp(), reactions: {} })
-                    .finally(() => { chatSendBtn.disabled = false; chatSendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>'; });
+                const message = {
+                    gif: gifUrl,
+                    userName: displayName,
+                    userId: user.uid,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    reactions: {}
+                };
                 chatSendBtn.disabled = true;
                 chatSendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                db.collection('chat').add(message).finally(() => {
+                    chatSendBtn.disabled = false;
+                    chatSendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                });
             }
             
             function showHeartEffect() {
@@ -3523,10 +3549,8 @@
                         if (span) span.textContent = stationLikes[sid] ? stationLikes[sid].count || 0 : 0;
                         if (userLikedStations.has(sid)) {
                             likesDiv.classList.add('liked');
-                            likesDiv.querySelector('i').className = 'fas fa-heart';
                         } else {
                             likesDiv.classList.remove('liked');
-                            likesDiv.querySelector('i').className = 'fas fa-heart';
                         }
                     }
                 });
@@ -3590,10 +3614,13 @@
                 }
                 let content = '';
                 if (msg.replyTo) content += `<div class="reply-indicator">Ответ на: <strong>${msg.replyTo.userName || msg.replyTo.user}</strong>: ${(msg.replyTo.text || '').substring(0,30)}${(msg.replyTo.text||'').length>30?'...':''}</div>`;
-                if (msg.gif) content += `<span class="message-user">${msg.userName || 'Аноним'}:</span> <img src="${msg.gif}" style="max-width:150px;border-radius:8px;margin-top:5px;"><span class="message-time">${time}</span>`;
-                else if (msg.isRadioShare && msg.radioStation) content += `<span class="share-radio-icon"><i class="fas fa-radio"></i></span> <span class="message-user">${msg.userName || 'Аноним'}</span> поделился: <strong>${msg.radioStation.name}</strong><span class="message-time">${time}</span>`;
-                else {
-                    let text = (msg.text || '').replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
+                if (msg.gif) {
+                    content += `<span class="message-user">${msg.userName || 'Аноним'}:</span> <img src="${msg.gif}" class="message-gif" alt="GIF"><span class="message-time">${time}</span>`;
+                } else if (msg.isRadioShare && msg.radioStation) {
+                    content += `<span class="share-radio-icon"><i class="fas fa-radio"></i></span> <span class="message-user">${msg.userName || 'Аноним'}</span> поделился: <strong>${msg.radioStation.name}</strong><span class="message-time">${time}</span>`;
+                } else {
+                    let text = (msg.text || '').replace(/(https?:\/\/[^\s]+\.(?:gif|jpg|jpeg|png|webp))/gi, '<img src="$1" class="message-gif" alt="image">');
+                    text = text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
                     content += `<span class="message-user">${msg.userName || 'Аноним'}:</span> ${text}<span class="message-time">${time}</span>`;
                 }
                 let reactions = '';
@@ -3688,8 +3715,15 @@
             }
             
             function changeGif() {
-                let list = currentStation === 'minecraft' ? minecraftGifs : gifs;
-                let gif = list[Math.floor(Math.random() * list.length)];
+                let gifList;
+                if (currentStation === 'taylorswift') {
+                    gifList = taylorGifs;
+                } else if (currentStation === 'minecraft') {
+                    gifList = minecraftGifs;
+                } else {
+                    gifList = gifs;
+                }
+                let gif = gifList[Math.floor(Math.random() * gifList.length)];
                 mainGif.classList.add('gif-transition');
                 setTimeout(() => {
                     mainGif.style.backgroundImage = `url('${gif}')`;

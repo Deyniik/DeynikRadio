@@ -6,11 +6,11 @@
     <title>Deynik Radio</title>
     
     <link rel="manifest" href="/manifest.json">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="/icon-32x32.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512x512.png">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
+    <link rel="apple-touch-icon" href="/favicon.png">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Pacifico&display=swap" rel="stylesheet">
@@ -354,7 +354,7 @@
             transform: scale(1.05);
         }
 
-        .feedback-btn, .support-btn, .download-app-btn {
+        .feedback-btn, .support-btn {
             background: rgba(40, 40, 40, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
@@ -369,7 +369,7 @@
             text-decoration: none;
         }
         
-        .feedback-btn:hover, .support-btn:hover, .download-app-btn:hover {
+        .feedback-btn:hover, .support-btn:hover {
             background: rgba(29, 185, 84, 0.3);
             transform: scale(1.05);
         }
@@ -2487,7 +2487,6 @@
             <div class="header-right">
                 <button class="feedback-btn" id="feedbackBtn"><i class="fas fa-star"></i> Отзыв</button>
                 <button class="support-btn" id="supportBtn"><i class="fas fa-heart"></i> Поддержать</button>
-                <button class="download-app-btn" id="downloadAppBtn"><i class="fas fa-download"></i> Скачать приложение</button>
             </div>
         </header>
         
@@ -2495,7 +2494,7 @@
             <div class="side-panel left-panel crt-effect">
                 <div class="stations-header">
                     <h2>Радиостанции</h2>
-                    <span class="station-count">12</span>
+                    <span class="station-count">15</span>
                 </div>
                 
                 <div class="categories-container">
@@ -2504,6 +2503,7 @@
                     <button class="category-btn" data-category="thematic">Тематические</button>
                     <button class="category-btn" data-category="no-copyright">Без АП</button>
                     <button class="category-btn" data-category="top">Лучшие</button>
+                    <button class="category-btn" data-category="dark">Dark</button>
                 </div>
                 
                 <ul class="station-list" id="station-list"></ul>
@@ -2630,7 +2630,6 @@
     <div class="notification" id="notification">Текст уведомления</div>
 
     <script>
-        // Обновление прогресса загрузки
         const progressBar = document.getElementById('loadingProgress');
         const loadingStatus = document.getElementById('loadingStatus');
         let progress = 0;
@@ -2660,11 +2659,11 @@
         
         updateProgress(30, 'Firebase готов...');
         
-        // Радиостанции
+        // Радиостанции с добавленными Dark
         const radioStations = {
             kissint: {
                 name: "KISS FM",
-                url: "https://cloud.revma.ihrhls.com/zc185?rj-org=n3bb-e2&rj-ttl=5&rj-tok=AAABmoBxYDMAAxQEnNjentV4ug",
+                url: "https://cloud.revma.ihrhls.com/zc185",
                 description: "Лучшие мировые хиты в отличном качестве",
                 currentTrack: "Популярные хиты",
                 currentArtist: "KISS FM",
@@ -2714,7 +2713,7 @@
             },
             jazz: {
                 name: "Jazz24",
-                url: "https://knkx-live-a.edge.audiocdn.com/6285_128k?aw_0_1st.playerid=jazz24.org&uuid=s9a9vs32",
+                url: "https://knkx-live-a.edge.audiocdn.com/6285_128k",
                 description: "Лучшие джазовые композиции",
                 currentTrack: "Smooth Jazz",
                 currentArtist: "Jazz Master",
@@ -2724,7 +2723,7 @@
             },
             chillhop: {
                 name: "Chillhop Radio",
-                url: "https://stream-178.zeno.fm/f3wvbbqmdg8uv",
+                url: "https://media-the.musicradio.com/ChillMP3",
                 description: "Расслабляющие биты для работы и отдыха без авторских прав",
                 currentTrack: "Chill Beats",
                 currentArtist: "Chillhop Music",
@@ -2772,6 +2771,36 @@
                 icon: "fas fa-tree",
                 category: "thematic",
                 isChristmas: true
+            },
+            darkzone: {
+                name: "The Dark Zone",
+                url: "https://ice6.somafm.com/darkzone-128-mp3",
+                description: "Мрачная электронная музыка для ночных путешествий",
+                currentTrack: "Dark Ambient Mix",
+                currentArtist: "SomaFM",
+                quality: "128kbps",
+                icon: "fas fa-skull",
+                category: "dark"
+            },
+            darkhorror: {
+                name: "Dark Horror",
+                url: "http://s3.viastreaming.net:8835/",
+                description: "Жуткие саундтреки и атмосфера ужаса",
+                currentTrack: "Horror Soundtrack",
+                currentArtist: "Dark Horror",
+                quality: "128kbps",
+                icon: "fas fa-ghost",
+                category: "dark"
+            },
+            darkambient: {
+                name: "Dark Ambient",
+                url: "http://79.120.39.202:8002/darkambient",
+                description: "Глубокие и медитативные эмбиент композиции",
+                currentTrack: "Ambient Journey",
+                currentArtist: "Dark Ambient",
+                quality: "128kbps",
+                icon: "fas fa-cloud-moon",
+                category: "dark"
             }
         };
 
@@ -2783,39 +2812,12 @@
             'https://i.pinimg.com/originals/93/08/1e/93081e266f7f0b20778d2736978b2e84.gif',
             'https://i.gifer.com/YMm7.gif',
             'https://i.pinimg.com/originals/51/7d/50/517d50010dfe6e71d17548cae0f6f0dc.gif',
-            'https://i.pinimg.com/originals/43/1c/e5/431ce5d15aab86f66a91ec9a07c9114f.gif',
-            'https://i.pinimg.com/originals/61/af/12/61af12d5fb3c469039dbdf63d783c95d.gif',
-            'https://i.pinimg.com/originals/2f/10/ce/2f10ce69b96c0611989308b0abc68e70.gif',
-            'https://i.pinimg.com/originals/6a/d2/ee/6ad2ee191d434a996766b500a1eb197e.gif',
-            'https://markiled.github.io/Images/Art/Commissions/Commission-2020-Mar-Raul.gif',
-            'https://i.pinimg.com/originals/6e/fb/de/6efbde2becc91166553e90ca975aaf07.gif',
-            'https://i.pinimg.com/originals/dc/9c/38/dc9c38d59ade3c7e307f64d52b3eba32.gif',
-            'https://i.pinimg.com/originals/0e/85/86/0e8586ecd90850bf236dd7efdf5fa594.gif',
-            'https://steamuserimages-a.akamaihd.net/ugc/9667873298027977/D91C419D674235E03A5ED1DD814E2C7B2A3AFEB5/',
-            'https://i.pinimg.com/originals/36/e2/3a/36e23aa11a22646e9c5f611d3b7c56f7.gif',
-            'https://i.pinimg.com/originals/e4/c3/9a/e4c39a73c1d9f9d32ca69f9ea0783c66.gif',
-            'https://i.pinimg.com/originals/0b/49/e3/0b49e3c7cdf6f64da625dd7b2ed94312.gif',
-            'https://i.pinimg.com/originals/5d/1b/b3/5d1bb3546868cf3791880fa5720da7a2.gif',
-            'https://i.pinimg.com/originals/c4/67/13/c4671376fad5ff9cc8a83c3f2174fd73.gif',
-            'https://media1.tenor.com/m/znpkuJKdqGkAAAAd/the-simpsons-lisa-simpson.gif',
-            'https://i.pinimg.com/originals/22/1e/a5/221ea5d2720d805681eea3b689160671.gif',
-            'https://media1.tenor.com/m/joAGLtB1n8IAAAAd/the-simpsons-bart.gif',
-            'https://i.gifer.com/KGXA.gif',
-            'https://avatars.dzeninfra.ru/get-zen_doc/2907131/pub_5f6762b8b142594c536fda3a_5f6770b4c833846a1ddf46ac/orig',
-            'https://i.pinimg.com/originals/c2/5c/ae/c25cae326dcdc03ce3ced251d45a34b6.gif',
-            'https://i.pinimg.com/originals/e4/25/d3/e425d3861a7d09173b6f31faefd4460a.gif',
-            'https://i.pinimg.com/originals/74/1b/06/741b066eff82e56aaab12962512ba741.gif'
+            'https://i.pinimg.com/originals/43/1c/e5/431ce5d15aab86f66a91ec9a07c9114f.gif'
         ];
 
         const minecraftGifs = [
             'https://i.pinimg.com/originals/44/f2/f6/44f2f6325aa9bf8c93ed6c3d6e8f8d57.gif',
-            'https://i.pinimg.com/originals/05/cf/1b/05cf1b97379bb751d2bf03b55ee16c5e.gif',
-            'https://i.pinimg.com/originals/da/85/43/da8543494a3baaec4fc61c2b952f8de0.gif',
-            'https://i.pinimg.com/originals/d9/04/03/d9040300483e5e5465e56ddb713eeb1b.gif',
-            'https://i.pinimg.com/originals/ac/25/3e/ac253eae753d0442a50f061051956cef.gif',
-            'https://i.pinimg.com/originals/2a/af/bf/2aafbff9c75012c41c2c9abd92d5de35.gif',
-            'https://i.pinimg.com/originals/a3/b4/55/a3b4558c0f0963b7a6135cc4a63b0d15.gif',
-            'https://i.pinimg.com/originals/8a/34/3e/8a343ea387b21d843715d0a3a86059ed.gif'
+            'https://i.pinimg.com/originals/da/85/43/da8543494a3baaec4fc61c2b952f8de0.gif'
         ];
 
         const stationIds = Object.keys(radioStations);
@@ -2910,7 +2912,6 @@
             
             const liteToggle = document.getElementById('liteToggle');
             
-            const downloadAppBtn = document.getElementById('downloadAppBtn');
             const pwaInstallPrompt = document.getElementById('pwaInstallPrompt');
             const pwaInstallBtn = document.getElementById('pwaInstallBtn');
             const pwaDismissBtn = document.getElementById('pwaDismissBtn');
@@ -2945,15 +2946,26 @@
             initFeedbackSystem();
             initPWA();
             
+            // Исправленный обработчик для Lite-режима
             liteToggle.addEventListener('change', function() {
                 if (this.checked) {
+                    // Сохраняем состояние перед переходом
+                    localStorage.setItem('liteModeEnabled', 'true');
                     window.location.href = 'https://deyniik.github.io/DeynikRadio/lite';
+                } else {
+                    localStorage.removeItem('liteModeEnabled');
                 }
             });
             
-            downloadAppBtn.addEventListener('click', function() {
-                showPWAInstallPrompt();
-            });
+            // Проверяем при загрузке, не был ли включен Lite режим
+            if (localStorage.getItem('liteModeEnabled') === 'true') {
+                liteToggle.checked = true;
+                localStorage.removeItem('liteModeEnabled');
+                // Не переключаем обратно, просто показываем что было включено
+                setTimeout(() => {
+                    liteToggle.checked = false;
+                }, 100);
+            }
             
             pwaInstallBtn.addEventListener('click', function() {
                 installPWA();
@@ -2997,10 +3009,6 @@
             function showPWAInstallPrompt() {
                 if (deferredPrompt && !isAppInstalled) {
                     pwaInstallPrompt.style.display = 'block';
-                } else if (isAppInstalled) {
-                    showNotification('Приложение уже установлено на вашем устройстве', 'info');
-                } else {
-                    showNotification('Установка приложения доступна только в современных браузерах', 'info');
                 }
             }
             
@@ -3037,7 +3045,10 @@
                     { id: 'lofihiphop', category: 'lofi' },
                     { id: 'minecraft', category: 'lofi' },
                     { id: 'halloween', category: 'thematic', title: 'Тематические' },
-                    { id: 'christmas', category: 'thematic' }
+                    { id: 'christmas', category: 'thematic' },
+                    { id: 'darkzone', category: 'dark', title: '🌑 Dark' },
+                    { id: 'darkhorror', category: 'dark' },
+                    { id: 'darkambient', category: 'dark' }
                 ];
                 
                 let lastCategory = '';
@@ -4224,7 +4235,8 @@
                     if (category === 'all' || 
                         (category === 'lofi' && station.category === 'lofi') ||
                         (category === 'thematic' && station.category === 'thematic') ||
-                        (category === 'no-copyright' && station.category === 'no-copyright')) {
+                        (category === 'no-copyright' && station.category === 'no-copyright') ||
+                        (category === 'dark' && station.category === 'dark')) {
                         item.style.display = 'flex';
                         if (item.previousElementSibling && item.previousElementSibling.classList.contains('category-title')) {
                             item.previousElementSibling.style.display = 'block';
